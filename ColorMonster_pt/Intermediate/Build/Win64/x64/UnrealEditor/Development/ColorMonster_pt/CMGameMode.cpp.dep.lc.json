@@ -1,0 +1,19 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\unseen\\documents\\minju\\colormonster_pt\\source\\colormonster_pt\\game\\cmgamemode.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\unseen\\documents\\minju\\colormonster_pt\\intermediate\\build\\win64\\x64\\colormonster_pteditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\unseen\\documents\\minju\\colormonster_pt\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\colormonster_pt\\definitions.colormonster_pt.h",
+            "c:\\users\\unseen\\documents\\minju\\colormonster_pt\\source\\colormonster_pt\\game\\cmgamemode.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\serverstatreplicator.generated.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gamemodebase.generated.h",
+            "c:\\users\\unseen\\documents\\minju\\colormonster_pt\\intermediate\\build\\win64\\unrealeditor\\inc\\colormonster_pt\\uht\\cmgamemode.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

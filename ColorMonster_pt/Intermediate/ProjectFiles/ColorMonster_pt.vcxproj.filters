@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\ColorMonster_pt.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\ColorMonster_pt.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\ColorMonster_ptEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\ColorMonster_pt">
+      <UniqueIdentifier>{D56A8FF5-0761-3DB7-8615-4CAA9624C78A}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\ColorMonster_pt\ColorMonster_pt.Build.cs">
+      <Filter>Source\ColorMonster_pt</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\ColorMonster_pt\ColorMonster_pt.cpp">
+      <Filter>Source\ColorMonster_pt</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ColorMonster_pt\ColorMonster_pt.h">
+      <Filter>Source\ColorMonster_pt</Filter>
+    </ClInclude>
+    <Filter Include="Source\ColorMonster_pt\Character">
+      <UniqueIdentifier>{1866A1A2-19D3-34B7-AF87-13AE75C29EC9}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\ColorMonster_pt\Character\CMCharacterBase.cpp">
+      <Filter>Source\ColorMonster_pt\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ColorMonster_pt\Character\CMCharacterBase.h">
+      <Filter>Source\ColorMonster_pt\Character</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\ColorMonster_pt\Character\CMCharacterPlayer.cpp">
+      <Filter>Source\ColorMonster_pt\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ColorMonster_pt\Character\CMCharacterPlayer.h">
+      <Filter>Source\ColorMonster_pt\Character</Filter>
+    </ClInclude>
+    <Filter Include="Source\ColorMonster_pt\Game">
+      <UniqueIdentifier>{177F532A-7FA5-3CD2-9247-C59D4F135540}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\ColorMonster_pt\Game\CMGameMode.cpp">
+      <Filter>Source\ColorMonster_pt\Game</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ColorMonster_pt\Game\CMGameMode.h">
+      <Filter>Source\ColorMonster_pt\Game</Filter>
+    </ClInclude>
+    <Filter Include="Source\ColorMonster_pt\Player">
+      <UniqueIdentifier>{2098BB91-4A30-3A61-A498-7490CD192278}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\ColorMonster_pt\Player\CMPlayerController.cpp">
+      <Filter>Source\ColorMonster_pt\Player</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ColorMonster_pt\Player\CMPlayerController.h">
+      <Filter>Source\ColorMonster_pt\Player</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
