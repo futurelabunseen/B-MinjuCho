@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"C:\\Users\\UNSEEN\\Documents\\Minju\\ColorMonster_pt\\Source\\ColorMonster_pt\\ColorMonster_pt.Build.cs",
-		"C:\\Users\\UNSEEN\\Documents\\Minju\\ColorMonster_pt\\Source\\ColorMonster_pt.Target.cs",
-		"C:\\Users\\UNSEEN\\Documents\\Minju\\ColorMonster_pt\\Source\\ColorMonster_ptEditor.Target.cs"
+		"E:\\Unreal_Projects\\B-MinjuCho\\ColorMonster_pt\\Source\\ColorMonster_pt\\ColorMonster_pt.Build.cs",
+		"E:\\Unreal_Projects\\B-MinjuCho\\ColorMonster_pt\\Source\\ColorMonster_pt.Target.cs",
+		"E:\\Unreal_Projects\\B-MinjuCho\\ColorMonster_pt\\Source\\ColorMonster_ptEditor.Target.cs"
 	],
 	"EngineVersion": "5.3.2"
 }

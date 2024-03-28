@@ -5,6 +5,13 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/Levels/Prototype.umap",
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/FirstPerson/Input/IMC_Default.uasset",
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/MeshPainter/Enemy.uasset",
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/FirstPersonBP/Blueprints/FirstPersonGameMode.uasset",
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/__ExternalActors__/FirstPerson/Maps/FirstPersonMap/4/26/331788YLL2IGSXW1PDQHQQ.uasset",
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/FirstPerson/Blueprints/BP_FirstPersonGameMode.uasset",
+				"E:/Unreal_Projects/B-MinjuCho/ColorMonster_pt/Content/FirstPerson/Blueprints/BP_Pickup_Rifle.uasset",
 				"C:/Users/UNSEEN/Documents/Minju/ColorMonster_pt/Content/Levels/Prototype.umap",
 				"C:/Users/UNSEEN/Documents/Minju/ColorMonster_pt/Content/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.uasset"
 			]
