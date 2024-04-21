@@ -39,11 +39,17 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UAnimMontage> LeftRightMontage;
 
+	UPROPERTY()
+	TArray<TObjectPtr<class UAnimMontage>> FireMontages;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<class UAnimMontage>> ConvertMontages;
+
 
 public:
 	UFUNCTION()
-	void PlayShooting();
+	uint8 PlayShooting(uint8 isLeft);
 
 	UFUNCTION()
-	void PlayConverting();
+	uint8 PlayConverting(uint8 isLeft);
 };

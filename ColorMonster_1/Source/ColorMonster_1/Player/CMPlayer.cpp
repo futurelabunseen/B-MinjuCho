@@ -185,7 +185,10 @@ void ACMPlayer::Fire()
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Shoot!"));
-	PlayerAnimInstance->PlayShooting();
+	if(PlayerAnimInstance->PlayShooting(isLeft) == 0)
+	{
+		return;
+	}
 	if (ProjectileClass)
 	{
 		FVector CameraLocation;
@@ -220,6 +223,9 @@ void ACMPlayer::ConvertingGun()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance"));
 		return;
 	}
-	PlayerAnimInstance->PlayConverting();
+	if(PlayerAnimInstance->PlayConverting(isLeft) == 1)
+	{
+		isLeft = !isLeft;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Converting Gun!: %d"), isLeft);
 }

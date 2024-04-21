@@ -40,6 +40,12 @@ UCMPlayerAnimInstance::UCMPlayerAnimInstance()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FAILED LOADING LeftRight MONTAGE"));
 	}
+
+	// Set Arrays
+	FireMontages.Add(RightFireMontage);
+	FireMontages.Add(LeftFireMontage);
+	ConvertMontages.Add(RightLeftMontage);
+	ConvertMontages.Add(LeftRightMontage);
 }
 
 void UCMPlayerAnimInstance::NativeInitializeAnimation()
@@ -64,44 +70,34 @@ void UCMPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	
 }
 
-void UCMPlayerAnimInstance::PlayShooting()
+uint8 UCMPlayerAnimInstance::PlayShooting(uint8 isLeft)
 {
-	if (!Montage_IsPlaying(RightFireMontage) && Owner->isLeft == 0)
+	for(auto ConvertMontage : ConvertMontages)
 	{
-		Montage_Play(RightFireMontage, 1.0f);
+		if(Montage_IsPlaying(ConvertMontage))
+		{
+			return 0;
+		}
 	}
-	if (!Montage_IsPlaying(LeftFireMontage) && Owner->isLeft == 1)
+	if (!Montage_IsPlaying(FireMontages[isLeft]))
 	{
-		Montage_Play(LeftFireMontage, 1.0f);
+		Montage_Play(FireMontages[isLeft], 1.0f);
+		return 1;
 	}
+	return 0;
 }
 
-void UCMPlayerAnimInstance::PlayConverting()
+uint8 UCMPlayerAnimInstance::PlayConverting(uint8 isLeft)
 {
-	if (Owner->isLeft == 0)
+	if (Montage_IsPlaying(FireMontages[isLeft]))
 	{
-		if (Montage_IsPlaying(RightFireMontage))
-		{
-			Montage_Stop(0.0f, RightFireMontage);
-		}
-		Owner->isLeft = 1;
-
-		if (!Montage_IsPlaying(RightLeftMontage))
-		{
-			Montage_Play(RightLeftMontage, 1.0f);
-		}
+		Montage_Stop(0.0f, FireMontages[isLeft]);
 	}
-	else if (Owner->isLeft == 1)
+
+	if (!Montage_IsPlaying(ConvertMontages[isLeft]))
 	{
-		if (Montage_IsPlaying(LeftFireMontage))
-		{
-			Montage_Stop(0.0f, LeftFireMontage);
-		}
-		Owner->isLeft = 0;
-
-		if (!Montage_IsPlaying(LeftRightMontage))
-		{
-			Montage_Play(LeftRightMontage, 1.0f);
-		}
+		Montage_Play(ConvertMontages[isLeft], 1.0f);
+		return 1;
 	}
+	return 0;
 }
