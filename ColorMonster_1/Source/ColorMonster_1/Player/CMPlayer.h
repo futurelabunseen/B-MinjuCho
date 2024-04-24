@@ -7,6 +7,13 @@
 #include "InputActionValue.h"
 #include "CMPlayer.generated.h"
 
+UENUM()
+enum class EGunHandler : uint8
+{
+	Right,
+	Left
+};
+
 
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -57,11 +64,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ConvertAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWorld> World;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class ACMProjectileActor> ProjectileClass;
 
 
 public:
@@ -78,15 +80,31 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCMPlayerAnimInstance> PlayerAnimInstance;
 
+// Gun Section
+public:
+	UPROPERTY(EditAnywhere)
+	EGunHandler isLeft;
+
 	void Fire();
 
 	void ConvertingGun();
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gun, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ACMLineGun> RightGunClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gun, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ACMLineGun> RightGun;
 
-public:
-	UPROPERTY(EditAnywhere)
-	uint8 isLeft;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gun, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ACMColorGun> LeftGunClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gun, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ACMColorGun> LeftGun;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamePlay")
-	FVector MuzzleOffset;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gun, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ACMWeapon> Gun;
 
+private:
+	UPROPERTY()
+	TArray<class ACMWeapon*> ArrayGun;
 };

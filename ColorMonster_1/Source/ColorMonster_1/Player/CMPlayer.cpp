@@ -10,7 +10,9 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
-#include "Player/CMProjectileActor.h"
+#include "Weapon/CMWeapon.h"
+#include "Weapon/CMLineGun.h"
+#include "Weapon/CMColorGun.h"
 
 ACMPlayer::ACMPlayer()
 {
@@ -73,8 +75,7 @@ ACMPlayer::ACMPlayer()
 		FireAction = InputActionFireRef.Object;
 	}
 
-	isLeft = 0;
-	MuzzleOffset = FVector(200, 0, 0);
+	isLeft = EGunHandler::Right;
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionConvertRef(TEXT("/Script/EnhancedInput.InputAction'/Game/FirstPerson/Input/Actions/IA_Convert.IA_Convert'"));
 	if (nullptr != InputActionConvertRef.Object)
@@ -82,27 +83,27 @@ ACMPlayer::ACMPlayer()
 		ConvertAction = InputActionConvertRef.Object;
 	}
 
-	World = GetWorld();
-
-	// Projectile Class
-	static ConstructorHelpers::FClassFinder<ACMProjectileActor> ProjectileRef(TEXT("/Game/Blueprint/BP_CMProjectile.BP_CMProjectile_C"));
-	if (ProjectileRef.Class)
+	// Weapon Class
+	// Right Weapon
+	static ConstructorHelpers::FClassFinder<ACMLineGun> RightGunRef (TEXT("/Game/Blueprint/BP_LineGun.BP_LineGun_C"));
+	if(RightGunRef.Class)
 	{
-		ProjectileClass = ProjectileRef.Class;
-		//ProjectileClass = Cast<UClass>(ProjectileRef.Class);
-		if (ProjectileClass)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Succeed to call Projectile class & Casting"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Failed to Casting Projectile class"));
-		}
+		RightGunClass = RightGunRef.Class;
 	}
-	else
+	RightGun = CreateDefaultSubobject<ACMLineGun>(TEXT("RightGun"));
+	
+	// Left Weapon
+	static ConstructorHelpers::FClassFinder<ACMColorGun> LeftGunRef (TEXT(""));
+	if(LeftGunRef.Class)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to call Projectile class"));
+		LeftGunClass = LeftGunRef.Class;
 	}
+	LeftGun = CreateDefaultSubobject<ACMColorGun>(TEXT("LeftGun"));
+	ArrayGun.Add(RightGun);
+	ArrayGun.Add(LeftGun);
+	
+	// Custom Anim Instance
+	PlayerAnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
 void ACMPlayer::BeginPlay()
@@ -119,7 +120,32 @@ void ACMPlayer::BeginPlay()
 		}
 	}
 
-	
+	// Equip Weapon Mesh
+	RightGun->SetPlayer(this);
+	if (RightGun)
+	{
+		// Material Visibility = None
+		// If you want change weapon Mesh, here
+		// FVector SocketLocation = GetMesh()->GetSocketLocation(FName("Muzzle_R"));
+		// WeaponMesh->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, AttachPoint);
+		// WeaponMesh->SetRelativeLocation(WeaponRelativeLocation);
+		// WeaponMesh->SetRelativeRotation(WeaponRotator);
+		// WeaponMesh->CastShadow = true;
+		// WeaponMesh->bCastHiddenShadow = true;
+	}
+	LeftGun->SetPlayer(this);
+	if (LeftGun)
+	{
+		// Material Visibility = None
+		// If you want change weapon Mesh, here
+		// FVector SocketLocation = GetMesh()->GetSocketLocation(FName("Muzzle_R"));
+		// WeaponMesh->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, AttachPoint);
+		// WeaponMesh->SetRelativeLocation(WeaponRelativeLocation);
+		// WeaponMesh->SetRelativeRotation(WeaponRotator);
+		// WeaponMesh->CastShadow = true;
+		// WeaponMesh->bCastHiddenShadow = true;
+	}
+	Gun = ArrayGun[0];
 }
 
 void ACMPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -178,54 +204,33 @@ void ACMPlayer::Look(const FInputActionValue& Value)
 
 void ACMPlayer::Fire()
 {
-	PlayerAnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
-	if (PlayerAnimInstance == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance"));
-		return;
-	}
-	UE_LOG(LogTemp, Warning, TEXT("Shoot!"));
-	if(PlayerAnimInstance->PlayShooting(isLeft) == 0)
-	{
-		return;
-	}
-	if (ProjectileClass)
-	{
-		FVector CameraLocation;
-		FRotator CameraRotation;
-		GetActorEyesViewPoint(CameraLocation, CameraRotation);
-
-		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-		FRotator MuzzleRotation = CameraRotation;
-		MuzzleRotation.Pitch += 10.0f;
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-
-			ACMProjectileActor* Projectile = World->SpawnActor<ACMProjectileActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-			if (Projectile)
-			{
-				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->FireInDirection(LaunchDirection);
-			}
-		}
-	}
+	Gun->Fire();
 	
 }
 
 void ACMPlayer::ConvertingGun()
 {
-	PlayerAnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	if(!PlayerAnimInstance)
+	{
+		PlayerAnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	}
 	if (PlayerAnimInstance == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance"));
 		return;
 	}
-	if(PlayerAnimInstance->PlayConverting(isLeft) == 1)
+	if(PlayerAnimInstance->PlayConverting((uint8)isLeft) == 1)
 	{
-		isLeft = !isLeft;
+		switch(isLeft)
+		{
+		case EGunHandler::Right:
+			isLeft = EGunHandler::Left;
+			break;
+		case EGunHandler::Left:
+			isLeft = EGunHandler::Right;
+			break;
+		}
+		Gun = ArrayGun[(uint8)isLeft];
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Converting Gun!: %d"), isLeft);
 }
