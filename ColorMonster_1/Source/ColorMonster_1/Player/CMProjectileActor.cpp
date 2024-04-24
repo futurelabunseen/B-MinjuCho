@@ -3,6 +3,7 @@
 
 #include "Player/CMProjectileActor.h"
 
+#include "Character/CMCharacter.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -34,15 +35,15 @@ ACMProjectileActor::ACMProjectileActor()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CMPROJECTILEACTOR: Failed to Load Static Mesh"));
 	}
-	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/FPWeapon/Materials/FirstPersonProjectileMaterial.FirstPersonProjectileMaterial'"));
-	if (MaterialRef.Object)
-	{
-		StaticMesh->SetMaterial(0, MaterialRef.Object);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CMPROJECTILEACTOR: Failed to Load Material"));
-	}
+	// static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT(""));
+	// if (MaterialRef.Object)
+	// {
+	// 	StaticMesh->SetMaterial(0, MaterialRef.Object);
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("CMPROJECTILEACTOR: Failed to Load Material"));
+	// }
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
@@ -81,7 +82,13 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 
-		
+		ensure(OtherActor != nullptr);
+		ACMCharacter* HitCharacter = Cast<ACMCharacter>(OtherActor);
+		if(HitCharacter != nullptr)
+		{
+			//HitCharacter->TakeDamage(50.0f, DamageEvent, GetController(), this);
+			// refer interface from ideugu class
+		}
 
 		Destroy();
 	}
