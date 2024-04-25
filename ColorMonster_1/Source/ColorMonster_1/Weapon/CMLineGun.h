@@ -34,4 +34,5 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Player, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCMPlayerAnimInstance> PlayerAnimInstance;
+
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Character/CMCharacter.h"
 #include "CMMonster.generated.h"
 
@@ -21,8 +22,10 @@ public:
 
 protected:
 	virtual void Dead() override;
+	void ChangeColor(FGameplayTag InColor);
 	
 // Color Data -> Tag
 private:
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag CurrentColor;
 };

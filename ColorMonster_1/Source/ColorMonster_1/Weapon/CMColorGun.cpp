@@ -6,6 +6,7 @@
 #include "Player/CMProjectileActor.h"
 #include "Player/CMPlayer.h"
 #include "Animation/CMPlayerAnimInstance.h"
+#include "Color/CMGameplayTag.h"
 
 ACMColorGun::ACMColorGun()
 {
@@ -69,7 +70,7 @@ void ACMColorGun::Fire()
 			if (Projectile)
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->FireInDirection(LaunchDirection);
+				Projectile->FireInDirection(LaunchDirection, CM_COLOR_BLUE);
 			}
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Color Gun Shoot!"));

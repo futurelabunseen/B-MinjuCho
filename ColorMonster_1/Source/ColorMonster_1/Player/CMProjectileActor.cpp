@@ -3,9 +3,10 @@
 
 #include "Player/CMProjectileActor.h"
 
-#include "Character/CMCharacter.h"
+#include "Character/CMMonster.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Color/CMGameplayTag.h"
 
 // Sets default values
 ACMProjectileActor::ACMProjectileActor()
@@ -16,8 +17,8 @@ ACMProjectileActor::ACMProjectileActor()
 	RootComponent = CollisionComponent;
 
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-	//CollisionComponent->OnComponentHit.AddDynamic(this, &ACMProjectileActor::OnHit);
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ACMProjectileActor::OnTriggerBegin);
+	CollisionComponent->OnComponentHit.AddDynamic(this, &ACMProjectileActor::OnHit);
+	//CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ACMProjectileActor::OnTriggerBegin);
 
 	// Players can't walk on it
 	CollisionComponent->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -55,6 +56,7 @@ ACMProjectileActor::ACMProjectileActor()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+	CurrentColor = CM_COLOR_RED;
 }
 
 // Called when the game starts or when spawned
@@ -71,9 +73,10 @@ void ACMProjectileActor::Tick(float DeltaTime)
 
 }
 
-void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
+void ACMProjectileActor::FireInDirection(const FVector& ShootDirection, const FGameplayTag InColor)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+	CurrentColor = InColor;
 }
 
 void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
@@ -83,9 +86,10 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 
 		ensure(OtherActor != nullptr);
-		ACMCharacter* HitCharacter = Cast<ACMCharacter>(OtherActor);
-		if(HitCharacter != nullptr)
+		ACMMonster* HitMonster = Cast<ACMMonster>(OtherActor);
+		if(HitMonster != nullptr)
 		{
+			HitMonster->
 			//HitCharacter->TakeDamage(50.0f, DamageEvent, GetController(), this);
 			// refer interface from ideugu class
 		}

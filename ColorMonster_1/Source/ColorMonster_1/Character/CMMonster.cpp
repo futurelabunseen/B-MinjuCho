@@ -4,6 +4,7 @@
 #include "Character/CMMonster.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
+#include "Color/CMGameplayTag.h"
 
 ACMMonster::ACMMonster()
 {
@@ -44,4 +45,10 @@ void ACMMonster::Dead()
 	{
 		AnimInstance->PlayDeathMontage();
 	}
+}
+
+void ACMMonster::ChangeColor(FGameplayTag InColor)
+{
+	CurrentColor = InColor;
+	
 }
