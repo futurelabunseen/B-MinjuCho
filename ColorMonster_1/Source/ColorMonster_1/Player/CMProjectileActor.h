@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "GameplayTags.h"
 #include "CMProjectileActor.generated.h"
 
 UCLASS()
@@ -34,7 +35,7 @@ public:
 	TObjectPtr<class UProjectileMovementComponent> ProjectileMovementComponent;
 
 	UFUNCTION()
-	void FireInDirection(const FVector& ShootDirection, const FGameplayTag InColor);
+	void FireInDirection(const FVector& ShootDirection);
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
@@ -44,7 +45,7 @@ public:
 
 protected:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag CurrentColor;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag CurrentColor;*/
 };
 

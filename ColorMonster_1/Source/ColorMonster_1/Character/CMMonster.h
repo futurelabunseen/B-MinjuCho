@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "GameplayTags.h"
 #include "Character/CMCharacter.h"
 #include "CMMonster.generated.h"
 
@@ -21,11 +22,15 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void Dead() override;
-	void ChangeColor(FGameplayTag InColor);
+public:
+	/*void ChangeColor(const FGameplayTag& InColor);*/
 	
 // Color Data -> Tag
-private:
+public:
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag CurrentColor;*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag CurrentColor;
+	FName CurrentColor;
 };

@@ -56,7 +56,7 @@ ACMProjectileActor::ACMProjectileActor()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
-	CurrentColor = CM_COLOR_RED;
+	
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +64,7 @@ void ACMProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//CurrentColor = FGameplayTag::EmptyTag;
 }
 
 // Called every frame
@@ -73,10 +74,10 @@ void ACMProjectileActor::Tick(float DeltaTime)
 
 }
 
-void ACMProjectileActor::FireInDirection(const FVector& ShootDirection, const FGameplayTag InColor)
+void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
-	CurrentColor = InColor;
+	//CurrentColor = InColor;
 }
 
 void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
@@ -89,7 +90,7 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		ACMMonster* HitMonster = Cast<ACMMonster>(OtherActor);
 		if(HitMonster != nullptr)
 		{
-			HitMonster->
+			//HitMonster->ChangeColor(CurrentColor);
 			//HitCharacter->TakeDamage(50.0f, DamageEvent, GetController(), this);
 			// refer interface from ideugu class
 		}

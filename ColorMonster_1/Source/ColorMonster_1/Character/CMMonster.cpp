@@ -4,7 +4,9 @@
 #include "Character/CMMonster.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
+#include "GameplayTagContainer.h"
 #include "Color/CMGameplayTag.h"
+#include "GameplayTags.h"
 
 ACMMonster::ACMMonster()
 {
@@ -26,6 +28,7 @@ ACMMonster::ACMMonster()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call anim instance class From Monster"));
 	}
+	CurrentColor = TEXT("Blue");
 }
 
 float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -37,6 +40,13 @@ float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	return FinalDamage;
 }
 
+void ACMMonster::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	//CurrentColor = FGameplayTag::EmptyTag;
+}
+
 void ACMMonster::Dead()
 {
 	Super::Dead();
@@ -46,9 +56,8 @@ void ACMMonster::Dead()
 		AnimInstance->PlayDeathMontage();
 	}
 }
-
-void ACMMonster::ChangeColor(FGameplayTag InColor)
-{
-	CurrentColor = InColor;
-	
-}
+//
+//void ACMMonster::ChangeColor(const FGameplayTag& InColor)
+//{
+//	CurrentColor = InColor;
+//}

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameplayTagContainer.h"
+#include "GameplayTags.h"
 
 #define CM_COLOR_RED FGameplayTag::RequestGameplayTag(FName("Color.Red"))
 #define CM_COLOR_GREEN FGameplayTag::RequestGameplayTag(FName("Color.Green"))
