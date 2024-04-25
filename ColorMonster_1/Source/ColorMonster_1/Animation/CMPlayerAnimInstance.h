@@ -26,6 +26,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 	TObjectPtr<class ACMPlayer> Owner;
 
+// Gun Montages
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UAnimMontage> RightFireMontage;
@@ -44,7 +45,10 @@ private:
 	
 	UPROPERTY()
 	TArray<TObjectPtr<class UAnimMontage>> ConvertMontages;
-
+	
+// Death Montage
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UAnimMontage> DeathMontage;
 
 public:
 	UFUNCTION()
@@ -52,4 +56,7 @@ public:
 
 	UFUNCTION()
 	uint8 PlayConverting(uint8 isLeft);
+
+	UFUNCTION()
+	void PlayDeathMontage();
 };

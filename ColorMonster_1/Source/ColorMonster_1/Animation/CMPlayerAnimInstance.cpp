@@ -46,6 +46,17 @@ UCMPlayerAnimInstance::UCMPlayerAnimInstance()
 	FireMontages.Add(LeftFireMontage);
 	ConvertMontages.Add(RightLeftMontage);
 	ConvertMontages.Add(LeftRightMontage);
+
+	// Death Montage
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeathMontageRef(TEXT("/Game/Animation/DeathFWD_Montage.DeathFWD_Montage"));
+	if (DeathMontageRef.Object)
+	{
+		DeathMontage = DeathMontageRef.Object;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FAILED LOADING Death MONTAGE"));
+	}
 }
 
 void UCMPlayerAnimInstance::NativeInitializeAnimation()
@@ -53,11 +64,7 @@ void UCMPlayerAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	Owner = Cast<ACMPlayer>(GetOwningActor());
-	if (Owner)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("GetOwner SUCCESS"));
-	}
-	else
+	if (!Owner)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GetOwner is Failed from anim instance"));
 	}
@@ -100,4 +107,12 @@ uint8 UCMPlayerAnimInstance::PlayConverting(uint8 isLeft)
 		return 1;
 	}
 	return 0;
+}
+
+void UCMPlayerAnimInstance::PlayDeathMontage()
+{
+	if(DeathMontage)
+	{
+		Montage_Play(DeathMontage);
+	}
 }
