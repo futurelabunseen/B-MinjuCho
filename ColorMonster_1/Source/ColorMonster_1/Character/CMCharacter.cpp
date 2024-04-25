@@ -31,6 +31,10 @@ ACMCharacter::ACMCharacter()
 	// Mesh
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+
+	// HP
+	SetMaxHP(100);
+	SetCurrentHP(GetMaxHP());
 }
 
 // Called when the game starts or when spawned
@@ -46,5 +50,21 @@ void ACMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ACMCharacter::UpdateHPFromDamage(float Damage)
+{
+	CurrentHP -= Damage;
+	if(CurrentHP <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Actor: %s is DEAD"), *GetName());
+		Dead();
+		SetActorEnableCollision(false);
+	}
+}
+
+void ACMCharacter::Dead()
+{
+	
 }
 

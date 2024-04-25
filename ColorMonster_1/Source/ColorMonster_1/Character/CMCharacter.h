@@ -23,4 +23,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+// HP
+protected:
+	UPROPERTY()
+	float CurrentHP;
+	UPROPERTY()
+	float MaxHP;
+	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
+	FORCEINLINE void SetCurrentHP(float InValue) { CurrentHP = InValue; }
+	FORCEINLINE float GetMaxHP() const { return MaxHP; }
+	FORCEINLINE void SetMaxHP(float InValue) { MaxHP = InValue; }
+	virtual void UpdateHPFromDamage(float Damage);
+	virtual void Dead();
 };

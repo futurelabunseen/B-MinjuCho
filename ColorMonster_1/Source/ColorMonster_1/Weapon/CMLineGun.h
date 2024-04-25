@@ -26,13 +26,9 @@ public:
 
 	virtual void SetPlayer(class ACMPlayer* const InPlayer) override;
 	virtual void Fire() override;
+	void ShootTrace();
+	void TraceHit(const FHitResult& FireHit);
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class ACMProjectileActor> ProjectileClass;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	FVector MuzzleOffset;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Player, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class ACMPlayer> Player;
 	
