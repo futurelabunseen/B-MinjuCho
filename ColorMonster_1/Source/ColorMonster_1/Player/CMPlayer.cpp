@@ -18,8 +18,9 @@ ACMPlayer::ACMPlayer()
 {
 	// Create a Camera
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(RootComponent);
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(12.0f, -5.0f, 72.0f));
+	FirstPersonCameraComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("FX_Head"));
+	//FirstPersonCameraComponent->SetupAttachment(RootComponent);
+	//FirstPersonCameraComponent->SetRelativeLocation(FVector(12.0f, -5.0f, 72.0f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	// Mesh
@@ -28,17 +29,18 @@ ACMPlayer::ACMPlayer()
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
-
+	
+	GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
+	
 	// Animation
 	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/ParagonTwinblast/Characters/Heroes/TwinBlast/Twinblast_AnimBlueprint.Twinblast_AnimBlueprint_C"));
 	if (AnimInstanceClassRef.Class)
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-		UE_LOG(LogTemp, Warning, TEXT("Succeed to call anim instance class"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to call anim instance class"));
+		UE_LOG(LogTemp, Warning, TEXT("Failed to call anim instance class From Player"));
 	}
 	//GetMesh()->SetupAttachment(RootComponent);
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
@@ -111,6 +113,9 @@ void ACMPlayer::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	
+	GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
+	
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
