@@ -19,4 +19,5 @@ public:
 	virtual void SetPlayer(class ACMPlayer* const InPlayer);
 	
 	virtual void Fire();
+	virtual void Reload();
 };

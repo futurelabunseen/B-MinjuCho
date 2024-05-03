@@ -17,4 +17,8 @@ void ACMWeapon::Fire()
 {
 }
 
+void ACMWeapon::Reload()
+{
+}
+
 
