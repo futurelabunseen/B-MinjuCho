@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Weapon/CMWeapon.h"
+#include "GameplayTagContainer.h"
 #include "CMColorGun.generated.h"
 
 /**
@@ -20,6 +21,9 @@ public:
 
 	virtual void SetPlayer(class ACMPlayer* const InPlayer) override;
 	virtual void Fire() override;
+	virtual void Reload() override;
+	void ShootTrace();
+	void Absorb(const FGameplayTag& SpongeColor);
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ACMProjectileActor> ProjectileClass;
@@ -32,4 +36,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Player, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCMPlayerAnimInstance> PlayerAnimInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag CurrentColor;
 };

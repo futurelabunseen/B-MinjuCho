@@ -4,7 +4,6 @@
 #include "Character/CMMonster.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
-#include "GameplayTagContainer.h"
 #include "Color/CMGameplayTag.h"
 #include "Components/CapsuleComponent.h"
 
@@ -34,6 +33,7 @@ ACMMonster::ACMMonster()
 	for(int i=0; i<GetMesh()->GetNumMaterials();++i)
 	{
 		GetMesh()->CreateDynamicMaterialInstance(i, nullptr);
+		//GetMesh()->GetMaterial(i);
 	}
 }
 
@@ -87,7 +87,7 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 	}
 }
 
-const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag) const
+const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag)
 {
 	if(ColorTag == CM_COLOR_RED)
 	{

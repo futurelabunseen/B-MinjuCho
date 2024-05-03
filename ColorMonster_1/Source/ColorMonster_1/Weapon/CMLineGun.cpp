@@ -60,6 +60,11 @@ void ACMLineGun::Fire()
 	}
 }
 
+void ACMLineGun::Reload()
+{
+	
+}
+
 void ACMLineGun::ShootTrace()
 {
 	FHitResult FireHit;

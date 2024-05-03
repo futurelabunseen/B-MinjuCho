@@ -6,6 +6,8 @@
 #include "Weapon/CMProjectileActor.h"
 #include "Player/CMPlayer.h"
 #include "Animation/CMPlayerAnimInstance.h"
+#include "Color/CMColorSponge.h"
+#include "Kismet/GameplayStatics.h"
 #include "Color/CMGameplayTag.h"
 
 ACMColorGun::ACMColorGun()
@@ -25,6 +27,7 @@ ACMColorGun::ACMColorGun()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call Projectile class"));
 	}
 	MuzzleOffset = FVector(200, 0, 0);
+	CurrentColor = CM_COLOR_BLUE;
 }
 
 void ACMColorGun::SetPlayer(ACMPlayer* const InPlayer)
@@ -70,9 +73,75 @@ void ACMColorGun::Fire()
 			if (Projectile)
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
+				Projectile->SetCurrentColor(CurrentColor);
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Color Gun Shoot!"));
 	}
 }
+
+void ACMColorGun::Reload()
+{
+	if (PlayerAnimInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance in CMLineGun"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload"));
+		ShootTrace();
+	}
+}
+
+void ACMColorGun::ShootTrace() 
+{
+	FHitResult FireHit;
+
+	FVector2D ViewportSize;
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+
+	FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+	FVector CrosshairWorldPosition;
+	FVector CrosshairWorldDirection;
+	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(
+		UGameplayStatics::GetPlayerController(this, 0),
+		CrosshairLocation,
+		CrosshairWorldPosition,
+		CrosshairWorldDirection
+	);
+
+	if (bScreenToWorld)
+	{
+		FVector Start = CrosshairWorldPosition;
+		FVector End = Start + CrosshairWorldDirection * 80000.0f;
+
+		bool bResult = GetWorld()->LineTraceSingleByChannel(
+			FireHit,
+			Start,
+			End,
+			ECollisionChannel::ECC_Visibility
+		);
+		
+		UE_LOG(LogTemp, Warning, TEXT("Line Trace Shoot!"));
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f, 0,0);
+		if(bResult && FireHit.GetActor())
+		{
+			ACMColorSponge* Sponge = Cast<ACMColorSponge>(FireHit.GetActor());
+			if(Sponge)
+			{
+				Absorb(Sponge->GetCurrentColor());
+			}
+		}
+	}
+}
+
+void ACMColorGun::Absorb(const FGameplayTag& SpongeColor)
+{
+	CurrentColor = SpongeColor;
+	UE_LOG(LogTemp, Warning, TEXT("Color Gun : %s"), *(SpongeColor.GetTagName().ToString()));
+}
+

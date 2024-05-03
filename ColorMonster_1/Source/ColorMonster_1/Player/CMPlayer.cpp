@@ -84,6 +84,12 @@ ACMPlayer::ACMPlayer()
 	{
 		ConvertAction = InputActionConvertRef.Object;
 	}
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionReloadRef(TEXT("/Script/EnhancedInput.InputAction'/Game/FirstPerson/Input/Actions/IA_Reload.IA_Reload'"));
+	if (nullptr != InputActionReloadRef.Object)
+	{
+		ReloadAction = InputActionReloadRef.Object;
+	}
 
 	// Weapon Class
 	// Right Weapon
@@ -174,6 +180,9 @@ void ACMPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		// Converting Gun
 		EnhancedInputComponent->BindAction(ConvertAction, ETriggerEvent::Triggered, this, &ACMPlayer::ConvertingGun);
+
+		// Reload
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &ACMPlayer::Reload);
 	}
 	else
 	{
@@ -238,4 +247,17 @@ void ACMPlayer::ConvertingGun()
 		Gun = ArrayGun[(uint8)isLeft];
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Converting Gun!: %d"), isLeft);
+}
+
+void ACMPlayer::Reload()
+{
+	if(Cast<ACMColorGun>(Gun))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Reload - ColorGun"));
+	}
+	if(Cast<ACMLineGun>(Gun))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Reload - LineGun"));
+	}
+	Gun->Reload();
 }

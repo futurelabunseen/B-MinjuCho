@@ -26,6 +26,7 @@ public:
 
 	virtual void SetPlayer(class ACMPlayer* const InPlayer) override;
 	virtual void Fire() override;
+	virtual void Reload() override;
 	void ShootTrace();
 	void TraceHit(const FHitResult& FireHit);
 protected:
