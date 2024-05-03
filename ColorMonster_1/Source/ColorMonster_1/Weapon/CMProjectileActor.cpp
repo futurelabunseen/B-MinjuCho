@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Player/CMProjectileActor.h"
+#include "Weapon/CMProjectileActor.h"
 
 #include "Character/CMMonster.h"
 #include "Components/SphereComponent.h"
@@ -56,7 +56,8 @@ ACMProjectileActor::ACMProjectileActor()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
-	
+
+	CurrentColor = CM_COLOR_BLUE;
 }
 
 // Called when the game starts or when spawned
@@ -82,28 +83,22 @@ void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
 
 void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if ((OtherActor != this) && (OtherComponent != nullptr) && OtherComponent->IsSimulatingPhysics())
+	if ((OtherActor != this) && (OtherComponent != nullptr))
 	{
-		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		// Knock Back
+		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 
 		ensure(OtherActor != nullptr);
 		ACMMonster* HitMonster = Cast<ACMMonster>(OtherActor);
 		if(HitMonster != nullptr)
 		{
-			//HitMonster->ChangeColor(CurrentColor);
-			//HitCharacter->TakeDamage(50.0f, DamageEvent, GetController(), this);
+			HitMonster->ChangeColor(CurrentColor);
 			// refer interface from ideugu class
 		}
 
 		Destroy();
 	}
 }
-
-void ACMProjectileActor::OnTriggerBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-}
-
 
 //GetWorld()->OverlapMultiByChannel()
 //UKismetSystemLibrary::SphereOverlapActors()

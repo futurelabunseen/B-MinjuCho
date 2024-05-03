@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "GameplayTags.h"
 #include "Character/CMCharacter.h"
+#include "Components/PrimitiveComponent.h"
 #include "CMMonster.generated.h"
 
 /**
@@ -24,13 +24,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Dead() override;
-public:
-	/*void ChangeColor(const FGameplayTag& InColor);*/
 	
 // Color Data -> Tag
 public:
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag CurrentColor;*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
-	FName CurrentColor;
+	FGameplayTag CurrentColor;
+
+	UFUNCTION()
+	void ChangeColor(const FGameplayTag& InColor);
+
+private:
+	const FLinearColor& TranslateColor(const FGameplayTag& ColorTag) const;
+	UPROPERTY();
+	TArray<TObjectPtr<UMaterialInstanceDynamic>> MaterialArray;
 };

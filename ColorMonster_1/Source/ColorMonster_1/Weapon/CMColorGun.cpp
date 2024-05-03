@@ -3,11 +3,10 @@
 
 #include "Weapon/CMColorGun.h"
 
-#include "Player/CMProjectileActor.h"
+#include "Weapon/CMProjectileActor.h"
 #include "Player/CMPlayer.h"
 #include "Animation/CMPlayerAnimInstance.h"
 #include "Color/CMGameplayTag.h"
-#include "GameplayTags.h"
 
 ACMColorGun::ACMColorGun()
 {

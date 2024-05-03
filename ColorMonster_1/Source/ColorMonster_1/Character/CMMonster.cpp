@@ -6,7 +6,7 @@
 #include "Animation/CMPlayerAnimInstance.h"
 #include "GameplayTagContainer.h"
 #include "Color/CMGameplayTag.h"
-#include "GameplayTags.h"
+#include "Components/CapsuleComponent.h"
 
 ACMMonster::ACMMonster()
 {
@@ -28,7 +28,13 @@ ACMMonster::ACMMonster()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call anim instance class From Monster"));
 	}
-	CurrentColor = TEXT("Blue");
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
+	CurrentColor = CM_COLOR_NONE;
+
+	for(int i=0; i<GetMesh()->GetNumMaterials();++i)
+	{
+		GetMesh()->CreateDynamicMaterialInstance(i, nullptr);
+	}
 }
 
 float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -44,7 +50,7 @@ void ACMMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//CurrentColor = FGameplayTag::EmptyTag;
+	
 }
 
 void ACMMonster::Dead()
@@ -56,8 +62,47 @@ void ACMMonster::Dead()
 		AnimInstance->PlayDeathMontage();
 	}
 }
-//
-//void ACMMonster::ChangeColor(const FGameplayTag& InColor)
-//{
-//	CurrentColor = InColor;
-//}
+
+void ACMMonster::ChangeColor(const FGameplayTag& InColor)
+{
+	CurrentColor = InColor;
+	const FLinearColor RealColor = TranslateColor(CurrentColor);
+	UE_LOG(LogTemp, Warning, TEXT("Monster::GetNumMaterials: %d"), GetMesh()->GetNumMaterials());
+	for(int i=0; i<GetMesh()->GetNumMaterials(); ++i)
+	{
+		UMaterialInstanceDynamic* Dynamic = Cast<UMaterialInstanceDynamic>(GetMesh()->GetMaterial(i));
+		if(Dynamic)
+		{
+			// 전체 훑는 방법
+			// TArray<FMaterialParameterInfo> MaterialParameters;
+			// TArray<FGuid> Guid;
+			// Dynamic->GetAllVectorParameterInfo(MaterialParameters, Guid);
+			// for(FMaterialParameterInfo MaterialParam : MaterialParameters)
+			// {
+			// 	Dynamic->SetVectorParameterValueByInfo(MaterialParam, RealColor);
+			// }
+			
+			Dynamic->SetVectorParameterValue(TEXT("TimesColor"), RealColor);
+		}
+	}
+}
+
+const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag) const
+{
+	if(ColorTag == CM_COLOR_RED)
+	{
+		return FLinearColor::Red;
+	}
+	if(ColorTag == CM_COLOR_BLUE)
+	{
+		return FLinearColor::Blue;
+	}
+	if(ColorTag == CM_COLOR_GREEN)
+	{
+		return FLinearColor::Green;
+	}
+	return FLinearColor::Green;
+}
+
+
+
