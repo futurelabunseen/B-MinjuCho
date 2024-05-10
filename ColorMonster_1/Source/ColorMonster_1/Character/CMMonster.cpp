@@ -27,13 +27,14 @@ ACMMonster::ACMMonster()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call anim instance class From Monster"));
 	}
+	// Collision
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
+	// Default Color
 	CurrentColor = CM_COLOR_NONE;
-
+	// 모든 매터리얼 다루기 위한 Dynamic 세팅
 	for(int i=0; i<GetMesh()->GetNumMaterials();++i)
 	{
 		GetMesh()->CreateDynamicMaterialInstance(i, nullptr);
-		//GetMesh()->GetMaterial(i);
 	}
 }
 
@@ -67,13 +68,13 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 {
 	CurrentColor = InColor;
 	const FLinearColor RealColor = TranslateColor(CurrentColor);
-	UE_LOG(LogTemp, Warning, TEXT("Monster::GetNumMaterials: %d"), GetMesh()->GetNumMaterials());
 	for(int i=0; i<GetMesh()->GetNumMaterials(); ++i)
 	{
+		// 각 매터리얼에 설정된 Dynamic 가져오기
 		UMaterialInstanceDynamic* Dynamic = Cast<UMaterialInstanceDynamic>(GetMesh()->GetMaterial(i));
 		if(Dynamic)
 		{
-			// 전체 훑는 방법
+			// 전체 Parameter 훑는 방법
 			// TArray<FMaterialParameterInfo> MaterialParameters;
 			// TArray<FGuid> Guid;
 			// Dynamic->GetAllVectorParameterInfo(MaterialParameters, Guid);
@@ -81,7 +82,7 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 			// {
 			// 	Dynamic->SetVectorParameterValueByInfo(MaterialParam, RealColor);
 			// }
-			
+			// 현재 컬러로 곱하기
 			Dynamic->SetVectorParameterValue(TEXT("TimesColor"), RealColor);
 		}
 	}
@@ -89,6 +90,7 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 
 const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag)
 {
+	// Tag => LinearColor Value
 	if(ColorTag == CM_COLOR_RED)
 	{
 		return FLinearColor::Red;

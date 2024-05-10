@@ -94,6 +94,11 @@ public:
 	void ConvertingGun();
 
 	void Reload();
+
+	void ChangeColorGunColor(const FLinearColor& InColor);
+
+	UPROPERTY(EditAnyWhere, Category = Gun, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ACMColorGun> ColorGun;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gun, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ACMLineGun> RightGunClass;

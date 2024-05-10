@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Weapon/CMWeapon.h"
 #include "Weapon/CMLineGun.h"
 #include "Weapon/CMColorGun.h"
@@ -101,7 +102,7 @@ ACMPlayer::ACMPlayer()
 	RightGun = CreateDefaultSubobject<ACMLineGun>(TEXT("RightGun"));
 	
 	// Left Weapon
-	static ConstructorHelpers::FClassFinder<ACMColorGun> LeftGunRef (TEXT(""));
+	static ConstructorHelpers::FClassFinder<ACMColorGun> LeftGunRef (TEXT("/Game/Blueprint/BP_CMColorGun.BP_CMColorGun_C"));
 	if(LeftGunRef.Class)
 	{
 		LeftGunClass = LeftGunRef.Class;
@@ -157,6 +158,27 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->bCastHiddenShadow = true;
 	}
 	Gun = ArrayGun[0];
+	if(LeftGun)
+	{
+		ACMColorGun* SpawnColorGun = GetWorld()->SpawnActor<ACMColorGun>(LeftGun->GetClass());
+		FName SocketName = FName("Muzzle_02");
+		if(GetMesh()->DoesSocketExist(SocketName))
+		{
+			if(SpawnColorGun)
+			{
+				const USkeletalMeshSocket* ColorGunMesh = (GetMesh()->GetSocketByName(SocketName));
+				if(ColorGunMesh)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Attaching ColorGun in Player"));
+					ColorGunMesh->AttachActor(SpawnColorGun, GetMesh());
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SpawnColorGun is NULL"));
+			}
+		}
+	}
 }
 
 void ACMPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -218,8 +240,10 @@ void ACMPlayer::Look(const FInputActionValue& Value)
 
 void ACMPlayer::Fire()
 {
-	Gun->Fire();
-	
+	if(Gun)
+	{
+		Gun->Fire();
+	}
 }
 
 void ACMPlayer::ConvertingGun()
@@ -251,13 +275,13 @@ void ACMPlayer::ConvertingGun()
 
 void ACMPlayer::Reload()
 {
-	if(Cast<ACMColorGun>(Gun))
+	if(Gun)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Reload - ColorGun"));
+		Gun->Reload();
 	}
-	if(Cast<ACMLineGun>(Gun))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Reload - LineGun"));
-	}
-	Gun->Reload();
+}
+
+void ACMPlayer::ChangeColorGunColor(const FLinearColor& InColor)
+{
+	
 }
