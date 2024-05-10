@@ -20,4 +20,9 @@ public:
 	
 	virtual void Fire();
 	virtual void Reload();
+	
+	UPROPERTY(EditAnywhere, Category=Bullet)
+	int32 MaxBullet;
+	UPROPERTY(EditAnywhere, Category=Bullet)
+	int32 CurrentBullet;
 };

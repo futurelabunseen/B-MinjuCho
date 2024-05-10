@@ -14,6 +14,9 @@ ACMLineGun::ACMLineGun()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	// Bullet Num
+	MaxBullet = CurrentBullet = 5;
 }
 
 // Called when the game starts or when spawned
@@ -50,19 +53,34 @@ void ACMLineGun::SetPlayer(ACMPlayer* const InPlayer)
 
 void ACMLineGun::Fire()
 {
+	// Skip if it has no bullet
+	if(CurrentBullet <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BULLET IS NOT ENOUGH!! ACMLineGun::Fire"));
+		return;
+	}
+	// Skip if it has no Animation
 	if (PlayerAnimInstance == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance in CMLineGun"));
+		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance in ACMLineGun"));
 	}
+	// 오른손 슈팅 Animation 정상 처리 됐을 때
 	else if (PlayerAnimInstance->PlayShooting(0) == 1)
 	{
 		ShootTrace();
+		--CurrentBullet;
 	}
 }
 
 void ACMLineGun::Reload()
 {
-	
+	// Skip if it has enough bullet
+	if(CurrentBullet == MaxBullet)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Bullet is Already Full - ACMLineGun::Reload"));
+		return;
+	}
+	CurrentBullet = MaxBullet;
 }
 
 void ACMLineGun::ShootTrace()

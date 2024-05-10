@@ -15,10 +15,12 @@ void ACMWeapon::SetPlayer(ACMPlayer* const InPlayer)
 
 void ACMWeapon::Fire()
 {
+	
 }
 
 void ACMWeapon::Reload()
 {
+	
 }
 
 
