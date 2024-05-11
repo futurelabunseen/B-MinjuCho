@@ -61,11 +61,7 @@ void ACMColorGun::BeginPlay()
 
 	StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
 
-	UE_LOG(LogTemp, Warning, TEXT("###CMColorGun::BeginPlay() Before Change Color"));
 	ChangeColor(CurrentColor);
-	CurrentColor = CM_COLOR_GREEN;
-	ChangeColor(CurrentColor);
-	UE_LOG(LogTemp, Warning, TEXT("###CMColorGun::BeginPlay() After Change Color"));
 }
 
 void ACMColorGun::SetPlayer(ACMPlayer* const InPlayer)

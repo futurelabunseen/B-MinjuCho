@@ -143,10 +143,8 @@ void ACMPlayer::BeginPlay()
 	}
 	RightGun->SetPlayer(this);
 	
-	
-	UE_LOG(LogTemp, Warning, TEXT("###CMPlayer::BeginPlay() Before Spawn LeftGun"));
+	// Spawn LeftGun Actor & Attach to Socket
 	LeftGun = GetWorld()->SpawnActor<ACMColorGun>(LeftGunClass);
-	UE_LOG(LogTemp, Warning, TEXT("###CMPlayer::BeginPlay() After Spawn LeftGun"));
 	ensure(LeftGun);
 	if (LeftGun)
 	{

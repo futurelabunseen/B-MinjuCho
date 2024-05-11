@@ -12,10 +12,10 @@ ACMColorSponge::ACMColorSponge()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	// Static Mesh
+	// Static Mesh (고정된 매터리얼 존재)
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Mesh/Cube.Cube'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRef(TEXT("/Game/Mesh/Cube1.Cube1"));
 	if (StaticMeshRef.Object)
 	{
 		StaticMesh->SetStaticMesh(StaticMeshRef.Object);
@@ -24,17 +24,6 @@ ACMColorSponge::ACMColorSponge()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ColorSponge: Failed to Load Static Mesh Ref"));
 	}
-	// Material
-	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT("/Script/Engine.Material'/Game/Mesh/BasicShapeMaterial.BasicShapeMaterial'"));
-	if (MaterialRef.Object)
-	{
-		StaticMesh->SetMaterial(0, MaterialRef.Object);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ColorSponge: Failed to Load Material Ref"));
-	}
-	StaticMesh->CreateDynamicMaterialInstance(0, nullptr);
 	// Need BoxCollision Component
 	
 	CurrentColor = CM_COLOR_RED;
@@ -44,6 +33,7 @@ ACMColorSponge::ACMColorSponge()
 void ACMColorSponge::BeginPlay()
 {
 	Super::BeginPlay();
+	StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
 	ChangeColor(CurrentColor);
 }
 
@@ -56,11 +46,13 @@ void ACMColorSponge::Tick(float DeltaTime)
 
 void ACMColorSponge::ChangeColor(const FGameplayTag& InColor)
 {
-	UMaterialInstanceDynamic* MaterialInstance = Cast<UMaterialInstanceDynamic>(StaticMesh->GetMaterial(0));
-	if(MaterialInstance)
-	{
-		MaterialInstance->SetVectorParameterValue(TEXT("Color"), ACMMonster::TranslateColor(InColor));
-	}
+	UMaterialInterface* StaticMeshMaterial = StaticMesh->GetMaterial(0);
+	UMaterialInstanceDynamic* DynamicMaterial = 
+		Cast<UMaterialInstanceDynamic>(StaticMeshMaterial);
 	
+	if(DynamicMaterial)
+	{
+		DynamicMaterial->SetVectorParameterValue(FName("Tint"), ACMMonster::TranslateColor(InColor));
+	}
 }
 

@@ -33,6 +33,6 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "StaticMesh")
 	TObjectPtr<class UStaticMeshComponent> StaticMesh;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ChangeColor(const FGameplayTag& InColor);
 };
