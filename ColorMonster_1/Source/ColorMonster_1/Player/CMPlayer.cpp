@@ -107,9 +107,6 @@ ACMPlayer::ACMPlayer()
 	{
 		LeftGunClass = LeftGunRef.Class;
 	}
-	LeftGun = CreateDefaultSubobject<ACMColorGun>(TEXT("LeftGun"));
-	ArrayGun.Add(RightGun);
-	ArrayGun.Add(LeftGun);
 	
 	// Custom Anim Instance
 	PlayerAnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
@@ -133,7 +130,6 @@ void ACMPlayer::BeginPlay()
 	}
 
 	// Equip Weapon Mesh
-	RightGun->SetPlayer(this);
 	if (RightGun)
 	{
 		// Material Visibility = None
@@ -145,9 +141,28 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->CastShadow = true;
 		// WeaponMesh->bCastHiddenShadow = true;
 	}
-	LeftGun->SetPlayer(this);
+	RightGun->SetPlayer(this);
+	
+	
+	UE_LOG(LogTemp, Warning, TEXT("###CMPlayer::BeginPlay() Before Spawn LeftGun"));
+	LeftGun = GetWorld()->SpawnActor<ACMColorGun>(LeftGunClass);
+	UE_LOG(LogTemp, Warning, TEXT("###CMPlayer::BeginPlay() After Spawn LeftGun"));
+	ensure(LeftGun);
 	if (LeftGun)
 	{
+		FName SocketName = FName("Muzzle_02");
+		if(GetMesh()->DoesSocketExist(SocketName))
+		{
+			const USkeletalMeshSocket* ColorGunMesh = (GetMesh()->GetSocketByName(SocketName));
+			if (ColorGunMesh)
+			{
+				ColorGunMesh->AttachActor(LeftGun, GetMesh());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Failed Attaching ColorGun in Player"));
+			}
+		}
 		// Material Visibility = None
 		// If you want change weapon Mesh, here
 		// FVector SocketLocation = GetMesh()->GetSocketLocation(FName("Muzzle_R"));
@@ -157,28 +172,13 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->CastShadow = true;
 		// WeaponMesh->bCastHiddenShadow = true;
 	}
+	LeftGun->SetPlayer(this);
+
+	// 총 교체를 위한 총 배열 관리
+	ArrayGun.Add(RightGun);
+	ArrayGun.Add(LeftGun);
+
 	Gun = ArrayGun[0];
-	if(LeftGun)
-	{
-		ACMColorGun* SpawnColorGun = GetWorld()->SpawnActor<ACMColorGun>(LeftGun->GetClass());
-		FName SocketName = FName("Muzzle_02");
-		if(GetMesh()->DoesSocketExist(SocketName))
-		{
-			if(SpawnColorGun)
-			{
-				const USkeletalMeshSocket* ColorGunMesh = (GetMesh()->GetSocketByName(SocketName));
-				if(ColorGunMesh)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Attaching ColorGun in Player"));
-					ColorGunMesh->AttachActor(SpawnColorGun, GetMesh());
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("SpawnColorGun is NULL"));
-			}
-		}
-	}
 }
 
 void ACMPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -279,9 +279,4 @@ void ACMPlayer::Reload()
 	{
 		Gun->Reload();
 	}
-}
-
-void ACMPlayer::ChangeColorGunColor(const FLinearColor& InColor)
-{
-	
 }

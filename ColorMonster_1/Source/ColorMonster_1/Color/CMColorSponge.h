@@ -26,7 +26,7 @@ public:
 
 	FORCEINLINE const FGameplayTag& GetCurrentColor() const { return CurrentColor; }
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Color, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag CurrentColor;
 
 private:

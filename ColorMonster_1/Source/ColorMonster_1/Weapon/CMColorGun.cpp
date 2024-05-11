@@ -10,14 +10,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "Color/CMGameplayTag.h"
 #include "Character/CMMonster.h"
+#include "Math/RandomStream.h"
 
 ACMColorGun::ACMColorGun()
 {
 	// 총 색깔 세팅
 	// Static Mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	//StaticMesh->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SkeletalMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Mesh/Cube1.Cube1'"));
+	StaticMesh->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SkeletalMeshRef(TEXT("/Game/Mesh/Cube1.Cube1"));
 	if (SkeletalMeshRef.Object)
 	{
 		StaticMesh->SetStaticMesh(SkeletalMeshRef.Object);
@@ -26,14 +28,10 @@ ACMColorGun::ACMColorGun()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ACMColorGun: Failed to Load Static Mesh Ref"));
 	}
+
 	StaticMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	StaticMesh->SetMobility(EComponentMobility::Movable);
 
-	//ObjectDynamic = StaticMesh->CreateDynamicMaterialInstance(0, nullptr, FName(TEXT("None")));
-	//ObjectDynamic = UMaterialInstanceDynamic::Create(StaticMesh->GetMaterial(0), this);
-	//StaticMesh->CreateDynamicMaterialInstance(0, nullptr);
-	
-	
 	CurrentColor = CM_COLOR_BLUE;
 	
 	// 투사체 세팅
@@ -61,12 +59,13 @@ void ACMColorGun::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ObjectDynamic = UMaterialInstanceDynamic::Create(StaticMesh->GetMaterial(0), this);
-	StaticMesh->SetMaterial(0, ObjectDynamic);
-	
+	StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
+
+	UE_LOG(LogTemp, Warning, TEXT("###CMColorGun::BeginPlay() Before Change Color"));
 	ChangeColor(CurrentColor);
 	CurrentColor = CM_COLOR_GREEN;
 	ChangeColor(CurrentColor);
+	UE_LOG(LogTemp, Warning, TEXT("###CMColorGun::BeginPlay() After Change Color"));
 }
 
 void ACMColorGun::SetPlayer(ACMPlayer* const InPlayer)
@@ -175,7 +174,6 @@ void ACMColorGun::ShootTrace()
 			ECollisionChannel::ECC_Visibility
 		);
 		
-		UE_LOG(LogTemp, Warning, TEXT("Line Trace Shoot!"));
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f, 0,0);
 		if(bResult && FireHit.GetActor())
 		{
@@ -183,7 +181,6 @@ void ACMColorGun::ShootTrace()
 			
 			if(Sponge)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("GetCurrentColor in ShootTrace: %s"), *(Sponge->GetCurrentColor().ToString()));
 				Absorb(Sponge->GetCurrentColor());
 			}
 		}
@@ -193,37 +190,17 @@ void ACMColorGun::ShootTrace()
 void ACMColorGun::Absorb(const FGameplayTag& SpongeColor)
 {
 	CurrentColor = SpongeColor;
-	UE_LOG(LogTemp, Warning, TEXT("Absorb in CMColorGun: %s"), *(CurrentColor.ToString()));
 	ChangeColor(CurrentColor);
 }
 
 void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 {
-	//UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), ObjectDynamic));
+	UMaterialInterface* StaticMeshMaterial = StaticMesh->GetMaterial(0);
+	UMaterialInstanceDynamic* DynamicMaterial = 
+		Cast<UMaterialInstanceDynamic>(StaticMeshMaterial);
 	
-	// UMaterialInstanceDynamic* MaterialInstance = Cast<UMaterialInstanceDynamic>(StaticMesh->GetMaterial(0));
-	// if(MaterialInstance)
-	// {
-	// 	MaterialInstance->SetVectorParameterValue(TEXT("Color"), ACMMonster::TranslateColor(InColor));
-	// 	UE_LOG(LogTemp, Warning, TEXT("ChangeColor in CMColorGun: %s"), *(InColor.GetTagName().ToString()));
-	// }
-
-	// ObjectDynamic = UMaterialInstanceDynamic::Create(StaticMesh->GetMaterial(0), this);
-	// StaticMesh->SetMaterial(0, ObjectDynamic);
-	if(ObjectDynamic)
+	if(DynamicMaterial)
 	{
-		ObjectDynamic->SetVectorParameterValue(FName("Tint"), ACMMonster::TranslateColor(InColor));
-		UE_LOG(LogTemp, Warning, TEXT("ChangeColor in CMColorGun: %s"), *(ACMMonster::TranslateColor(InColor).ToString()));
-		UE_LOG(LogTemp, Warning, TEXT("ObjectDynamic in CMColorGun: %s"), *ObjectDynamic->GetName());
-		//StaticMesh->SetMaterial(0, ObjectDynamic);
-		
+		DynamicMaterial->SetVectorParameterValue(FName("Tint"), ACMMonster::TranslateColor(InColor));
 	}
 }
-
-
-
-
-
-
-
-
