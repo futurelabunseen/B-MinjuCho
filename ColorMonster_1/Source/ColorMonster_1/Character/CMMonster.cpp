@@ -3,6 +3,7 @@
 
 #include "Character/CMMonster.h"
 
+#include "AI/CMAIController.h"
 #include "Animation/CMPlayerAnimInstance.h"
 #include "Color/CMGameplayTag.h"
 #include "Components/CapsuleComponent.h"
@@ -36,6 +37,10 @@ ACMMonster::ACMMonster()
 	{
 		GetMesh()->CreateDynamicMaterialInstance(i, nullptr);
 	}
+
+	// AI Controller 속성
+	AIControllerClass = ACMAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -106,5 +111,43 @@ const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag)
 	return FLinearColor::Green;
 }
 
+float ACMMonster::GetAIPatrolRadius()
+{
+	return 800.0f;
+}
 
+float ACMMonster::GetAIDetectRange()
+{
+	return 400.0f;
+}
+
+float ACMMonster::GetAIAttackRange()
+{
+	return 200.0f;
+}
+
+float ACMMonster::GetAITurnSpeed()
+{
+	return 2.0f;
+}
+
+void ACMMonster::SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished)
+{
+	OnAttackFinished = InOnAttackFinished;
+}
+
+void ACMMonster::AttackByAI()
+{
+	// Attack 함수 실행
+	UE_LOG(LogTemp, Warning, TEXT("Monster Attack By AI!"));
+	OnAttackFinished.ExecuteIfBound();
+}
+
+// // CharacterBase 클래스에서 새로 생성한 가상함수 override (공격이 끝날 때 호출될 예정)
+// // AnimNotify 함수라서 자동 호출됨
+// void ACMMonster::NotifyComboActionEnd()
+// {
+// 	Super::NotifyComboActionEnd(); // 아무것도 없음
+// 	OnAttackFinished.ExecuteIfBound(); // 델리게이트 바인딩 됐다면, 함수 호출
+// }
 

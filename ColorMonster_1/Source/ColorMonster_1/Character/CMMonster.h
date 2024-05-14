@@ -6,13 +6,14 @@
 #include "GameplayTagContainer.h"
 #include "Character/CMCharacter.h"
 #include "Components/PrimitiveComponent.h"
+#include "Interface/CMAIInterface.h"
 #include "CMMonster.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class COLORMONSTER_1_API ACMMonster : public ACMCharacter
+class COLORMONSTER_1_API ACMMonster : public ACMCharacter, public ICMAIInterface
 {
 	GENERATED_BODY()
 
@@ -38,4 +39,16 @@ public:
 private:
 	UPROPERTY();
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> MaterialArray;
+
+// AI Interface
+protected:
+	FAICharacterAttackFinished OnAttackFinished;
+	
+	virtual float GetAIPatrolRadius();
+	virtual float GetAIDetectRange();
+	virtual float GetAIAttackRange();
+	virtual float GetAITurnSpeed();
+
+	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished);
+	virtual void AttackByAI();
 };
