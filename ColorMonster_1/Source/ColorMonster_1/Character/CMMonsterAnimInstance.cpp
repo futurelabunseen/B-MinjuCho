@@ -5,6 +5,11 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Character/CMMonster.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
+#include "Player/CMPlayer.h"
+
 UCMMonsterAnimInstance::UCMMonsterAnimInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageRef(TEXT("/Game/Animation/MonsterAttackMontage.MonsterAttackMontage"));
@@ -26,6 +31,11 @@ UCMMonsterAnimInstance::UCMMonsterAnimInstance()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call DeathMontage From MonsterAnimInstance"));
 	}
+}
+
+void UCMMonsterAnimInstance::SetMonster(ACMMonster* const InMonster)
+{
+	Monster = InMonster;
 }
 
 void UCMMonsterAnimInstance::NativeInitializeAnimation()
@@ -74,3 +84,22 @@ void UCMMonsterAnimInstance::PlayDeadMontage()
 		}
 	}
 }
+
+void UCMMonsterAnimInstance::AnimNotify_EndedAttack()
+{
+	ensure(Monster);
+	if(Monster)
+	{
+		Monster->AfterAnimEndedAttack();
+	}
+}
+
+void UCMMonsterAnimInstance::AnimNotify_CheckHit()
+{
+	ensure(Monster);
+	if(Monster)
+	{
+		Monster->TraceHit();
+	}
+}
+

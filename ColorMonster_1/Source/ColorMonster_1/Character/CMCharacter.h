@@ -33,6 +33,7 @@ protected:
 	FORCEINLINE void SetCurrentHP(float InValue) { CurrentHP = InValue; }
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE void SetMaxHP(float InValue) { MaxHP = InValue; }
+public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 	virtual void UpdateHPFromDamage(float Damage);

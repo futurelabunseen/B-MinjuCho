@@ -8,6 +8,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -32,6 +33,7 @@ ACMPlayer::ACMPlayer()
 	}
 	
 	GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
+	GetCapsuleComponent()->BodyInstance.SetCollisionProfileName(TEXT("Player"));
 	
 	// Animation
 	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/ParagonTwinblast/Characters/Heroes/TwinBlast/Twinblast_AnimBlueprint.Twinblast_AnimBlueprint_C"));
@@ -99,7 +101,6 @@ ACMPlayer::ACMPlayer()
 	{
 		RightGunClass = RightGunRef.Class;
 	}
-	RightGun = CreateDefaultSubobject<ACMLineGun>(TEXT("RightGun"));
 	
 	// Left Weapon
 	static ConstructorHelpers::FClassFinder<ACMColorGun> LeftGunRef (TEXT("/Game/Blueprint/BP_CMColorGun.BP_CMColorGun_C"));
@@ -129,6 +130,8 @@ void ACMPlayer::BeginPlay()
 		}
 	}
 
+	RightGun = GetWorld()->SpawnActor<ACMLineGun>(RightGunClass);
+	ensure(RightGun);
 	// Equip Weapon Mesh
 	if (RightGun)
 	{
@@ -140,8 +143,8 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->SetRelativeRotation(WeaponRotator);
 		// WeaponMesh->CastShadow = true;
 		// WeaponMesh->bCastHiddenShadow = true;
+		RightGun->SetPlayer(this);
 	}
-	RightGun->SetPlayer(this);
 	
 	// Spawn LeftGun Actor & Attach to Socket
 	LeftGun = GetWorld()->SpawnActor<ACMColorGun>(LeftGunClass);
@@ -169,8 +172,8 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->SetRelativeRotation(WeaponRotator);
 		// WeaponMesh->CastShadow = true;
 		// WeaponMesh->bCastHiddenShadow = true;
+		LeftGun->SetPlayer(this);
 	}
-	LeftGun->SetPlayer(this);
 
 	// 총 교체를 위한 총 배열 관리
 	ArrayGun.Add(RightGun);

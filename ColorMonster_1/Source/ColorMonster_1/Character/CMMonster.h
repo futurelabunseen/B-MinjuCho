@@ -25,11 +25,14 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Dead() override;
 	virtual void Attack() override;
-	void AttackHitCheck();
+public:
+	FORCEINLINE float GetAttackRange() const {return AttackRange;}
+	FORCEINLINE float GetAttackRadius() const {return AttackRadius;}
+	FORCEINLINE float GetAttackDamage() const {return AttackDamage;}
 // Attack Data
 private:
 	float AttackRange = 100.0f;
-	float AttackRadius = 50.0f;
+	float AttackRadius = 100.0f;
 	float AttackDamage = 10.0f;
 	
 // Color Data -> Tag
@@ -49,9 +52,14 @@ private:
 	// AnimInstance
 	UPROPERTY()
 	TObjectPtr<class UCMMonsterAnimInstance> AnimInstance;
-
+	
+public:
 	UFUNCTION()
-	void AnimNotify_EndedAttack();
+	void AfterAnimEndedAttack();
+
+	void TraceHit();
+private:
+	TObjectPtr<class ACMPlayer> HitPlayer;
 
 // AI Interface
 protected:

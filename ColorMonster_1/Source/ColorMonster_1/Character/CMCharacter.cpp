@@ -17,7 +17,6 @@ ACMCharacter::ACMCharacter()
 
 	// Capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT(""));
 
 	// Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;

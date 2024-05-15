@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Engine/DamageEvents.h"
 #include "CMMonsterAnimInstance.generated.h"
 
 /**
@@ -15,6 +16,8 @@ class COLORMONSTER_1_API UCMMonsterAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 public:
 	UCMMonsterAnimInstance();
+	
+	void SetMonster(class ACMMonster* const InMonster);
 protected:
 	virtual void NativeInitializeAnimation() override;
 
@@ -53,11 +56,20 @@ public:
 	UFUNCTION()
 	void PlayDeadMontage();
 
+	UFUNCTION()
+	void AnimNotify_EndedAttack();
+
+	UFUNCTION()
+	void AnimNotify_CheckHit();
+
 private:
+	// Monster
+	TObjectPtr<class ACMMonster> Monster;
 	// Attack Montage
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UAnimMontage> AttackMontage;
 	// Death Montage
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Death, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UAnimMontage> DeathMontage;
+	
 };

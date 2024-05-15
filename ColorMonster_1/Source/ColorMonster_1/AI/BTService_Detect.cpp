@@ -70,6 +70,10 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET, Pawn);
 				// 디버그 구체 그리기
 				DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+
+				// 감지 플레이어 사이에 점과 선을 그려준다.
+				DrawDebugPoint(World, Pawn->GetActorLocation(), 10.0f, FColor::Green, false, 0.2f);
+				DrawDebugLine(World, ControllingPawn->GetActorLocation(), Pawn->GetActorLocation(), FColor::Green, false, 0.27f);
 				return;
 			}
 		}
