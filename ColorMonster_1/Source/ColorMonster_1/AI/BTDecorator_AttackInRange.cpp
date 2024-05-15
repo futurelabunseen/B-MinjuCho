@@ -39,6 +39,12 @@ bool UBTDecorator_AttackInRange::CalculateRawConditionValue(UBehaviorTreeCompone
 		return false;
 	}
 
+	bool IsAttacking = OwnerComp.GetBlackboardComponent()->GetValueAsBool(BBKEY_ISATTACKING);
+	if(IsAttacking)
+	{
+		return false;
+	}
+	
 	// AI 폰과 타겟 거리 구하고, 
 	// AI 폰의 인터페이스를 통한 공격범위값
 	// 내에 있으면 true, 아니면 false 반환

@@ -50,6 +50,7 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 	ControllingPawn->SetActorRotation(FMath::RInterpTo(ControllingPawn->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), TurnSpeed));
 
+	
 	return EBTNodeResult::Succeeded;
 	
 }

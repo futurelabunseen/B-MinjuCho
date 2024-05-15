@@ -4,6 +4,8 @@
 #include "AI/BTTask_Attack.h"
 
 #include "AIController.h"
+#include "CMAI.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Interface/CMAIInterface.h"
 
 UBTTask_Attack::UBTTask_Attack()
@@ -13,7 +15,6 @@ UBTTask_Attack::UBTTask_Attack()
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
-
 	// 폰 정보 가져오기
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
 	if(!ControllingPawn)
@@ -38,6 +39,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 			// 델리게이트 함수에서 호출할 예정이다.
 			// 기본적으로 ExecuteTask 함수가 리턴된 후, Task 끝내려면 호출되어야 하는 함수 (성공으로)
 			UE_LOG(LogTemp, Warning, TEXT("Delgate: Finished Monster Attack Task."));
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(BBKEY_ISATTACKING, false);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	);
@@ -48,6 +50,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	AIInterface->AttackByAI();
 
 	// 아직 실행 중
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(BBKEY_ISATTACKING, true);
 	return EBTNodeResult::InProgress;
 	// 델리게이트로 FinishLatentTask 넘겨줬으니까 공격 끝날 시 자동으로 성공 함수가 실행될 것임.
 }
