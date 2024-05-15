@@ -7,19 +7,22 @@
 #include "Animation/CMPlayerAnimInstance.h"
 #include "Color/CMGameplayTag.h"
 #include "Components/CapsuleComponent.h"
+#include "Character/CMMonsterAnimInstance.h"
+#include "Engine/DamageEvents.h"
 
 ACMMonster::ACMMonster()
 {
 	// Mesh
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/ParagonTwinblast/Characters/Heroes/TwinBlast/Meshes/TwinBlast.TwinBlast'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/InfinityBladeWarriors/Character/CompleteCharacters/sk_CharM_Base.sk_CharM_Base'"));
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 	GetMesh()->SetCollisionProfileName(TEXT("Enemy"));
+	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
 	// Animation
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/ParagonTwinblast/Characters/Heroes/TwinBlast/Twinblast_AnimBlueprint.Twinblast_AnimBlueprint_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Animation/AnimBP_CMMonster.AnimBP_CMMonster_C"));
 	if (AnimInstanceClassRef.Class)
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
@@ -28,45 +31,81 @@ ACMMonster::ACMMonster()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call anim instance class From Monster"));
 	}
+	AnimInstance = Cast<UCMMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	
 	// Collision
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	// Default Color
 	CurrentColor = CM_COLOR_NONE;
-	// 모든 매터리얼 다루기 위한 Dynamic 세팅
-	for(int i=0; i<GetMesh()->GetNumMaterials();++i)
-	{
-		GetMesh()->CreateDynamicMaterialInstance(i, nullptr);
-	}
-
 	// AI Controller 속성
 	AIControllerClass = ACMAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-}
 
-float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
-{
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	UE_LOG(LogTemp, Warning, TEXT("Actor: %s took Damage : %f"), *GetName(), FinalDamage);
-	UpdateHPFromDamage(FinalDamage);
-	return FinalDamage;
 }
 
 void ACMMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	
+	// 모든 매터리얼 다루기 위한 Dynamic 세팅
+	for(int i=0; i<GetMesh()->GetNumMaterials();++i)
+	{
+		GetMesh()->CreateAndSetMaterialInstanceDynamic(i);
+	}
+	ChangeColor(CurrentColor);
 }
 
 void ACMMonster::Dead()
 {
 	Super::Dead();
-	UCMPlayerAnimInstance* AnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	if(!AnimInstance)
+	{
+		AnimInstance = Cast<UCMMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	}
+	ensure(AnimInstance);
 	if(AnimInstance)
 	{
-		AnimInstance->PlayDeathMontage();
+		AnimInstance->PlayDeadMontage();
 	}
+}
+
+void ACMMonster::Attack()
+{
+	Super::Attack();
+	if(!AnimInstance)
+	{
+		AnimInstance = Cast<UCMMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	}
+	ensure(AnimInstance);
+	if(AnimInstance)
+	{
+		AnimInstance->PlayAttackMontage();
+		
+	}
+}
+
+void ACMMonster::AttackHitCheck()
+{
+	FHitResult OutHitResult;
+	const FVector Start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector End = Start + GetActorForwardVector() * AttackRange;
+
+	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, ECC_Pawn, FCollisionShape::MakeSphere(AttackRadius));
+	if (HitDetected)
+	{
+		FDamageEvent DamageEvent;
+		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+	}
+
+#if ENABLE_DRAW_DEBUG
+
+	FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	float CapsuleHalfHeight = AttackRange * 0.5f;
+	FColor DrawColor = HitDetected ? FColor::Green : FColor::Red;
+
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
+
+#endif
 }
 
 void ACMMonster::ChangeColor(const FGameplayTag& InColor)
@@ -76,8 +115,10 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 	for(int i=0; i<GetMesh()->GetNumMaterials(); ++i)
 	{
 		// 각 매터리얼에 설정된 Dynamic 가져오기
-		UMaterialInstanceDynamic* Dynamic = Cast<UMaterialInstanceDynamic>(GetMesh()->GetMaterial(i));
-		if(Dynamic)
+		UMaterialInterface* SkeletalMeshMaterial = GetMesh()->GetMaterial(i);
+		UMaterialInstanceDynamic* DynamicMaterial = 
+			Cast<UMaterialInstanceDynamic>(SkeletalMeshMaterial);
+		if(DynamicMaterial)
 		{
 			// 전체 Parameter 훑는 방법
 			// TArray<FMaterialParameterInfo> MaterialParameters;
@@ -88,7 +129,11 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 			// 	Dynamic->SetVectorParameterValueByInfo(MaterialParam, RealColor);
 			// }
 			// 현재 컬러로 곱하기
-			Dynamic->SetVectorParameterValue(TEXT("TimesColor"), RealColor);
+			DynamicMaterial->SetVectorParameterValue(FName("TimesColor"), RealColor);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ACMMonster::Failed to Load DynmaicMaterial"));
 		}
 	}
 }
@@ -108,7 +153,12 @@ const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag)
 	{
 		return FLinearColor::Green;
 	}
-	return FLinearColor::Green;
+	return FLinearColor::White;
+}
+
+void ACMMonster::AnimNotify_EndedAttack()
+{
+	OnAttackFinished.ExecuteIfBound();
 }
 
 float ACMMonster::GetAIPatrolRadius()
@@ -123,7 +173,7 @@ float ACMMonster::GetAIDetectRange()
 
 float ACMMonster::GetAIAttackRange()
 {
-	return 200.0f;
+	return AttackRange + AttackRadius * 2;
 }
 
 float ACMMonster::GetAITurnSpeed()
@@ -139,8 +189,8 @@ void ACMMonster::SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttac
 void ACMMonster::AttackByAI()
 {
 	// Attack 함수 실행
-	UE_LOG(LogTemp, Warning, TEXT("Monster Attack By AI!"));
-	OnAttackFinished.ExecuteIfBound();
+	Attack();
+	//UE_LOG(LogTemp, Warning, TEXT("Monster Attack By AI!"));
 }
 
 // // CharacterBase 클래스에서 새로 생성한 가상함수 override (공격이 끝날 때 호출될 예정)

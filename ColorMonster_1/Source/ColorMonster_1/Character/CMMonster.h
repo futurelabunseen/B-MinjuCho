@@ -20,11 +20,17 @@ class COLORMONSTER_1_API ACMMonster : public ACMCharacter, public ICMAIInterface
 public:
 	ACMMonster();
 
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
+// Basic Action
 protected:
 	virtual void BeginPlay() override;
 	virtual void Dead() override;
+	virtual void Attack() override;
+	void AttackHitCheck();
+// Attack Data
+private:
+	float AttackRange = 100.0f;
+	float AttackRadius = 50.0f;
+	float AttackDamage = 10.0f;
 	
 // Color Data -> Tag
 public:
@@ -39,6 +45,13 @@ public:
 private:
 	UPROPERTY();
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> MaterialArray;
+
+	// AnimInstance
+	UPROPERTY()
+	TObjectPtr<class UCMMonsterAnimInstance> AnimInstance;
+
+	UFUNCTION()
+	void AnimNotify_EndedAttack();
 
 // AI Interface
 protected:

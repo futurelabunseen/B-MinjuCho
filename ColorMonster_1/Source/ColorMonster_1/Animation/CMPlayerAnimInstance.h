@@ -47,7 +47,7 @@ private:
 	TArray<TObjectPtr<class UAnimMontage>> ConvertMontages;
 	
 // Death Montage
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Death, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UAnimMontage> DeathMontage;
 
 public:

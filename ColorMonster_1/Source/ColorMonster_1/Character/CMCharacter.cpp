@@ -52,6 +52,15 @@ void ACMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+float ACMCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UE_LOG(LogTemp, Warning, TEXT("Actor: %s took Damage : %f"), *GetName(), FinalDamage);
+	UpdateHPFromDamage(FinalDamage);
+	return FinalDamage;
+}
+
 void ACMCharacter::UpdateHPFromDamage(float Damage)
 {
 	CurrentHP -= Damage;
@@ -66,5 +75,9 @@ void ACMCharacter::UpdateHPFromDamage(float Damage)
 void ACMCharacter::Dead()
 {
 	
+}
+
+void ACMCharacter::Attack()
+{
 }
 

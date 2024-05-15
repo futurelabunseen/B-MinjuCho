@@ -37,7 +37,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		{
 			// 델리게이트 함수에서 호출할 예정이다.
 			// 기본적으로 ExecuteTask 함수가 리턴된 후, Task 끝내려면 호출되어야 하는 함수 (성공으로)
-			UE_LOG(LogTemp, Warning, TEXT("Finished Monster Attack Task."));
+			UE_LOG(LogTemp, Warning, TEXT("Delgate: Finished Monster Attack Task."));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	);
