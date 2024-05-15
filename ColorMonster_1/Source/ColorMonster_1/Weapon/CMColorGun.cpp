@@ -32,7 +32,7 @@ ACMColorGun::ACMColorGun()
 	StaticMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	StaticMesh->SetMobility(EComponentMobility::Movable);
 
-	CurrentColor = CM_COLOR_BLUE;
+	CurrentColor = CM_COLOR_NONE;
 	
 	// 투사체 세팅
 	// Projectile Class
@@ -52,7 +52,8 @@ ACMColorGun::ACMColorGun()
 	MuzzleOffset = FVector(200, 0, 0);
 
 	// Bullet Num
-	MaxBullet = CurrentBullet = 3;
+	MaxBullet = 3;
+	CurrentBullet = 0;
 }
 
 void ACMColorGun::BeginPlay()
@@ -119,21 +120,23 @@ void ACMColorGun::Fire()
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Color Gun Shoot!"));
 		--CurrentBullet;
+	}
+	if(CurrentBullet == 0)
+	{
+		CurrentColor = CM_COLOR_NONE;
+		ChangeColor(CurrentColor);
 	}
 }
 
 void ACMColorGun::Reload()
 {
-	CurrentBullet = MaxBullet;
 	if (PlayerAnimInstance == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to cast anim instance in ACMColorGun::Reload"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload"));
 		ShootTrace();
 	}
 }
@@ -177,16 +180,10 @@ void ACMColorGun::ShootTrace()
 			
 			if(Sponge)
 			{
-				Absorb(Sponge->GetCurrentColor());
+				ChangeColor(Sponge->GetCurrentColor());
 			}
 		}
 	}
-}
-
-void ACMColorGun::Absorb(const FGameplayTag& SpongeColor)
-{
-	CurrentColor = SpongeColor;
-	ChangeColor(CurrentColor);
 }
 
 void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
@@ -198,5 +195,13 @@ void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 	if(DynamicMaterial)
 	{
 		DynamicMaterial->SetVectorParameterValue(FName("Tint"), ACMMonster::TranslateColor(InColor));
+		
+		// 색이 제대로 바뀌었을 때만 장전 완료 처리
+		CurrentColor = InColor;
+		if(InColor != CM_COLOR_NONE)
+		{
+			CurrentBullet = MaxBullet;
+			UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload : %s"), *CurrentColor.ToString());
+		}
 	}
 }

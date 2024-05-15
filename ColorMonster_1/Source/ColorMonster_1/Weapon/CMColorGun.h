@@ -25,7 +25,6 @@ public:
 	virtual void Fire() override;
 	virtual void Reload() override;
 	void ShootTrace();
-	void Absorb(const FGameplayTag& SpongeColor);
 	void ChangeColor(const FGameplayTag& InColor);
 protected:
 	
