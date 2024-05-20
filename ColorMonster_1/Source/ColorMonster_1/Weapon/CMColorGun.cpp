@@ -194,7 +194,7 @@ void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 	
 	if(DynamicMaterial)
 	{
-		DynamicMaterial->SetVectorParameterValue(FName("Tint"), ACMMonster::TranslateColor(InColor));
+		DynamicMaterial->SetVectorParameterValue(FName("Tint"), CMGameplayTag::TranslateColor(InColor));
 		
 		// 색이 제대로 바뀌었을 때만 장전 완료 처리
 		CurrentColor = InColor;

@@ -43,8 +43,6 @@ public:
 	UFUNCTION()
 	void ChangeColor(const FGameplayTag& InColor);
 
-	static const FLinearColor& TranslateColor(const FGameplayTag& ColorTag);
-
 private:
 	UPROPERTY();
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> MaterialArray;

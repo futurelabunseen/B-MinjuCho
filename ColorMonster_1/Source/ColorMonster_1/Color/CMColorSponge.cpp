@@ -52,7 +52,7 @@ void ACMColorSponge::ChangeColor(const FGameplayTag& InColor)
 	
 	if(DynamicMaterial)
 	{
-		DynamicMaterial->SetVectorParameterValue(FName("Tint"), ACMMonster::TranslateColor(InColor));
+		DynamicMaterial->SetVectorParameterValue(FName("Tint"), CMGameplayTag::TranslateColor(InColor));
 	}
 }
 

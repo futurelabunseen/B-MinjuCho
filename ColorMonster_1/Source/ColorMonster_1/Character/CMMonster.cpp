@@ -94,7 +94,7 @@ void ACMMonster::Attack()
 void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 {
 	CurrentColor = InColor;
-	const FLinearColor RealColor = TranslateColor(CurrentColor);
+	const FLinearColor RealColor = CMGameplayTag::TranslateColor(CurrentColor);
 	for(int i=0; i<GetMesh()->GetNumMaterials(); ++i)
 	{
 		// 각 매터리얼에 설정된 Dynamic 가져오기
@@ -119,24 +119,6 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 			UE_LOG(LogTemp, Warning, TEXT("ACMMonster::Failed to Load DynmaicMaterial"));
 		}
 	}
-}
-
-const FLinearColor& ACMMonster::TranslateColor(const FGameplayTag& ColorTag)
-{
-	// Tag => LinearColor Value
-	if(ColorTag == CM_COLOR_RED)
-	{
-		return FLinearColor::Red;
-	}
-	if(ColorTag == CM_COLOR_BLUE)
-	{
-		return FLinearColor::Blue;
-	}
-	if(ColorTag == CM_COLOR_GREEN)
-	{
-		return FLinearColor::Green;
-	}
-	return FLinearColor::White;
 }
 
 void ACMMonster::AfterAnimEndedAttack()
