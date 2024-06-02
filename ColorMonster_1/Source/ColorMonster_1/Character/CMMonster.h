@@ -20,6 +20,10 @@ class COLORMONSTER_1_API ACMMonster : public ACMCharacter, public ICMAIInterface
 public:
 	ACMMonster();
 
+private:
+	UPROPERTY()
+	FGameplayTag CurrentCategory;
+
 // Basic Action
 protected:
 	virtual void BeginPlay() override;

@@ -6,7 +6,7 @@
 #include "Character/CMMonster.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Color/CMGameplayTag.h"
+#include "CMSharedDefinition.h"
 
 // Sets default values
 ACMProjectileActor::ACMProjectileActor()

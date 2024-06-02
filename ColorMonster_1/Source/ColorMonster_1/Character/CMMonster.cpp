@@ -5,10 +5,11 @@
 
 #include "AI/CMAIController.h"
 #include "Animation/CMPlayerAnimInstance.h"
-#include "Color/CMGameplayTag.h"
+#include "CMSharedDefinition.h"
 #include "Components/CapsuleComponent.h"
 #include "Character/CMMonsterAnimInstance.h"
 #include "Engine/DamageEvents.h"
+#include "Game/CMGameState.h"
 #include "Player/CMPlayer.h"
 
 ACMMonster::ACMMonster()
@@ -38,6 +39,7 @@ ACMMonster::ACMMonster()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	// Default Color
 	CurrentColor = CM_COLOR_NONE;
+	CurrentCategory = CM_MONSTER_BASE;
 	// AI Controller 속성
 	AIControllerClass = ACMAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -73,6 +75,11 @@ void ACMMonster::Dead()
 	if(AnimInstance)
 	{
 		AnimInstance->PlayDeadMontage();
+		ACMGameState* GameState = GetWorld()->GetGameState<ACMGameState>();
+		if(GameState)
+		{
+			GameState->UpdateFromDead(CurrentCategory, CurrentColor);
+		}
 	}
 }
 
@@ -94,7 +101,7 @@ void ACMMonster::Attack()
 void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 {
 	CurrentColor = InColor;
-	const FLinearColor RealColor = CMGameplayTag::TranslateColor(CurrentColor);
+	const FLinearColor RealColor = CMSharedDefinition::TranslateColor(CurrentColor);
 	for(int i=0; i<GetMesh()->GetNumMaterials(); ++i)
 	{
 		// 각 매터리얼에 설정된 Dynamic 가져오기

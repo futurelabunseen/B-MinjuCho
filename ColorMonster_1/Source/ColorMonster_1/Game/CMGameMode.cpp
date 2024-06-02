@@ -3,8 +3,9 @@
 
 #include "Game/CMGameMode.h"
 
-#include "GameFramework/HUD.h"
+#include "CMGameState.h"
 #include "UI/CMFPSHUD.h"
+#include "UI/CMUserWidget.h"
 
 ACMGameMode::ACMGameMode()
 {
@@ -19,10 +20,33 @@ ACMGameMode::ACMGameMode()
 		PlayerControllerClass = PlayerControllerClassRef.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<ACMFPSHUD> HUDClassRef(TEXT("/Game/Blueprint/BP_CMFPSHUD.BP_CMFPSHUD_C"));
+	// UI
+	static ConstructorHelpers::FClassFinder<ACMFPSHUD> HUDClassRef(TEXT("/Game/Blueprint/UI/BP_CMFPSHUD.BP_CMFPSHUD_C"));
 	if (HUDClassRef.Class)
 	{
 		HUDClass = HUDClassRef.Class;
 	}
-	// TSubclassOf<Derieved> -> Available Downcasting 
+
+	static ConstructorHelpers::FClassFinder<UCMUserWidget> WBPClassRef(TEXT("/Game/Blueprint/UI/WBP_CM.WBP_CM_C"));
+	if(WBPClassRef.Class)
+	{
+		WidgetClass = WBPClassRef.Class;
+	}
+
+	// Set GameState
+	GameStateClass = ACMGameState::StaticClass();
+}
+
+void ACMGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if(WidgetClass)
+	{
+		UCMUserWidget* CMUserWidget = CreateWidget<UCMUserWidget>(GetWorld(), WidgetClass);
+		if(CMUserWidget)
+		{
+			CMUserWidget->AddToViewport();
+		}
+	}
 }

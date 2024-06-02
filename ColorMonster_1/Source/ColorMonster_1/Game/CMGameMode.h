@@ -17,4 +17,9 @@ class COLORMONSTER_1_API ACMGameMode : public AGameModeBase
 
 public:
 	ACMGameMode();
+	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(EditAnywhere, Blueprintable, Category = "UI")
+	TSubclassOf<UUserWidget> WidgetClass;
 };

@@ -2,7 +2,7 @@
 
 
 #include "Color/CMColorSponge.h"
-#include "Color/CMGameplayTag.h"
+#include "CMSharedDefinition.h"
 #include "Character/CMMonster.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -52,7 +52,7 @@ void ACMColorSponge::ChangeColor(const FGameplayTag& InColor)
 	
 	if(DynamicMaterial)
 	{
-		DynamicMaterial->SetVectorParameterValue(FName("Tint"), CMGameplayTag::TranslateColor(InColor));
+		DynamicMaterial->SetVectorParameterValue(FName("Tint"), CMSharedDefinition::TranslateColor(InColor));
 	}
 }
 
