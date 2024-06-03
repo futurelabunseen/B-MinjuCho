@@ -41,4 +41,7 @@ private:
 	
 	UPROPERTY()
 	TMap<FGameplayTag, FInfoPerColor> GameObjective;
+
+	UPROPERTY()
+	int32 Level;
 };

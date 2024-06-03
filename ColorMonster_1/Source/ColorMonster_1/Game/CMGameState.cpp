@@ -4,20 +4,30 @@
 #include "Game/CMGameState.h"
 
 #include "CMSharedDefinition.h"
+#include "Game/CMGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 ACMGameState::ACMGameState()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
-	
-	FInfoPerColor BaseInfo(CM_COLOR_RED, 3);
-	GameObjective.Add(CM_MONSTER_BASE, BaseInfo);
+	PrimaryActorTick.bCanEverTick = false;
+	Level = 1;
 }
 
 void ACMGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateAllScoreUI();
+
+	auto CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if(CMGameInstance)
+	{
+		
+		if(CMGameInstance->GetObjectiveData(Level))
+		{
+			FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
+			GameObjective.Add(CM_MONSTER_BASE, BaseInfo);
+			UpdateAllScoreUI();
+		}
+	}
 }
 
 void ACMGameState::Tick(float DeltaSeconds)
