@@ -20,6 +20,9 @@ public:
 
 	UFUNCTION()
 	void UpdateScore(const FText& Monster, const FText& Color, const FText& Number);
+
+	UFUNCTION()
+	void UpdateTime(int32 Minute, int32 Second);
 	
 private:
 	UFUNCTION()
@@ -33,4 +36,11 @@ private:
 	// 텍스트 박스를 추가할 컨테이너 위젯
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UHorizontalBox> ScoreBox;
+
+	// Timer Text Block
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Timer_Minute;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Timer_Second;
 };

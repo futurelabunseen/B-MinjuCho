@@ -5,6 +5,7 @@
 
 UCMGameInstance::UCMGameInstance()
 {
+	// Load CSV Data
 	FString ObjectiveDataPath = TEXT("/Game/Book/GameData/GameObjectivePerLevel.GameObjectivePerLevel");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_CMOBJECTIVE(*ObjectiveDataPath);
 	if(DT_CMOBJECTIVE.Object)
@@ -13,6 +14,7 @@ UCMGameInstance::UCMGameInstance()
 	}
 	// Check Valid Data
 	ensure(CMLevelObjectiveTable->GetRowMap().Num() > 0);
+
 }
 
 void UCMGameInstance::Init()

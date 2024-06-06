@@ -8,6 +8,7 @@
 #include "CMGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnScoreChanged, const FText&, Monster, const FText&, Color, const FText&, Number);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTimeChanged, int32, Minute, int32, Second);
 
 /**
  * 
@@ -28,6 +29,10 @@ public:
 	
 	// Delagate Instance
 	FOnScoreChanged OnScoreChanged;
+	FOnTimeChanged OnTimeChanged;
+
+	float GetCurrentLeftTime() const { return CurrentLeftTime; }
+	void SetCurrentLeftTime(float InTime) { CurrentLeftTime = InTime; }
 
 private:
 	UFUNCTION()
@@ -44,4 +49,25 @@ private:
 
 	UPROPERTY()
 	int32 Level;
+
+	UPROPERTY()
+	float CurrentLeftTime;
+
+	UPROPERTY()
+	int32 CurrentMinute = 3;
+
+	UPROPERTY()
+	int32 CurrentSecond = 0;
+
+	UPROPERTY()
+	FTimerHandle TimeUpdateHandle;
+
+	UFUNCTION()
+	void CalcMinute();
+
+public:
+	int32 GetMinute() const {return CurrentMinute;}
+	int32 GetSecond() const {return CurrentSecond;}
+
+	void SetTimerOn();
 };

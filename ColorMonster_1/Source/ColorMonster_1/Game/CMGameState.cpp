@@ -17,6 +17,7 @@ void ACMGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// csv Data from GameInstance
 	auto CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if(CMGameInstance)
 	{
@@ -24,10 +25,12 @@ void ACMGameState::BeginPlay()
 		if(CMGameInstance->GetObjectiveData(Level))
 		{
 			FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
+
 			GameObjective.Add(CM_MONSTER_BASE, BaseInfo);
 			UpdateAllScoreUI();
 		}
 	}
+
 }
 
 void ACMGameState::Tick(float DeltaSeconds)
@@ -35,6 +38,7 @@ void ACMGameState::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
+// Called By Monster Dead
 void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayTag& Color)
 {
 	if(GameObjective.Contains(Category))
@@ -43,6 +47,7 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 	}
 }
 
+// Update Partial Data
 void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number)
 {
 	FInfoPerColor BaseInfo(Color, Number);
@@ -57,6 +62,7 @@ void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplay
 	UpdateScoreUI(Category);
 }
 
+// Update All Data
 void ACMGameState::UpdateAllScoreUI() const
 {
 	for(auto ElemOfObjective : GameObjective)
@@ -65,10 +71,28 @@ void ACMGameState::UpdateAllScoreUI() const
 	}
 }
 
+// Broadcast to CMUserWidget
 void ACMGameState::UpdateScoreUI(const FGameplayTag& Monster) const
 {
 	FText MonsterKey = CMSharedDefinition::MonsterTagToText(Monster);
 	FText ColorValue = CMSharedDefinition::ColorTagToText(GameObjective[Monster].Color);
 	FText NumberValue = FText::AsNumber(GameObjective[Monster].LeftOver);
 	OnScoreChanged.Broadcast(MonsterKey, ColorValue, NumberValue);
+}
+
+void ACMGameState::CalcMinute()
+{
+	CurrentMinute = CurrentLeftTime / 60;
+	CurrentSecond = static_cast<int>(CurrentLeftTime) % 60;
+	if(CurrentMinute == 0 && CurrentSecond == 0)
+	{
+		GetWorldTimerManager().ClearTimer(TimeUpdateHandle);
+	}
+	OnTimeChanged.Broadcast(CurrentMinute, CurrentSecond);
+}
+
+void ACMGameState::SetTimerOn()
+{
+	// Timer Handler for Update Minute
+	GetWorld()->GetTimerManager().SetTimer(TimeUpdateHandle, this, &ACMGameState::CalcMinute, 0.2f, true);
 }

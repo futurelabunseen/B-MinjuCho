@@ -3,12 +3,18 @@
 
 #include "Game/CMGameMode.h"
 
+#include "CMGameInstance.h"
 #include "CMGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/CMFPSHUD.h"
 #include "UI/CMUserWidget.h"
 
 ACMGameMode::ACMGameMode()
 {
+	// For Time
+	PrimaryActorTick.bCanEverTick = true;
+
+	// Player Setting
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassRef(TEXT("/Game/Blueprint/BP_CMPlayer.BP_CMPlayer_C"));
 	if (PlayerPawnClassRef.Class)
 	{
@@ -33,8 +39,10 @@ ACMGameMode::ACMGameMode()
 		WidgetClass = WBPClassRef.Class;
 	}
 
-	// Set GameState
+	// Set GameInstance, GameState
+	CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	GameStateClass = ACMGameState::StaticClass();
+	SetGameLevel(1);
 }
 
 void ACMGameMode::BeginPlay()
@@ -49,4 +57,73 @@ void ACMGameMode::BeginPlay()
 			CMUserWidget->AddToViewport();
 		}
 	}
+
+	// Set GameState
+	CMGameState = GetWorld()->GetGameState<ACMGameState>();
+	
+	// Initialize Time
+	InitializeTime();
+}
+
+void ACMGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	UpdateTime(DeltaSeconds);
+}
+
+void ACMGameMode::UpdateTime(float DeltaSeconds)
+{
+	if(IsSetTimerOn == false)
+	{
+		IsSetTimerOn = true;
+		CMGameState->SetTimerOn();
+	}
+	if(CurrentLeftTime <= KINDA_SMALL_NUMBER)
+	{
+		return;
+	}
+	else
+	{
+		CurrentLeftTime -= DeltaSeconds;
+		CMGameState->SetCurrentLeftTime(CurrentLeftTime);
+	}
+}
+
+void ACMGameMode::InitializeTime()
+{
+	if(CMGameInstance == nullptr)
+	{
+		CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	}
+	if(CMGameInstance)
+	{
+		LimitTimePerThisLevel = GetLimitTime();
+	}
+	CurrentLeftTime = LimitTimePerThisLevel;
+}
+
+// Get Data From GameInstance
+int32 ACMGameMode::GetGameLevel() const
+{ 
+	return GameLevel;
+}
+
+float ACMGameMode::GetLimitTime() const
+{
+	return CMGameInstance->GetObjectiveData(GameLevel)->LimitTime;
+}
+
+FGameplayTag ACMGameMode::GetBaseColor() const
+{
+	return CMGameInstance->GetObjectiveData(GameLevel)->Base_Color;
+}
+
+int32 ACMGameMode::GetBaseNumber() const
+{
+	return CMGameInstance->GetObjectiveData(GameLevel)->Base_Number;
+}
+
+void ACMGameMode::SetGameLevel(int32 InLevel)
+{
+	GameLevel = InLevel;
 }

@@ -14,10 +14,13 @@ struct FCMLevelObjectiveData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FCMLevelObjectiveData() : Level(1), Base_Color(CM_COLOR_RED), Base_Number(3) {}
+	FCMLevelObjectiveData() : Level(1), LimitTime(180.0f), Base_Color(CM_COLOR_RED), Base_Number(3) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float LimitTime;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FGameplayTag Base_Color;

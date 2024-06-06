@@ -52,6 +52,12 @@ void UCMUserWidget::UpdateScore(const FText& Monster, const FText& Color, const 
 	}
 }
 
+void UCMUserWidget::UpdateTime(int32 Minute, int32 Second)
+{
+	Timer_Minute->SetText(FText::AsNumber(Minute));
+	Timer_Second->SetText(FText::AsNumber(Second));
+}
+
 void UCMUserWidget::BindToGameState()
 {
 	// 현재 월드의 GameState 가져오기
@@ -60,6 +66,7 @@ void UCMUserWidget::BindToGameState()
 	{
 		// 델리게이트에 함수 바인딩
 		GameState->OnScoreChanged.AddDynamic(this, &UCMUserWidget::UpdateScore);
+		GameState->OnTimeChanged.AddDynamic(this, &UCMUserWidget::UpdateTime);
 	}
 }
 
