@@ -41,7 +41,7 @@ void ACMGameState::Tick(float DeltaSeconds)
 // Called By Monster Dead
 void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayTag& Color)
 {
-	if(GameObjective.Contains(Category))
+	if(GameObjective.Contains(Category) && Color == GameObjective[Category].Color)
 	{
 		UpdateScoreData(Category, Color, GameObjective[Category].LeftOver - 1);
 	}
