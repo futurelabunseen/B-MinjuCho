@@ -9,6 +9,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnScoreChanged, const FText&, Monster, const FText&, Color, const FText&, Number);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTimeChanged, int32, Minute, int32, Second);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWinWindowChanged, bool, IsTurnOn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLooseWindowChanged, bool, IsTurnOn);
 
 /**
  * 
@@ -23,6 +25,9 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	
+	UFUNCTION()
+	void InitializeScoreData(int32 Level);
 
 	UFUNCTION()
 	void UpdateFromDead(const FGameplayTag& Category, const FGameplayTag& Color);
@@ -30,11 +35,14 @@ public:
 	// Delagate Instance
 	FOnScoreChanged OnScoreChanged;
 	FOnTimeChanged OnTimeChanged;
+	FOnWinWindowChanged OnWinWindowChanged;
+	FOnLooseWindowChanged OnLooseWindowChanged;
 
 	float GetCurrentLeftTime() const { return CurrentLeftTime; }
 	void SetCurrentLeftTime(float InTime) { CurrentLeftTime = InTime; }
 
-private:
+// Score
+private:	
 	UFUNCTION()
 	void UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number);
 	
@@ -47,9 +55,9 @@ private:
 	UPROPERTY()
 	TMap<FGameplayTag, FInfoPerColor> GameObjective;
 
-	UPROPERTY()
-	int32 Level;
 
+// Time
+	
 	UPROPERTY()
 	float CurrentLeftTime;
 
@@ -64,6 +72,14 @@ private:
 
 	UFUNCTION()
 	void CalcMinute();
+
+	UFUNCTION()
+	void GameOver();
+	
+// Win
+	UFUNCTION()
+	bool CalculateWin() const;
+	
 
 public:
 	int32 GetMinute() const {return CurrentMinute;}

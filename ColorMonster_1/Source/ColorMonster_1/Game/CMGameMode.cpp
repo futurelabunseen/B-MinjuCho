@@ -60,9 +60,8 @@ void ACMGameMode::BeginPlay()
 
 	// Set GameState
 	CMGameState = GetWorld()->GetGameState<ACMGameState>();
-	
-	// Initialize Time
-	InitializeTime();
+	ensure(CMGameState);
+	CMGameState->InitializeScoreData(GetGameLevel());
 }
 
 void ACMGameMode::Tick(float DeltaSeconds)
@@ -76,6 +75,7 @@ void ACMGameMode::UpdateTime(float DeltaSeconds)
 	if(IsSetTimerOn == false)
 	{
 		IsSetTimerOn = true;
+		InitializeTime();
 		CMGameState->SetTimerOn();
 	}
 	if(CurrentLeftTime <= KINDA_SMALL_NUMBER)
@@ -102,12 +102,17 @@ void ACMGameMode::InitializeTime()
 	CurrentLeftTime = LimitTimePerThisLevel;
 }
 
-// Get Data From GameInstance
 int32 ACMGameMode::GetGameLevel() const
 { 
 	return GameLevel;
 }
 
+void ACMGameMode::SetGameLevel(int32 InLevel)
+{
+	GameLevel = InLevel;
+}
+
+// Get Data From GameInstance
 float ACMGameMode::GetLimitTime() const
 {
 	return CMGameInstance->GetObjectiveData(GameLevel)->LimitTime;
@@ -123,7 +128,19 @@ int32 ACMGameMode::GetBaseNumber() const
 	return CMGameInstance->GetObjectiveData(GameLevel)->Base_Number;
 }
 
-void ACMGameMode::SetGameLevel(int32 InLevel)
+void ACMGameMode::SetLevelAndRestart(int32 InLevel = -1)
 {
-	GameLevel = InLevel;
+	// Default: Next Level
+	if(InLevel == -1)
+	{
+		SetGameLevel(GetGameLevel() + 1);
+	}
+	else
+	{
+		SetGameLevel(InLevel);
+	}
+	// Update Game Objective passing to GameState
+	CMGameState->InitializeScoreData(GetGameLevel());
+	IsSetTimerOn = false;
 }
+

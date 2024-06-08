@@ -43,4 +43,19 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Timer_Second;
+
+	// Win / Loose UI
+public:
+	UFUNCTION()
+	void TurnWinWindow(bool IsTurnOn);
+	
+	UFUNCTION()
+	void TurnLooseWindow(bool IsTurnOn);
+	
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> WinWindow;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> LooseWindow;
 };

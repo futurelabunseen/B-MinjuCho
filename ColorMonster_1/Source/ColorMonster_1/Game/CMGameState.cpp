@@ -10,32 +10,33 @@
 ACMGameState::ACMGameState()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	Level = 1;
 }
 
 void ACMGameState::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// csv Data from GameInstance
-	auto CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if(CMGameInstance)
-	{
-		
-		if(CMGameInstance->GetObjectiveData(Level))
-		{
-			FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
-
-			GameObjective.Add(CM_MONSTER_BASE, BaseInfo);
-			UpdateAllScoreUI();
-		}
-	}
-
 }
 
 void ACMGameState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void ACMGameState::InitializeScoreData(int32 Level)
+{
+	// csv Data from GameInstance
+	auto CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if(CMGameInstance)
+	{
+		if(CMGameInstance->GetObjectiveData(Level))
+		{
+			GameObjective.Reset();
+			FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
+
+			GameObjective.Emplace(CM_MONSTER_BASE, BaseInfo);
+			UpdateAllScoreUI();
+		}
+	}
 }
 
 // Called By Monster Dead
@@ -86,9 +87,39 @@ void ACMGameState::CalcMinute()
 	CurrentSecond = static_cast<int>(CurrentLeftTime) % 60;
 	if(CurrentMinute == 0 && CurrentSecond == 0)
 	{
-		GetWorldTimerManager().ClearTimer(TimeUpdateHandle);
+		GameOver();
 	}
 	OnTimeChanged.Broadcast(CurrentMinute, CurrentSecond);
+}
+
+void ACMGameState::GameOver()
+{
+	// Stop Timer
+	GetWorldTimerManager().ClearTimer(TimeUpdateHandle);
+	if(CalculateWin() == true)
+	{
+		// Win UI
+		OnWinWindowChanged.Broadcast(true);
+		OnLooseWindowChanged.Broadcast(false);
+	}
+	else
+	{
+		// Loose UI
+		OnWinWindowChanged.Broadcast(false);
+		OnLooseWindowChanged.Broadcast(true);
+	}
+}
+
+bool ACMGameState::CalculateWin() const
+{
+	for(auto ElemOfObjective : GameObjective)
+	{
+		if(ElemOfObjective.Value.LeftOver != 0)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 void ACMGameState::SetTimerOn()

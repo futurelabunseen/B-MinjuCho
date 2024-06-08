@@ -3,6 +3,7 @@
 
 #include "UI/CMUserWidget.h"
 
+#include "Components/CanvasPanel.h"
 #include "Components/HorizontalBox.h"
 #include "Components/TextBlock.h"
 #include "Game/CMGameState.h"
@@ -67,6 +68,9 @@ void UCMUserWidget::BindToGameState()
 		// 델리게이트에 함수 바인딩
 		GameState->OnScoreChanged.AddDynamic(this, &UCMUserWidget::UpdateScore);
 		GameState->OnTimeChanged.AddDynamic(this, &UCMUserWidget::UpdateTime);
+		
+		GameState->OnWinWindowChanged.AddDynamic(this, &UCMUserWidget::TurnWinWindow);
+		GameState->OnLooseWindowChanged.AddDynamic(this, &UCMUserWidget::TurnLooseWindow);
 	}
 }
 
@@ -91,5 +95,29 @@ void UCMUserWidget::UpdateTextBoxAtContainer(const FString& InString, const FTex
 	if(ExistTextBox)
 	{
 		ExistTextBox->SetText(Value);
+	}
+}
+
+void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
+{
+	if(IsTurnOn == true)
+	{
+		WinWindow->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		WinWindow->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
+{
+	if(IsTurnOn == true)
+	{
+		LooseWindow->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

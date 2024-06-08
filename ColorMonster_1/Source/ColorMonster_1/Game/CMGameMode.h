@@ -38,9 +38,13 @@ private:
 	UPROPERTY(EditAnywhere, Blueprintable, Category = "UI")
 	TSubclassOf<UUserWidget> WidgetClass;
 
-// GameObjectData
 public:
 	int32 GetGameLevel() const;
+private:
+	void SetGameLevel(int32 InLevel);
+
+// Game Object Data
+public:
 	float GetLimitTime() const;
 	FGameplayTag GetBaseColor() const;
 	int32 GetBaseNumber() const;
@@ -55,11 +59,10 @@ private:
 	UPROPERTY()
 	int32 GameLevel;
 	
-	void SetGameLevel(int32 InLevel);
 
 	UPROPERTY()
 	bool IsSetTimerOn = false;
-// Need Setting Next Level
+// Next Level
 public:
-	
+	void SetLevelAndRestart(int32 InLevel);
 };
