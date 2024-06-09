@@ -61,6 +61,14 @@ void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplay
 		GameObjective.Add(Category, BaseInfo);
 	}
 	UpdateScoreUI(Category);
+
+	if(Number <= 0)
+	{
+		if(CalculateWin())
+		{
+			GameOver();
+		}
+	}
 }
 
 // Update All Data
