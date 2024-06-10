@@ -18,3 +18,13 @@ void ACMPlayerController::BeginPlay()
 		//UE_LOG(LogTemp, Warning, TEXT("CMPlayerController BeginPlay"));
 	}
 }
+
+void ACMPlayerController::SetPlayerInputMode(bool bInputMode)
+{
+	FInputModeDataBase* InputMode = (bInputMode)
+	? static_cast<FInputModeDataBase*>(new FInputModeGameOnly())
+	: static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
+
+	SetInputMode(*InputMode);
+	bShowMouseCursor = bInputMode;
+}

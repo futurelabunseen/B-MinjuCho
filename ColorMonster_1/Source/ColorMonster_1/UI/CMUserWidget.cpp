@@ -3,11 +3,14 @@
 
 #include "UI/CMUserWidget.h"
 
+#include "Components/Button.h"
 #include "Components/CanvasPanel.h"
 #include "Components/HorizontalBox.h"
 #include "Components/TextBlock.h"
+#include "Game/CMGameMode.h"
 #include "Game/CMGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/CMPlayerController.h"
 
 
 UCMUserWidget::UCMUserWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -71,6 +74,11 @@ void UCMUserWidget::BindToGameState()
 		
 		GameState->OnWinWindowChanged.AddDynamic(this, &UCMUserWidget::TurnWinWindow);
 		GameState->OnLooseWindowChanged.AddDynamic(this, &UCMUserWidget::TurnLooseWindow);
+
+		RetryButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
+		RetryButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
+		StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
+		StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
 	}
 }
 
@@ -100,6 +108,12 @@ void UCMUserWidget::UpdateTextBoxAtContainer(const FString& InString, const FTex
 
 void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 {
+	// 마우스 위치 해제 필요
+	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if(PlayerController)
+	{
+		PlayerController->SetPlayerInputMode(false);
+	}
 	if(IsTurnOn == true)
 	{
 		WinWindow->SetVisibility(ESlateVisibility::Visible);
@@ -112,6 +126,12 @@ void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 
 void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 {
+	// 마우스 위치 해제 필요
+	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if(PlayerController)
+	{
+		PlayerController->SetPlayerInputMode(false);
+	}
 	if(IsTurnOn == true)
 	{
 		LooseWindow->SetVisibility(ESlateVisibility::Visible);
@@ -120,4 +140,26 @@ void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 	{
 		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+void UCMUserWidget::ClickedRetryBtn()
+{
+	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if(PlayerController)
+	{
+		PlayerController->SetPlayerInputMode(true);
+	}
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndRestart(GameMode->GetGameLevel());
+		// 레벨 초기화 필요
+		WinWindow->SetVisibility(ESlateVisibility::Hidden);
+		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UCMUserWidget::ClickedStageBtn()
+{
+	StageWindow->SetVisibility(ESlateVisibility::Visible);
 }

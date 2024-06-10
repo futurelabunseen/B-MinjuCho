@@ -48,7 +48,7 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 	}
 }
 
-// Update Partial Data
+// 몬스터 하나 죽일 때마다 불리는 Update Partial Data
 void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number)
 {
 	FInfoPerColor BaseInfo(Color, Number);
@@ -62,6 +62,7 @@ void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplay
 	}
 	UpdateScoreUI(Category);
 
+	// 한 목표를 0으로 만들었을 때 목표 완수 계산
 	if(Number <= 0)
 	{
 		if(CalculateWin())
@@ -93,6 +94,7 @@ void ACMGameState::CalcMinute()
 {
 	CurrentMinute = CurrentLeftTime / 60;
 	CurrentSecond = static_cast<int>(CurrentLeftTime) % 60;
+	// 타이머가 끝났을 때 목표 완수 계산
 	if(CurrentMinute == 0 && CurrentSecond == 0)
 	{
 		GameOver();
@@ -118,6 +120,7 @@ void ACMGameState::GameOver()
 	}
 }
 
+// 목표 완수 계산
 bool ACMGameState::CalculateWin() const
 {
 	for(auto ElemOfObjective : GameObjective)

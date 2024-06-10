@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "CMSharedDefinition.h"
 #include "CMGameMode.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class COLORMONSTER_1_API ACMGameMode : public AGameModeBase
+class COLORMONSTER_1_API ACMGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
@@ -65,4 +65,5 @@ private:
 // Next Level
 public:
 	void SetLevelAndRestart(int32 InLevel);
+
 };

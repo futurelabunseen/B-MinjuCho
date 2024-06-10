@@ -58,4 +58,28 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> LooseWindow;
+
+	// RETRY BTN / SELECT STAGE BTN
+public:
+	UFUNCTION(BlueprintCallable)
+	void ClickedRetryBtn();
+	
+	UFUNCTION(BlueprintCallable)
+	void ClickedStageBtn();
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> RetryButton_Win;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageButton_Win;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> RetryButton_Loose;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageButton_Loose;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> StageWindow;
 };

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameStateBase.h"
+#include "GameFramework/GameState.h"
 #include "CMSharedDefinition.h"
 #include "CMGameState.generated.h"
 
@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLooseWindowChanged, bool, IsTurnO
  * 
  */
 UCLASS()
-class COLORMONSTER_1_API ACMGameState : public AGameStateBase
+class COLORMONSTER_1_API ACMGameState : public AGameState
 {
 	GENERATED_BODY()
 

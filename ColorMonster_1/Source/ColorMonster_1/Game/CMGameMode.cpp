@@ -142,5 +142,8 @@ void ACMGameMode::SetLevelAndRestart(int32 InLevel = -1)
 	// Update Game Objective passing to GameState
 	CMGameState->InitializeScoreData(GetGameLevel());
 	IsSetTimerOn = false;
+	// 멀티 환경에서 클라이언트끼리 스타트 시점 맞추기 위해서 Delay Start 사용할 때 게임모드 전환이 필요하다.
+	// 게임모드 기능 활용하면 손봐야하고, 아니면 타이머로 구현 가능
+	RestartGame();
 }
 
