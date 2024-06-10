@@ -145,13 +145,21 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->bCastHiddenShadow = true;
 		RightGun->SetPlayer(this);
 	}
+
+	// 왼쪽 기존 총 없애기
+	if (USkeletalMeshComponent* SkeletalMeshComp = GetMesh())
+	{
+		// 본을 숨기기 
+		SkeletalMeshComp->HideBoneByName("weapon_l", EPhysBodyOp::PBO_None);
+	}
 	
 	// Spawn LeftGun Actor & Attach to Socket
 	LeftGun = GetWorld()->SpawnActor<ACMColorGun>(LeftGunClass);
+	
 	ensure(LeftGun);
 	if (LeftGun)
 	{
-		FName SocketName = FName("Muzzle_02");
+		FName SocketName = FName("Muzzle_L");
 		if(GetMesh()->DoesSocketExist(SocketName))
 		{
 			const USkeletalMeshSocket* ColorGunMesh = (GetMesh()->GetSocketByName(SocketName));

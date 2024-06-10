@@ -15,22 +15,22 @@
 ACMColorGun::ACMColorGun()
 {
 	// 총 색깔 세팅
-	// Static Mesh
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMesh->SetupAttachment(RootComponent);
+	// Skeletal Mesh
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
+	SkeletalMesh->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SkeletalMeshRef(TEXT("/Game/Mesh/Cube1.Cube1"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Sci-Fi_Assault_Rifle/Assault_Rifle/SK_Rifle_Mesh/SK_Butt.SK_Butt'"));
 	if (SkeletalMeshRef.Object)
 	{
-		StaticMesh->SetStaticMesh(SkeletalMeshRef.Object);
+		SkeletalMesh->SetSkeletalMesh(SkeletalMeshRef.Object);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ACMColorGun: Failed to Load Static Mesh Ref"));
 	}
 
-	StaticMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	StaticMesh->SetMobility(EComponentMobility::Movable);
+	SkeletalMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+	SkeletalMesh->SetMobility(EComponentMobility::Movable);
 
 	CurrentColor = CM_COLOR_NONE;
 	
@@ -60,7 +60,7 @@ void ACMColorGun::BeginPlay()
 {
 	Super::BeginPlay();
 
-	StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
+	SkeletalMesh->CreateAndSetMaterialInstanceDynamic(0);
 
 	ChangeColor(CurrentColor);
 }
@@ -188,7 +188,7 @@ void ACMColorGun::ShootTrace()
 
 void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 {
-	UMaterialInterface* StaticMeshMaterial = StaticMesh->GetMaterial(0);
+	UMaterialInterface* StaticMeshMaterial = SkeletalMesh->GetMaterial(0);
 	UMaterialInstanceDynamic* DynamicMaterial = 
 		Cast<UMaterialInstanceDynamic>(StaticMeshMaterial);
 	

@@ -45,7 +45,7 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UStaticMeshComponent> StaticMesh;
+	TObjectPtr<class USkeletalMeshComponent> SkeletalMesh;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic;
