@@ -82,4 +82,20 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> StageWindow;
+
+	// TITLE Window
+public:
+	UFUNCTION(BlueprintCallable)
+	void ClickedStartBtn();
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> TitlePanel;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UVerticalBox> InGameUI;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StartButton;
+	
 };

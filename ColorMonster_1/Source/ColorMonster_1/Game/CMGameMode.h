@@ -64,6 +64,6 @@ private:
 	bool IsSetTimerOn = false;
 // Next Level
 public:
-	void SetLevelAndRestart(int32 InLevel);
+	void SetLevelAndLoad(int32 InLevel);
 
 };

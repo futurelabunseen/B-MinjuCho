@@ -7,6 +7,7 @@
 #include "Components/CanvasPanel.h"
 #include "Components/HorizontalBox.h"
 #include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
 #include "Game/CMGameMode.h"
 #include "Game/CMGameState.h"
 #include "Kismet/GameplayStatics.h"
@@ -79,6 +80,7 @@ void UCMUserWidget::BindToGameState()
 		RetryButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
 		StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
 		StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
+		StartButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStartBtn);
 	}
 }
 
@@ -144,15 +146,16 @@ void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 
 void UCMUserWidget::ClickedRetryBtn()
 {
-	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	if(PlayerController)
-	{
-		PlayerController->SetPlayerInputMode(true);
-	}
+	// 열릴 레벨이 Title UI가 아닌 경우
+	// ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	// if(PlayerController)
+	// {
+	// 	PlayerController->SetPlayerInputMode(true);
+	// }
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
 	{
-		GameMode->SetLevelAndRestart(GameMode->GetGameLevel());
+		GameMode->SetLevelAndLoad(GameMode->GetGameLevel());
 		// 레벨 초기화 필요
 		WinWindow->SetVisibility(ESlateVisibility::Hidden);
 		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
@@ -162,4 +165,22 @@ void UCMUserWidget::ClickedRetryBtn()
 void UCMUserWidget::ClickedStageBtn()
 {
 	StageWindow->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UCMUserWidget::ClickedStartBtn()
+{
+	// 마우스 위치 해제 필요
+	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if(PlayerController)
+	{
+		PlayerController->SetPlayerInputMode(true);
+	}
+	TitlePanel->SetVisibility(ESlateVisibility::Hidden);
+	InGameUI->SetVisibility(ESlateVisibility::Visible);
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(GameMode->GetGameLevel() + 1);
+	}
 }

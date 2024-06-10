@@ -17,6 +17,8 @@ void ACMPlayerController::BeginPlay()
 
 		//UE_LOG(LogTemp, Warning, TEXT("CMPlayerController BeginPlay"));
 	}
+	// 첫 화면은 UI이므로
+	SetPlayerInputMode(false);
 }
 
 void ACMPlayerController::SetPlayerInputMode(bool bInputMode)
@@ -26,5 +28,5 @@ void ACMPlayerController::SetPlayerInputMode(bool bInputMode)
 	: static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
 
 	SetInputMode(*InputMode);
-	bShowMouseCursor = bInputMode;
+	bShowMouseCursor = !bInputMode;
 }
