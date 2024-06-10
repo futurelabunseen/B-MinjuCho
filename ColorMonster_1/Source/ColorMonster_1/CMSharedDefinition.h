@@ -11,6 +11,12 @@
 #define CM_COLOR_RED FGameplayTag::RequestGameplayTag(FName("Color.Red"))
 #define CM_COLOR_GREEN FGameplayTag::RequestGameplayTag(FName("Color.Green"))
 #define CM_COLOR_BLUE FGameplayTag::RequestGameplayTag(FName("Color.Blue"))
+#define CM_COLOR_PURPLE FGameplayTag::RequestGameplayTag(FName("Color.Purple"))
+#define CM_COLOR_PINK FGameplayTag::RequestGameplayTag(FName("Color.Pink"))
+#define CM_COLOR_YELLOW FGameplayTag::RequestGameplayTag(FName("Color.Yellow"))
+#define CM_COLOR_GRAY FGameplayTag::RequestGameplayTag(FName("Color.Gray"))
+#define CM_COLOR_ORANGE FGameplayTag::RequestGameplayTag(FName("Color.Orange"))
+#define CM_COLOR_BLACK FGameplayTag::RequestGameplayTag(FName("Color.Black"))
 
 #define CM_MONSTER_BASE FGameplayTag::RequestGameplayTag(FName("Monster.Base"))
 #define CM_MONSTER_CARDBOARD FGameplayTag::RequestGameplayTag(FName("Monster.Cardboard"))
@@ -50,6 +56,11 @@ public:
 	
 	static const FLinearColor& TranslateColor(const FGameplayTag& ColorTag)
 	{
+		static const FLinearColor PurpleColor = FLinearColor(FVector(0.5f, 0.f, 1.0f));
+		static const FLinearColor PinkColor = FLinearColor(FVector(1.0f, 0.f, 1.0f));
+		static const FLinearColor OrangeColor = FLinearColor(FVector(1.0f, 0.5f, 0.0f));
+		static const FLinearColor DeepGrayColor = FLinearColor(FVector(0.8f, 0.8f, 0.8f));
+		
 		// Tag => LinearColor Value
 		if(ColorTag == CM_COLOR_RED)
 		{
@@ -62,6 +73,30 @@ public:
 		if(ColorTag == CM_COLOR_GREEN)
 		{
 			return FLinearColor::Green;
+		}
+		if(ColorTag == CM_COLOR_PURPLE)
+		{
+			return PurpleColor;
+		}
+		if(ColorTag == CM_COLOR_PINK)
+		{
+			return PinkColor;
+		}
+		if(ColorTag == CM_COLOR_YELLOW)
+		{
+			return FLinearColor::Yellow;
+		}
+		if(ColorTag == CM_COLOR_GRAY)
+		{
+			return DeepGrayColor;
+		}
+		if(ColorTag == CM_COLOR_ORANGE)
+		{
+			return OrangeColor;
+		}
+		if(ColorTag == CM_COLOR_BLACK)
+		{
+			return FLinearColor::Black;
 		}
 		return FLinearColor::White;
 	}
@@ -80,6 +115,30 @@ public:
 		if(ColorTag == CM_COLOR_GREEN)
 		{
 			return FText::FromString("GREEN");
+		}
+		if(ColorTag == CM_COLOR_PURPLE)
+		{
+			return FText::FromString("PURPLE");
+		}
+		if(ColorTag == CM_COLOR_PINK)
+		{
+			return FText::FromString("PINK");
+		}
+		if(ColorTag == CM_COLOR_YELLOW)
+		{
+			return FText::FromString("YELLOW");
+		}
+		if(ColorTag == CM_COLOR_GRAY)
+		{
+			return FText::FromString("GRAY");
+		}
+		if(ColorTag == CM_COLOR_ORANGE)
+		{
+			return FText::FromString("ORANGE");
+		}
+		if(ColorTag == CM_COLOR_BLACK)
+		{
+			return FText::FromString("BLACK");
 		}
 		return FText::FromString("WHITE");
 	}

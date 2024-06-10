@@ -19,9 +19,7 @@ class COLORMONSTER_1_API ACMMonster : public ACMCharacter, public ICMAIInterface
 
 public:
 	ACMMonster();
-
-private:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = CategoryOfMonster, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag CurrentCategory;
 
 // Basic Action
