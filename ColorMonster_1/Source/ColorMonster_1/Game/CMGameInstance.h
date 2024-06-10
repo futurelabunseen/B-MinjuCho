@@ -23,11 +23,19 @@ public:
 	float LimitTime;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	int32 Category_Code;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FGameplayTag Base_Color;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 Base_Number;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	FGameplayTag Cardboard_Color;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	int32 Cardboard_Number;
 	// 몬스터 종류에 따라 확장 필요
 };
 

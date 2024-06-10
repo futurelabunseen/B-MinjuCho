@@ -1,6 +1,6 @@
-﻿Name,Level,LimitTime,Base_Color,Base_Number
-1,1,180.0f,Color.Red,3
-2,2,170.0f,Color.Blue,2
-3,3,160.0f,Color.Green,4
-4,4,150.0f,Color.Red,5
-5,5,140.0f,Color.Blue,4
+﻿Name,Level,LimitTime,Category_Code,Base_Color,Base_Number,Cardboard_Color,Cardboard_Number
+1,1,180.0f,4,Color.Red,3,Color.Purple,2
+2,2,170.0f,1,Color.Blue,2,Color.None,0
+3,3,160.0f,4,Color.Orange,4,Color.Yellow,2
+4,4,150.0f,4,Color.Red,5,Color.Black,2
+5,5,140.0f,4,Color.Blue,4,Color.Pink,3

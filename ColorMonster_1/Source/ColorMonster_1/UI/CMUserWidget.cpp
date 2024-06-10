@@ -23,7 +23,7 @@ void UCMUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ScoreBox = Cast<UHorizontalBox>(GetWidgetFromName(TEXT("ScoreBox")));
+	ScoreBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ScoreBox")));
 	ensure(ScoreBox);
 
 	BindToGameState();

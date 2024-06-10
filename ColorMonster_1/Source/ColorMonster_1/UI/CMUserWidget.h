@@ -35,7 +35,7 @@ private:
 private:
 	// 텍스트 박스를 추가할 컨테이너 위젯
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UHorizontalBox> ScoreBox;
+	TObjectPtr<class UVerticalBox> ScoreBox;
 
 	// Timer Text Block
 	UPROPERTY(meta = (BindWidget))

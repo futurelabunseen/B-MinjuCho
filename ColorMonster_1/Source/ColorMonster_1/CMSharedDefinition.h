@@ -156,4 +156,23 @@ public:
 		}
 		return FText::FromString("NONE");
 	}
+
+	static const TArray<FGameplayTag>& GetCategoriesPerLevel(int32 InCode)
+	{
+		// 이게 아니라 그냥 static const TArray<FGameplayTag> 하나 만들어놓고, 비트에 따라 해당 인덱스 검색하게끔 해야함
+		static const TArray<FGameplayTag> BaseOnly = {CM_MONSTER_BASE};
+		static const TArray<FGameplayTag> CardboardOnly = {CM_MONSTER_CARDBOARD};
+		static const TArray<FGameplayTag> BaseCardboard = {CM_MONSTER_BASE, CM_MONSTER_CARDBOARD};
+		switch (InCode)
+		{
+		case 1:
+			return BaseOnly;
+		case 2:
+			return CardboardOnly;
+		case 4:
+			return BaseCardboard;
+		default:
+			return BaseOnly;
+		}
+	}
 };

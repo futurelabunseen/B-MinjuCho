@@ -31,9 +31,18 @@ void ACMGameState::InitializeScoreData(int32 Level)
 		if(CMGameInstance->GetObjectiveData(Level))
 		{
 			GameObjective.Reset();
-			FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
-
-			GameObjective.Emplace(CM_MONSTER_BASE, BaseInfo);
+			if(CMGameInstance->GetObjectiveData(Level)->Base_Color != CM_COLOR_NONE)
+			{
+				FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
+				GameObjective.Emplace(CM_MONSTER_BASE, BaseInfo);
+			}
+			
+			if(CMGameInstance->GetObjectiveData(Level)->Cardboard_Color != CM_COLOR_NONE)
+			{
+				FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Cardboard_Color, CMGameInstance->GetObjectiveData(Level)->Cardboard_Number);
+				GameObjective.Emplace(CM_MONSTER_CARDBOARD, BaseInfo);
+			}
+			
 			UpdateAllScoreUI();
 		}
 	}
