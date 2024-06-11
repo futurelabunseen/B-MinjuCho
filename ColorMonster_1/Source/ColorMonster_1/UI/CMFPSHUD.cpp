@@ -3,8 +3,12 @@
 
 #include "UI/CMFPSHUD.h"
 
+#include "CMUserWidget.h"
 #include "Engine/Canvas.h"
 #include "Engine/Texture2D.h"
+#include "Player/CMPlayer.h"
+#include "Weapon/CMColorGun.h"
+
 ACMFPSHUD::ACMFPSHUD()
 {
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshairTextureRef(TEXT("/Script/Engine.Texture2D'/Game/UI/crosshair.crosshair'"));
@@ -16,7 +20,40 @@ ACMFPSHUD::ACMFPSHUD()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to load CrosshairTexture"));
 	}
+	
+	static ConstructorHelpers::FClassFinder<UCMUserWidget> CMWidgetRef(TEXT("/Game/Blueprint/UI/WBP_CM.WBP_CM_C"));
+	if (CMWidgetRef.Class)
+	{
+		CMWidgetClass = CMWidgetRef.Class;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to load CMUserWidgetClass"));
+	}
 }
+
+void ACMFPSHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if(CMWidgetClass)
+	{
+		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), CMWidgetClass);
+		if(Widget)
+		{
+			Widget->AddToViewport();
+			CMWidget = Cast<UCMUserWidget>(Widget);
+		}
+	}
+
+	// 현재 HUD 소유 Pawn 가져오기
+	ACMPlayer* Player = Cast<ACMPlayer>(GetOwningPawn());
+	if(Player)
+	{
+		Player->OnSetGun.AddDynamic(this, &ACMFPSHUD::BindPlayerDelagate);
+	}
+}
+
 void ACMFPSHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -32,5 +69,21 @@ void ACMFPSHUD::DrawHUD()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL CrosshairTexture"));
+	}
+}
+
+void ACMFPSHUD::BindPlayerDelagate()
+{
+	// 현재 HUD 소유 Pawn 가져오기
+	ACMPlayer* Player = Cast<ACMPlayer>(GetOwningPawn());
+	if (Player && CMWidget)
+	{
+		// 델리게이트에 함수 바인딩
+		if(Player->GetLeftGun())
+		{
+			Player->GetLeftGun()->OnColorChanged.AddDynamic(CMWidget, &UCMUserWidget::ChangeColorUI);
+			Player->GetLeftGun()->OnBulletChanged.AddDynamic(CMWidget, &UCMUserWidget::ChangeLeftNum);
+		}
+
 	}
 }

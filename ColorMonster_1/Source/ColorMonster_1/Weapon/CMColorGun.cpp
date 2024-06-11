@@ -52,8 +52,8 @@ ACMColorGun::ACMColorGun()
 	MuzzleOffset = FVector(200, 0, 0);
 
 	// Bullet Num
-	MaxBullet = 3;
-	CurrentBullet = 0;
+	SetMaxBullet(3);
+	SetCurrentBullet(0);
 }
 
 void ACMColorGun::BeginPlay()
@@ -86,7 +86,7 @@ void ACMColorGun::SetPlayer(ACMPlayer* const InPlayer)
 void ACMColorGun::Fire()
 {
 	// Skip if it has no bullet
-	if(CurrentBullet <= 0)
+	if(GetCurrentBullet() <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BULLET IS NOT ENOUGH!! ACMColorGun::Fire"));
 		return;
@@ -120,9 +120,10 @@ void ACMColorGun::Fire()
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
-		--CurrentBullet;
+		SetCurrentBullet(GetCurrentBullet() - 1);
+		OnBulletChanged.Broadcast(GetCurrentBullet(), GetMaxBullet());
 	}
-	if(CurrentBullet == 0)
+	if(GetCurrentBullet() == 0)
 	{
 		CurrentColor = CM_COLOR_NONE;
 		ChangeColor(CurrentColor);
@@ -200,8 +201,9 @@ void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 		CurrentColor = InColor;
 		if(InColor != CM_COLOR_NONE)
 		{
-			CurrentBullet = MaxBullet;
+			SetCurrentBullet(GetMaxBullet());
 			UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload : %s"), *CurrentColor.ToString());
+			OnColorChanged.Broadcast(CurrentColor);
 		}
 	}
 }

@@ -21,6 +21,8 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSetGun);
+
 UCLASS()
 class COLORMONSTER_1_API ACMPlayer : public ACMCharacter
 {
@@ -86,6 +88,9 @@ protected:
 
 // Gun Section
 public:
+	// Delegate Instance for HUD Binding
+	FOnSetGun OnSetGun;
+	
 	UPROPERTY(EditAnywhere)
 	EGunHandler isLeft;
 
@@ -114,4 +119,8 @@ protected:
 private:
 	UPROPERTY()
 	TArray<class ACMWeapon*> ArrayGun;
+
+public:
+	const TObjectPtr<class ACMColorGun>& GetLeftGun() const { return LeftGun; }
+	const TObjectPtr<class ACMLineGun>& GetRightGun() const { return RightGun; }
 };

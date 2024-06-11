@@ -41,8 +41,8 @@ ACMMonster::ACMMonster()
 	CurrentColor = CM_COLOR_NONE;
 	CurrentCategory = CM_MONSTER_BASE;
 	// AI Controller 속성
-	//AIControllerClass = ACMAIController::StaticClass();
-	//AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AIControllerClass = ACMAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 }
 

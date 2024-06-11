@@ -16,7 +16,8 @@ ACMLineGun::ACMLineGun()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	// Bullet Num
-	MaxBullet = CurrentBullet = 5;
+	SetMaxBullet(5);
+	SetCurrentBullet(GetMaxBullet());
 }
 
 // Called when the game starts or when spawned
@@ -54,7 +55,7 @@ void ACMLineGun::SetPlayer(ACMPlayer* const InPlayer)
 void ACMLineGun::Fire()
 {
 	// Skip if it has no bullet
-	if(CurrentBullet <= 0)
+	if(GetCurrentBullet() <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BULLET IS NOT ENOUGH!! ACMLineGun::Fire"));
 		return;
@@ -68,19 +69,19 @@ void ACMLineGun::Fire()
 	else if (PlayerAnimInstance->PlayShooting(0) == 1)
 	{
 		ShootTrace();
-		--CurrentBullet;
+		SetCurrentBullet(GetCurrentBullet() - 1);
 	}
 }
 
 void ACMLineGun::Reload()
 {
 	// Skip if it has enough bullet
-	if(CurrentBullet == MaxBullet)
+	if(GetCurrentBullet() == GetMaxBullet())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bullet is Already Full - ACMLineGun::Reload"));
 		return;
 	}
-	CurrentBullet = MaxBullet;
+	SetCurrentBullet(GetMaxBullet());
 }
 
 void ACMLineGun::ShootTrace()

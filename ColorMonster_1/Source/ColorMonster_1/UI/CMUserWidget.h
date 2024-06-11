@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameplayTagContainer.h"
 #include "CMUserWidget.generated.h"
-
 /**
  * 
  */
@@ -27,6 +27,8 @@ public:
 private:
 	UFUNCTION()
 	void BindToGameState();
+	UFUNCTION()
+	void BindButtonClicked();
 	UFUNCTION()
 	void AddTextBoxAtContainer(const FText& InText, const FString& GroupName) const;
 	UFUNCTION()
@@ -97,5 +99,27 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> StartButton;
+
+	// Gun UI
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> LeftGunImg;
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> LeftColorTxt;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> LeftCurrentNumTxt;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> LeftTotalNumTxt;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> LeftSlashTxt;
+
+public:
+	UFUNCTION()
+	void ChangeColorUI(const FGameplayTag& InColor);
+	
+	UFUNCTION()
+	void ChangeLeftNum(int32 CurrentNum, int32 MaxNum);
 };

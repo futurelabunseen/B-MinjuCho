@@ -12,6 +12,8 @@
 #include "Game/CMGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/CMPlayerController.h"
+#include "CMSharedDefinition.h"
+#include "Components/Image.h"
 
 
 UCMUserWidget::UCMUserWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -27,9 +29,7 @@ void UCMUserWidget::NativeConstruct()
 	ensure(ScoreBox);
 
 	BindToGameState();
-
-	// 나중에 인터페이스로 구현부 빼기 ??
-	// 게임 스테이트는 owning actor가 아니라서 안될 것 같다.
+	BindButtonClicked();
 }
 
 void UCMUserWidget::UpdateScore(const FText& Monster, const FText& Color, const FText& Number)
@@ -76,12 +76,17 @@ void UCMUserWidget::BindToGameState()
 		GameState->OnWinWindowChanged.AddDynamic(this, &UCMUserWidget::TurnWinWindow);
 		GameState->OnLooseWindowChanged.AddDynamic(this, &UCMUserWidget::TurnLooseWindow);
 
-		RetryButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
-		RetryButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
-		StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
-		StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
-		StartButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStartBtn);
 	}
+	
+}
+
+void UCMUserWidget::BindButtonClicked()
+{
+	RetryButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
+	RetryButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
+	StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
+	StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
+	StartButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStartBtn);
 }
 
 void UCMUserWidget::AddTextBoxAtContainer(const FText& InText, const FString& GroupName) const
@@ -184,3 +189,22 @@ void UCMUserWidget::ClickedStartBtn()
 		GameMode->SetLevelAndLoad(GameMode->GetGameLevel() + 1);
 	}
 }
+
+void UCMUserWidget::ChangeColorUI(const FGameplayTag& InColor)
+{
+	FLinearColor RealColor = CMSharedDefinition::TranslateColor(InColor);
+	FText TextFromColorTag = CMSharedDefinition::ColorTagToText(InColor);
+	LeftGunImg->SetColorAndOpacity(RealColor);
+	LeftColorTxt->SetText(TextFromColorTag);
+	LeftColorTxt->SetColorAndOpacity(RealColor);
+	LeftCurrentNumTxt->SetColorAndOpacity(RealColor);
+	LeftTotalNumTxt->SetColorAndOpacity(RealColor);
+	LeftSlashTxt->SetColorAndOpacity(RealColor);
+}
+
+void UCMUserWidget::ChangeLeftNum(int32 CurrentNum, int32 MaxNum)
+{
+	LeftCurrentNumTxt->SetText(FText::AsNumber(CurrentNum));
+	LeftTotalNumTxt->SetText(FText::AsNumber(MaxNum));
+}
+

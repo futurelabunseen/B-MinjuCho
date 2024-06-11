@@ -18,7 +18,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UTexture2D> CrosshairTexture;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UCMUserWidget> CMWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UCMUserWidget> CMWidget;
+	
 public:
 	ACMFPSHUD();
+	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
+
+private:
+	UFUNCTION()
+	void BindPlayerDelagate();
 };

@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "CMColorGun.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnColorChanged, const FGameplayTag&, InColor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBulletChanged, int32, CurrentNum, int32, MaxNum);
 /**
  * 
  */
@@ -49,4 +51,9 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic;
+
+	// Delgate Instance
+public:
+	FOnColorChanged OnColorChanged;
+	FOnBulletChanged OnBulletChanged;
 };

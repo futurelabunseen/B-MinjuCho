@@ -33,11 +33,11 @@ ACMGameMode::ACMGameMode()
 		HUDClass = HUDClassRef.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UCMUserWidget> WBPClassRef(TEXT("/Game/Blueprint/UI/WBP_CM.WBP_CM_C"));
-	if(WBPClassRef.Class)
-	{
-		WidgetClass = WBPClassRef.Class;
-	}
+	// static ConstructorHelpers::FClassFinder<UCMUserWidget> WBPClassRef(TEXT("/Game/Blueprint/UI/WBP_CM.WBP_CM_C"));
+	// if(WBPClassRef.Class)
+	// {
+	// 	WidgetClass = WBPClassRef.Class;
+	// }
 
 	// Set GameInstance, GameState
 	CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -53,14 +53,15 @@ void ACMGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(WidgetClass)
-	{
-		UCMUserWidget* CMUserWidget = CreateWidget<UCMUserWidget>(GetWorld(), WidgetClass);
-		if(CMUserWidget)
-		{
-			CMUserWidget->AddToViewport();
-		}
-	}
+	// GameMode -> HUD로 옮김
+	// if(WidgetClass)
+	// {
+	// 	UCMUserWidget* CMUserWidget = CreateWidget<UCMUserWidget>(GetWorld(), WidgetClass);
+	// 	if(CMUserWidget)
+	// 	{
+	// 		CMUserWidget->AddToViewport();
+	// 	}
+	// }
 
 	// Set GameState
 	CMGameState = GetWorld()->GetGameState<ACMGameState>();

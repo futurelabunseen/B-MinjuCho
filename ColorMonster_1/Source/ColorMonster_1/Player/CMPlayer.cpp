@@ -181,6 +181,12 @@ void ACMPlayer::BeginPlay()
 		// WeaponMesh->CastShadow = true;
 		// WeaponMesh->bCastHiddenShadow = true;
 		LeftGun->SetPlayer(this);
+
+		// For Binding with Spawned LeftGun
+		OnSetGun.Broadcast();
+		
+		// Update Bullet UI
+		LeftGun->OnBulletChanged.Broadcast(LeftGun->GetCurrentBullet(), LeftGun->GetMaxBullet());
 	}
 
 	// 총 교체를 위한 총 배열 관리
