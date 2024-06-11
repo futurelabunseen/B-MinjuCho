@@ -70,6 +70,7 @@ void ACMLineGun::Fire()
 	{
 		ShootTrace();
 		SetCurrentBullet(GetCurrentBullet() - 1);
+		OnBulletChanged.Broadcast(GetCurrentBullet(), GetMaxBullet());
 	}
 }
 
@@ -82,6 +83,7 @@ void ACMLineGun::Reload()
 		return;
 	}
 	SetCurrentBullet(GetMaxBullet());
+	OnBulletChanged.Broadcast(GetCurrentBullet(), GetMaxBullet());
 }
 
 void ACMLineGun::ShootTrace()

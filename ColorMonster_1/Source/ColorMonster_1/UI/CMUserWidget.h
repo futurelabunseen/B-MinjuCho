@@ -115,11 +115,20 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> LeftSlashTxt;
-
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> RightCurrentNumTxt;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> RightTotalNumTxt;
+	
 public:
 	UFUNCTION()
 	void ChangeColorUI(const FGameplayTag& InColor);
 	
 	UFUNCTION()
 	void ChangeLeftNum(int32 CurrentNum, int32 MaxNum);
+	
+	UFUNCTION()
+	void ChangeRightNum(int32 CurrentNum, int32 MaxNum);
 };

@@ -8,6 +8,7 @@
 #include "Engine/Texture2D.h"
 #include "Player/CMPlayer.h"
 #include "Weapon/CMColorGun.h"
+#include "Weapon/CMLineGun.h"
 
 ACMFPSHUD::ACMFPSHUD()
 {
@@ -83,6 +84,11 @@ void ACMFPSHUD::BindPlayerDelagate()
 		{
 			Player->GetLeftGun()->OnColorChanged.AddDynamic(CMWidget, &UCMUserWidget::ChangeColorUI);
 			Player->GetLeftGun()->OnBulletChanged.AddDynamic(CMWidget, &UCMUserWidget::ChangeLeftNum);
+		}
+
+		if(Player->GetRightGun())
+		{
+			Player->GetRightGun()->OnBulletChanged.AddDynamic(CMWidget, &UCMUserWidget::ChangeRightNum);
 		}
 
 	}

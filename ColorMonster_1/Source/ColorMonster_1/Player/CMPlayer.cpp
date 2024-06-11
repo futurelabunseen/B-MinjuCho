@@ -187,6 +187,7 @@ void ACMPlayer::BeginPlay()
 		
 		// Update Bullet UI
 		LeftGun->OnBulletChanged.Broadcast(LeftGun->GetCurrentBullet(), LeftGun->GetMaxBullet());
+		RightGun->OnBulletChanged.Broadcast(RightGun->GetCurrentBullet(), RightGun->GetMaxBullet());
 	}
 
 	// 총 교체를 위한 총 배열 관리

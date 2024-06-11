@@ -6,6 +6,7 @@
 #include "CMWeapon.h"
 #include "GameFramework/Actor.h"
 #include "CMLineGun.generated.h"
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRightBulletChanged, int32, CurrentNum, int32, MaxNum);
 
 UCLASS()
 class COLORMONSTER_1_API ACMLineGun : public ACMWeapon
@@ -36,4 +37,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Player, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCMPlayerAnimInstance> PlayerAnimInstance;
 
+public:
+	// Delgate Instance
+	FOnRightBulletChanged OnBulletChanged;
 };

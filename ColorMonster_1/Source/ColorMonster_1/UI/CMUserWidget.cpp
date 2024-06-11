@@ -208,3 +208,9 @@ void UCMUserWidget::ChangeLeftNum(int32 CurrentNum, int32 MaxNum)
 	LeftTotalNumTxt->SetText(FText::AsNumber(MaxNum));
 }
 
+void UCMUserWidget::ChangeRightNum(int32 CurrentNum, int32 MaxNum)
+{
+	RightCurrentNumTxt->SetText(FText::AsNumber(CurrentNum));
+	RightTotalNumTxt->SetText(FText::AsNumber(MaxNum));
+}
+
