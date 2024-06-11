@@ -197,13 +197,16 @@ void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 	{
 		DynamicMaterial->SetVectorParameterValue(FName("Tint"), CMSharedDefinition::TranslateColor(InColor));
 		
-		// 색이 제대로 바뀌었을 때만 장전 완료 처리
 		CurrentColor = InColor;
+		OnColorChanged.Broadcast(CurrentColor);
+		// 색이 제대로 바뀌었을 때만 장전 완료 처리
 		if(InColor != CM_COLOR_NONE)
 		{
+			// Update Bullet
 			SetCurrentBullet(GetMaxBullet());
+			OnBulletChanged.Broadcast(GetCurrentBullet(), GetMaxBullet());
+			
 			UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload : %s"), *CurrentColor.ToString());
-			OnColorChanged.Broadcast(CurrentColor);
 		}
 	}
 }
