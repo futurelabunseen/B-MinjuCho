@@ -20,7 +20,13 @@ public:
 	
 	virtual void Fire();
 	virtual void Reload();
+
+	int32 GetMaxBullet() const {return MaxBullet;}
+	int32 GetCurrentBullet() const {return CurrentBullet;}
+	void SetMaxBullet(int32 InMaxNum) {MaxBullet = InMaxNum;}
+	void SetCurrentBullet(int32 InCurrentNum) {CurrentBullet = InCurrentNum;}
 	
+private:
 	UPROPERTY(EditAnywhere, Category=Bullet)
 	int32 MaxBullet;
 	UPROPERTY(EditAnywhere, Category=Bullet)
