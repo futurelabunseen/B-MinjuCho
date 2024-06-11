@@ -7,6 +7,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "CMSharedDefinition.h"
+#include "Weapon/CMColorDecalEffect.h"
+#include "Engine/DecalActor.h"
 
 // Sets default values
 ACMProjectileActor::ACMProjectileActor()
@@ -57,7 +59,22 @@ ACMProjectileActor::ACMProjectileActor()
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
 
-	CurrentColor = CM_COLOR_BLUE;
+	CurrentColor = CM_COLOR_NONE;
+
+	// Load Effect
+	static ConstructorHelpers::FClassFinder<ADecalActor> EffectClassRef(TEXT("/Game/Blueprint/BP_CMDecalEffect.BP_CMDecalEffect_C"));
+	if (EffectClassRef.Class)
+	{
+		EffectClass = EffectClassRef.Class;
+		if (EffectClass == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to Casting Effect class"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to call Effect class"));
+	}
 }
 
 // Called when the game starts or when spawned
@@ -65,7 +82,8 @@ void ACMProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//CurrentColor = FGameplayTag::EmptyTag;
+	// Dynamic 세팅
+	StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
 }
 
 // Called every frame
@@ -94,8 +112,16 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		{
 			HitMonster->ChangeColor(CurrentColor);
 			// refer interface from ideugu class
-		}
 
+			ACMColorDecalEffect* DecalEffect = GetWorld()->SpawnActor<ACMColorDecalEffect>(EffectClass);
+			if (DecalEffect)
+			{
+				DecalEffect->ChangeColor(CurrentColor);
+				DecalEffect->SetActorLocation(HitMonster->GetActorLocation());
+				
+			}
+		}
+		
 		Destroy();
 	}
 }
@@ -103,3 +129,25 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 //GetWorld()->OverlapMultiByChannel()
 //UKismetSystemLibrary::SphereOverlapActors()
 //UKismetSystemLibrary::SphereTraceSingle()
+
+void ACMProjectileActor::ChangeColor(const FGameplayTag& InColor)
+{
+	CurrentColor = InColor;
+	const FLinearColor RealColor = CMSharedDefinition::TranslateColor(CurrentColor);
+	for(int i=0; i<StaticMesh->GetNumMaterials(); ++i)
+	{
+		// 각 매터리얼에 설정된 Dynamic 가져오기
+		UMaterialInterface* SkeletalMeshMaterial = StaticMesh->GetMaterial(i);
+		UMaterialInstanceDynamic* DynamicMaterial = 
+			Cast<UMaterialInstanceDynamic>(SkeletalMeshMaterial);
+		if(DynamicMaterial)
+		{
+			// 현재 컬러로 곱하기
+			DynamicMaterial->SetVectorParameterValue(FName("Tint"), RealColor);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ACMProjectileActor::Failed to Load DynmaicMaterial"));
+		}
+	}
+}

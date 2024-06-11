@@ -41,9 +41,16 @@ public:
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 	FORCEINLINE void SetCurrentColor(const FGameplayTag& InColor) {CurrentColor = InColor;}
+
+	UFUNCTION()
+	void ChangeColor(const FGameplayTag& InColor);
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag CurrentColor;
+
+	// Effect
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ADecalActor> EffectClass;
 };
 

@@ -116,7 +116,7 @@ void ACMColorGun::Fire()
 			if (Projectile)
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->SetCurrentColor(CurrentColor);
+				Projectile->ChangeColor(CurrentColor);
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
