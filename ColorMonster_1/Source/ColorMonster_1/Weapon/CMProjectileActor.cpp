@@ -8,7 +8,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "CMSharedDefinition.h"
 #include "Weapon/CMColorDecalEffect.h"
-#include "Engine/DecalActor.h"
+#include "Components/DecalComponent.h"
 
 // Sets default values
 ACMProjectileActor::ACMProjectileActor()
@@ -61,8 +61,9 @@ ACMProjectileActor::ACMProjectileActor()
 
 	CurrentColor = CM_COLOR_NONE;
 
+	// 1. For Decal Actor
 	// Load Effect
-	static ConstructorHelpers::FClassFinder<ADecalActor> EffectClassRef(TEXT("/Game/Blueprint/BP_CMDecalEffect.BP_CMDecalEffect_C"));
+	/*static ConstructorHelpers::FClassFinder<ADecalActor> EffectClassRef(TEXT("/Game/Blueprint/BP_CMDecalEffect.BP_CMDecalEffect_C"));
 	if (EffectClassRef.Class)
 	{
 		EffectClass = EffectClassRef.Class;
@@ -74,7 +75,19 @@ ACMProjectileActor::ACMProjectileActor()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call Effect class"));
+	}*/
+
+	// 2. For Decal Component
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> DecalMaterialRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Vefects/Blood_VFX/VFX/Decals/MI_VFX_Blood_Decal_WallSplatter01_Censor.MI_VFX_Blood_Decal_WallSplatter01_Censor'"));
+	if (DecalMaterialRef.Object)
+	{
+		DecalMaterial = DecalMaterialRef.Object;
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to call DecalMetrial Object"));
+	}
+	DecalSize = FVector(32.0f, 64.0f, 64.0f);
 }
 
 // Called when the game starts or when spawned
@@ -99,6 +112,42 @@ void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
 	//CurrentColor = InColor;
 }
 
+void ACMProjectileActor::AttachDecalToMonster(AActor* HitMonster, const FLinearColor& InColor)
+{
+	//UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAttached(DecalMaterial, DecalSize,
+	//	HitMonster->GetRootComponent(), // Attach Component
+	//	NAME_None,						// Socket Name
+	//	HitMonster->GetActorLocation(), HitMonster->GetActorRotation(), // Relative Pos, Rot 
+	//	EAttachLocation::KeepRelativeOffset, // Attach Type
+	//	10.0f);							// Decal LifeTime (sec) [0: Permanent]
+	UDecalComponent* DecalComponent = NewObject<UDecalComponent>(HitMonster);
+	if (DecalComponent)
+	{
+		// Initialize
+		DecalComponent->SetDecalMaterial(DecalMaterial);
+		DecalComponent->DecalSize = DecalSize;
+
+		// Change Color
+		UMaterialInstanceDynamic* DynamicMaterial =
+			DecalComponent->CreateDynamicMaterialInstance();
+		if (DynamicMaterial)
+		{
+			// Multiply by CurrentColor
+			DynamicMaterial->SetVectorParameterValue(FName("Tint"), InColor);
+		}
+
+		// Pin Position to Monster
+		DecalComponent->SetupAttachment(HitMonster->GetRootComponent());
+		DecalComponent->RegisterComponent();
+
+		// Position
+		DecalComponent->SetWorldLocation(HitMonster->GetActorLocation());
+		DecalComponent->SetWorldRotation(HitMonster->GetActorRotation());
+
+	}
+
+}
+
 void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != this) && (OtherComponent != nullptr))
@@ -108,24 +157,28 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 
 		ensure(OtherActor != nullptr);
 		ACMMonster* HitMonster = Cast<ACMMonster>(OtherActor);
-		if(HitMonster != nullptr)
+		if (HitMonster != nullptr)
 		{
 			HitMonster->ChangeColor(CurrentColor);
 			// refer interface from ideugu class
 
-			ACMColorDecalEffect* DecalEffect = GetWorld()->SpawnActor<ACMColorDecalEffect>(EffectClass);
+			// 1. Decal Actor
+			/*ACMColorDecalEffect* DecalEffect = GetWorld()->SpawnActor<ACMColorDecalEffect>(EffectClass);
 			if (DecalEffect)
 			{
 				DecalEffect->ChangeColor(CurrentColor);
 				DecalEffect->SetActorLocation(HitMonster->GetActorLocation());
-				
-			}
+
+			}*/
+
+			// 2. Decal Component
+			AttachDecalToMonster(HitMonster, CMSharedDefinition::TranslateColor(CurrentColor));
+
 		}
-		
+
 		Destroy();
 	}
 }
-
 //GetWorld()->OverlapMultiByChannel()
 //UKismetSystemLibrary::SphereOverlapActors()
 //UKismetSystemLibrary::SphereTraceSingle()
@@ -134,13 +187,13 @@ void ACMProjectileActor::ChangeColor(const FGameplayTag& InColor)
 {
 	CurrentColor = InColor;
 	const FLinearColor RealColor = CMSharedDefinition::TranslateColor(CurrentColor);
-	for(int i=0; i<StaticMesh->GetNumMaterials(); ++i)
+	for (int i = 0; i < StaticMesh->GetNumMaterials(); ++i)
 	{
 		// 각 매터리얼에 설정된 Dynamic 가져오기
 		UMaterialInterface* SkeletalMeshMaterial = StaticMesh->GetMaterial(i);
-		UMaterialInstanceDynamic* DynamicMaterial = 
+		UMaterialInstanceDynamic* DynamicMaterial =
 			Cast<UMaterialInstanceDynamic>(SkeletalMeshMaterial);
-		if(DynamicMaterial)
+		if (DynamicMaterial)
 		{
 			// 현재 컬러로 곱하기
 			DynamicMaterial->SetVectorParameterValue(FName("Tint"), RealColor);

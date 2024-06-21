@@ -44,13 +44,22 @@ public:
 
 	UFUNCTION()
 	void ChangeColor(const FGameplayTag& InColor);
+
+	UFUNCTION()
+	void AttachDecalToMonster(AActor* HitMonster, const FLinearColor& InColor);
+	UPROPERTY(EditAnywhere, Category = Effect, meta = (AllowPrivateAccess = "true"))
+	FVector DecalSize;
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag CurrentColor;
 
-	// Effect
+	// Decal Effect For Actor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ADecalActor> EffectClass;
+
+	// Decal Material For Component
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UMaterialInstance> DecalMaterial;
 };
 
