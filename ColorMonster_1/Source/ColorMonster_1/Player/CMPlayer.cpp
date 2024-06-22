@@ -12,6 +12,7 @@
 
 #include "Animation/CMPlayerAnimInstance.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "UI/CMWidgetComponent.h"
 #include "Weapon/CMWeapon.h"
 #include "Weapon/CMLineGun.h"
 #include "Weapon/CMColorGun.h"
@@ -118,7 +119,7 @@ void ACMPlayer::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	
+	HpBar->SetVisibility(false);
 	GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
 	
 	// Add Input Mapping Context

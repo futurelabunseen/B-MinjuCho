@@ -12,10 +12,14 @@
 #include "Components/SphereComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Game/CMGameState.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/CMPlayer.h"
+#include "UI/CMWidgetComponent.h"
 
 ACMMonster::ACMMonster()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	// Mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/InfinityBladeWarriors/Character/CompleteCharacters/sk_CharM_Base.sk_CharM_Base'"));
 	if (CharacterMeshRef.Object)
@@ -85,6 +89,33 @@ void ACMMonster::BeginPlay()
 		GetMesh()->CreateAndSetMaterialInstanceDynamic(i);
 	}
 	ChangeColor(CurrentColor);
+
+	// Load Player
+	LoadPlayer();
+}
+
+void ACMMonster::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	RotateHPBarToCamera();
+}
+
+void ACMMonster::RotateHPBarToCamera()
+{
+	if (PlayerController)
+	{
+		// 카메라 위치와 몬스터 위치에 따라 Rotate 하는 방법
+		//FVector CameraLocation = PlayerController->PlayerCameraManager->GetCameraLocation();
+		//FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), CameraLocation);
+		//HpBar->SetWorldRotation(LookAtRotation);
+		// 그냥 카메라 Rotation 따르는 방법
+		FRotator CameraRotation = PlayerController->PlayerCameraManager->GetCameraRotation() + FRotator(0,180.0f, 0);
+		HpBar->SetWorldRotation(CameraRotation);
+	}
+	else
+	{
+		LoadPlayer();
+	}
 }
 
 void ACMMonster::Dead()
@@ -118,6 +149,15 @@ void ACMMonster::Attack()
 	if(AnimInstance)
 	{
 		AnimInstance->PlayAttackMontage();
+	}
+}
+
+void ACMMonster::LoadPlayer()
+{
+	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if(PlayerController)
+	{
+		
 	}
 }
 

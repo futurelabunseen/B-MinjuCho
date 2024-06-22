@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/CMCharacterWidgetInterface.h"
 #include "CMCharacter.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHpChanged, float, CurrentHP);
+
 UCLASS()
-class COLORMONSTER_1_API ACMCharacter : public ACharacter
+class COLORMONSTER_1_API ACMCharacter : public ACharacter, public ICMCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -33,10 +37,17 @@ protected:
 	FORCEINLINE void SetCurrentHP(float InValue) { CurrentHP = InValue; }
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE void SetMaxHP(float InValue) { MaxHP = InValue; }
+	// UI Widget Section
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UCMWidgetComponent> HpBar;
+	virtual void SetupCharacterWidget(class UCMCharacterWidget* InCharacterWidget) override;
+
 public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 	virtual void UpdateHPFromDamage(float Damage);
 	virtual void Dead();
 	virtual void Attack();
+
+	FOnHpChanged OnHpChanged;
 };

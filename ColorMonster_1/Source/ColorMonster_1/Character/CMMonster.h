@@ -25,8 +25,14 @@ public:
 // Basic Action
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	void RotateHPBarToCamera();
 	virtual void Dead() override;
 	virtual void Attack() override;
+// For Hp Bar Rotate To Player Camera
+private:
+	void LoadPlayer();
+	TObjectPtr<APlayerController> PlayerController;
 public:
 	FORCEINLINE float GetAttackRange() const {return AttackRange;}
 	FORCEINLINE float GetAttackRadius() const {return AttackRadius;}
