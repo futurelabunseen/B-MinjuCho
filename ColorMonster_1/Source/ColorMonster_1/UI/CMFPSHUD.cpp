@@ -90,6 +90,7 @@ void ACMFPSHUD::BindPlayerDelagate()
 		{
 			Player->GetRightGun()->OnBulletChanged.AddDynamic(CMWidget, &UCMUserWidget::ChangeRightNum);
 		}
-
+		
+		Player->OnConvertedGun.AddDynamic(CMWidget, &UCMUserWidget::ConvertGunUI);
 	}
 }

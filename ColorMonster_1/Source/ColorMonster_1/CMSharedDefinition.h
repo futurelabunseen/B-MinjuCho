@@ -140,7 +140,7 @@ public:
 		{
 			return FText::FromString("BLACK");
 		}
-		return FText::FromString("WHITE");
+		return FText::FromString("NONE");
 	}
 
 	static const FText MonsterTagToText(const FGameplayTag& ColorTag)

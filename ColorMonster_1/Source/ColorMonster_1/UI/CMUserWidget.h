@@ -86,9 +86,12 @@ private:
 	TObjectPtr<class UCanvasPanel> StageWindow;
 
 	// TITLE Window
-public:
+public:	
 	UFUNCTION(BlueprintCallable)
 	void ClickedStartBtn();
+	
+	UFUNCTION(BlueprintCallable)
+	void ClickedPlayBtn();
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -96,9 +99,18 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UVerticalBox> InGameUI;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> InGameWindow;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> StartButton;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> IntroduceImg;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> PlayButton;
 
 	// Gun UI
 	UPROPERTY(meta = (BindWidget))
@@ -122,6 +134,12 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> RightTotalNumTxt;
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> LeftGunWindow;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> RightGunWindow;
+	
 public:
 	UFUNCTION()
 	void ChangeColorUI(const FGameplayTag& InColor);
@@ -131,4 +149,7 @@ public:
 	
 	UFUNCTION()
 	void ChangeRightNum(int32 CurrentNum, int32 MaxNum);
+
+	UFUNCTION()
+	void ConvertGunUI(uint8 InIsLeft);
 };

@@ -188,6 +188,7 @@ void ACMPlayer::BeginPlay()
 		// Update Bullet UI
 		LeftGun->OnBulletChanged.Broadcast(LeftGun->GetCurrentBullet(), LeftGun->GetMaxBullet());
 		RightGun->OnBulletChanged.Broadcast(RightGun->GetCurrentBullet(), RightGun->GetMaxBullet());
+		OnConvertedGun.Broadcast((uint8)isLeft);
 	}
 
 	// 총 교체를 위한 총 배열 관리
@@ -285,6 +286,7 @@ void ACMPlayer::ConvertingGun()
 			break;
 		}
 		Gun = ArrayGun[(uint8)isLeft];
+		OnConvertedGun.Broadcast((uint8)isLeft);
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Converting Gun!: %d"), isLeft);
 }

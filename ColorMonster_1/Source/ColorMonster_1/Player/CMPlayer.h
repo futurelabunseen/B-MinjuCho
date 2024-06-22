@@ -22,6 +22,7 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSetGun);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConvertedGun, uint8, IsLeft);
 
 UCLASS()
 class COLORMONSTER_1_API ACMPlayer : public ACMCharacter
@@ -96,6 +97,8 @@ public:
 
 	void Fire();
 
+	// Delegate for Converting UI
+	FOnConvertedGun OnConvertedGun;
 	void ConvertingGun();
 
 	void Reload();

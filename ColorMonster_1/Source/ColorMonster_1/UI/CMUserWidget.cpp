@@ -86,6 +86,7 @@ void UCMUserWidget::BindButtonClicked()
 	RetryButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
 	StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
 	StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
+	PlayButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedPlayBtn);
 	StartButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStartBtn);
 }
 
@@ -174,6 +175,15 @@ void UCMUserWidget::ClickedStageBtn()
 
 void UCMUserWidget::ClickedStartBtn()
 {
+	IntroduceImg->SetVisibility(ESlateVisibility::Visible);
+	PlayButton->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UCMUserWidget::ClickedPlayBtn()
+{
+	IntroduceImg->SetVisibility(ESlateVisibility::Hidden);
+	PlayButton->SetVisibility(ESlateVisibility::Hidden);
+	
 	// 마우스 위치 해제 필요
 	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if(PlayerController)
@@ -181,7 +191,7 @@ void UCMUserWidget::ClickedStartBtn()
 		PlayerController->SetPlayerInputMode(true);
 	}
 	TitlePanel->SetVisibility(ESlateVisibility::Hidden);
-	InGameUI->SetVisibility(ESlateVisibility::Visible);
+	InGameWindow->SetVisibility(ESlateVisibility::Visible);
 	// Game START
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
@@ -212,5 +222,13 @@ void UCMUserWidget::ChangeRightNum(int32 CurrentNum, int32 MaxNum)
 {
 	RightCurrentNumTxt->SetText(FText::AsNumber(CurrentNum));
 	RightTotalNumTxt->SetText(FText::AsNumber(MaxNum));
+}
+
+void UCMUserWidget::ConvertGunUI(uint8 InIsLeft)
+{
+	ESlateVisibility visibleLeft = (InIsLeft == 1) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	ESlateVisibility visibleRight = (InIsLeft == 0) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	LeftGunWindow->SetVisibility(visibleLeft);
+	RightGunWindow->SetVisibility(visibleRight);
 }
 
