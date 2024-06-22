@@ -27,4 +27,22 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag CurrentColor;
+
+// Timer
+public:
+	void SetTimerOn();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
+	int32 DestroyTime;
+	
+protected:
+	UFUNCTION()
+	void CalcMinute();
+private:
+	UPROPERTY()
+	FTimerHandle DecalTimerHandle;
+	
+	int32 BeforeDestroyTime = 0;
+
+	void StopTimer();
 };

@@ -13,7 +13,7 @@ ACMColorDecalEffect::ACMColorDecalEffect()
 	{
 		SetDecalMaterial(DecalMaterialRef.Object);
 	}
-	
+	DestroyTime = 3;
 }
 
 void ACMColorDecalEffect::BeginPlay()
@@ -25,6 +25,8 @@ void ACMColorDecalEffect::BeginPlay()
 	UDecalComponent* DecalComp = this->FindComponentByClass<UDecalComponent>();
 	if (DecalComp)
 	{
+		DecalComp->DecalSize = DecalComp->DecalSize / 2;
+		
 		// 동적 머티리얼 인스턴스 생성
 		UMaterialInstanceDynamic* DynamicMaterialInstance = DecalComp->CreateDynamicMaterialInstance();
 	}
@@ -64,5 +66,26 @@ void ACMColorDecalEffect::ChangeColor(const FGameplayTag& InColor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ACMColorDecalEffect::Failed to Load DynmaicMaterial"));
 	}
+}
+
+void ACMColorDecalEffect::SetTimerOn()
+{
+	// Timer Handler for Update Minute
+	GetWorld()->GetTimerManager().SetTimer(DecalTimerHandle, this, &ACMColorDecalEffect::CalcMinute, 1.0f, true);
+}
+
+void ACMColorDecalEffect::CalcMinute()
+{
+	BeforeDestroyTime += 1;
+	if(BeforeDestroyTime >= DestroyTime)
+	{
+		StopTimer();
+	}
+}
+
+void ACMColorDecalEffect::StopTimer()
+{
+	GetWorldTimerManager().ClearTimer(DecalTimerHandle);
+	Destroy();
 }
 

@@ -36,6 +36,28 @@ private:
 	float AttackRange = 100.0f;
 	float AttackRadius = 100.0f;
 	float AttackDamage = 10.0f;
+
+// Decal
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect)
+	TObjectPtr<class UDecalComponent> DecalComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
+	FVector DecalSize;
+
+	void InitializeDecalComponent() const;
+	void TurnReceiveDecal(bool IsTurnOn) const;
+	void UpdateDecal(const FLinearColor& InDecalColor) const;
+	void UpdateDecal(const FLinearColor& InDecalColor, const FVector& InDecalSize) const;
+
+private:
+	// Decal Material For Component
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UMaterialInstance> DecalMaterial;
+
+	// Monster - Monster Collision
+	UPROPERTY(VisibleDefaultsOnly, Category = "Collision")
+	TObjectPtr<class USphereComponent> MonsterCollisionComponent;
 	
 // Color Data -> Tag
 public:
@@ -49,7 +71,7 @@ private:
 	UPROPERTY();
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> MaterialArray;
 
-	// AnimInstance
+// AnimInstance
 	UPROPERTY()
 	TObjectPtr<class UCMMonsterAnimInstance> AnimInstance;
 	

@@ -8,6 +8,8 @@
 #include "CMSharedDefinition.h"
 #include "Components/CapsuleComponent.h"
 #include "Character/CMMonsterAnimInstance.h"
+#include "Components/DecalComponent.h"
+#include "Components/SphereComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Game/CMGameState.h"
 #include "Player/CMPlayer.h"
@@ -44,6 +46,27 @@ ACMMonster::ACMMonster()
 	AIControllerClass = ACMAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	// Load Decal Material
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> DecalMaterialRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Vefects/Blood_VFX/VFX/Decals/MI_VFX_Blood_Decal_WallSplatter01_Censor.MI_VFX_Blood_Decal_WallSplatter01_Censor'"));
+	if (DecalMaterialRef.Object)
+	{
+		DecalMaterial = DecalMaterialRef.Object;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to call DecalMetrial Object"));
+	}
+	DecalSize = FVector(32.0f, 48.0f, 80.0f);
+
+	DecalComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
+	ensure(DecalComponent);
+	DecalComponent->SetupAttachment(RootComponent);
+	InitializeDecalComponent();
+
+	// Big Size of Monster Collision against Monster
+	MonsterCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("MonsterCollisionComponent"));
+	MonsterCollisionComponent->SetCollisionProfileName(TEXT("ConfrontMonster"));
+	MonsterCollisionComponent->SetWorldScale3D(FVector(3.0f, 3.0f, 3.0f));
 }
 
 void ACMMonster::BeginPlay()
@@ -98,6 +121,51 @@ void ACMMonster::Attack()
 	}
 }
 
+void ACMMonster::InitializeDecalComponent() const
+{
+	// Initialize Shape
+	DecalComponent->SetDecalMaterial(DecalMaterial);
+	DecalComponent->DecalSize = DecalSize;
+
+	// Initialize Visibility & Receive State
+	DecalComponent->SetVisibility(false);
+	TurnReceiveDecal(false);
+
+	// Position
+	// DecalComponent->SetWorldLocation(HitMonster->GetActorLocation());
+	// DecalComponent->SetWorldRotation(HitMonster->GetActorRotation());
+}
+
+void ACMMonster::TurnReceiveDecal(bool IsTurnOn) const
+{
+	GetMesh()->SetReceivesDecals(IsTurnOn);
+}
+
+void ACMMonster::UpdateDecal(const FLinearColor& InDecalColor) const
+{
+	if(DecalComponent)
+	{
+		DecalComponent->SetVisibility(true);
+		TurnReceiveDecal(true);
+		
+		// Set the color of the Decal Material
+		UMaterialInstanceDynamic* DecalDynamicMaterial = DecalComponent->CreateDynamicMaterialInstance();
+		if (DecalDynamicMaterial)
+		{
+			DecalDynamicMaterial->SetVectorParameterValue(FName("Tint"), InDecalColor);
+		}
+	}
+}
+
+void ACMMonster::UpdateDecal(const FLinearColor& InDecalColor, const FVector& InDecalSize) const
+{
+	if(DecalComponent)
+	{
+		UpdateDecal(InDecalColor);
+		DecalComponent->DecalSize = InDecalSize;
+	}
+}
+
 void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 {
 	CurrentColor = InColor;
@@ -119,7 +187,7 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 			// 	Dynamic->SetVectorParameterValueByInfo(MaterialParam, RealColor);
 			// }
 			// 현재 컬러로 곱하기
-			DynamicMaterial->SetVectorParameterValue(FName("TimesColor"), RealColor);
+			DynamicMaterial->SetVectorParameterValue(FName("Tint"), RealColor);
 		}
 		else
 		{

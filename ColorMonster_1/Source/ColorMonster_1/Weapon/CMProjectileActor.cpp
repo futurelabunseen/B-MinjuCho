@@ -38,16 +38,8 @@ ACMProjectileActor::ACMProjectileActor()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CMPROJECTILEACTOR: Failed to Load Static Mesh"));
 	}
-	// static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT(""));
-	// if (MaterialRef.Object)
-	// {
-	// 	StaticMesh->SetMaterial(0, MaterialRef.Object);
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("CMPROJECTILEACTOR: Failed to Load Material"));
-	// }
-
+	
+	// Movement
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 3000.0f;
@@ -63,7 +55,7 @@ ACMProjectileActor::ACMProjectileActor()
 
 	// 1. For Decal Actor
 	// Load Effect
-	/*static ConstructorHelpers::FClassFinder<ADecalActor> EffectClassRef(TEXT("/Game/Blueprint/BP_CMDecalEffect.BP_CMDecalEffect_C"));
+	static ConstructorHelpers::FClassFinder<ADecalActor> EffectClassRef(TEXT("/Game/Blueprint/BP_CMDecalEffect.BP_CMDecalEffect_C"));
 	if (EffectClassRef.Class)
 	{
 		EffectClass = EffectClassRef.Class;
@@ -75,19 +67,8 @@ ACMProjectileActor::ACMProjectileActor()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call Effect class"));
-	}*/
+	}
 
-	// 2. For Decal Component
-	static ConstructorHelpers::FObjectFinder<UMaterialInstance> DecalMaterialRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Vefects/Blood_VFX/VFX/Decals/MI_VFX_Blood_Decal_WallSplatter01_Censor.MI_VFX_Blood_Decal_WallSplatter01_Censor'"));
-	if (DecalMaterialRef.Object)
-	{
-		DecalMaterial = DecalMaterialRef.Object;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to call DecalMetrial Object"));
-	}
-	DecalSize = FVector(32.0f, 64.0f, 64.0f);
 }
 
 // Called when the game starts or when spawned
@@ -109,43 +90,6 @@ void ACMProjectileActor::Tick(float DeltaTime)
 void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
-	//CurrentColor = InColor;
-}
-
-void ACMProjectileActor::AttachDecalToMonster(AActor* HitMonster, const FLinearColor& InColor)
-{
-	//UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAttached(DecalMaterial, DecalSize,
-	//	HitMonster->GetRootComponent(), // Attach Component
-	//	NAME_None,						// Socket Name
-	//	HitMonster->GetActorLocation(), HitMonster->GetActorRotation(), // Relative Pos, Rot 
-	//	EAttachLocation::KeepRelativeOffset, // Attach Type
-	//	10.0f);							// Decal LifeTime (sec) [0: Permanent]
-	UDecalComponent* DecalComponent = NewObject<UDecalComponent>(HitMonster);
-	if (DecalComponent)
-	{
-		// Initialize
-		DecalComponent->SetDecalMaterial(DecalMaterial);
-		DecalComponent->DecalSize = DecalSize;
-
-		// Change Color
-		UMaterialInstanceDynamic* DynamicMaterial =
-			DecalComponent->CreateDynamicMaterialInstance();
-		if (DynamicMaterial)
-		{
-			// Multiply by CurrentColor
-			DynamicMaterial->SetVectorParameterValue(FName("Tint"), InColor);
-		}
-
-		// Pin Position to Monster
-		DecalComponent->SetupAttachment(HitMonster->GetRootComponent());
-		DecalComponent->RegisterComponent();
-
-		// Position
-		DecalComponent->SetWorldLocation(HitMonster->GetActorLocation());
-		DecalComponent->SetWorldRotation(HitMonster->GetActorRotation());
-
-	}
-
 }
 
 void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
@@ -160,19 +104,19 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		if (HitMonster != nullptr)
 		{
 			HitMonster->ChangeColor(CurrentColor);
-			// refer interface from ideugu class
 
 			// 1. Decal Actor
-			/*ACMColorDecalEffect* DecalEffect = GetWorld()->SpawnActor<ACMColorDecalEffect>(EffectClass);
+			ACMColorDecalEffect* DecalEffect = GetWorld()->SpawnActor<ACMColorDecalEffect>(EffectClass);
 			if (DecalEffect)
 			{
 				DecalEffect->ChangeColor(CurrentColor);
-				DecalEffect->SetActorLocation(HitMonster->GetActorLocation());
-
-			}*/
+				DecalEffect->SetActorLocation(HitMonster->GetActorLocation() + FVector(0.0f, 0.0f, -142.792745));
+				DecalEffect->SetTimerOn();
+			
+			}
 
 			// 2. Decal Component
-			AttachDecalToMonster(HitMonster, CMSharedDefinition::TranslateColor(CurrentColor));
+			HitMonster->UpdateDecal(CMSharedDefinition::TranslateColor(CurrentColor));
 
 		}
 
