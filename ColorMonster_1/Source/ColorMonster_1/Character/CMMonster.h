@@ -29,6 +29,7 @@ protected:
 	void RotateHPBarToCamera();
 	virtual void Dead() override;
 	virtual void Attack() override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 // For Hp Bar Rotate To Player Camera
 private:
 	void LoadPlayer();

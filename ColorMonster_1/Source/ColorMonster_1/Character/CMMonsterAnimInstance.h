@@ -54,6 +54,9 @@ public:
 	void PlayAttackMontage();
 
 	UFUNCTION()
+	void PlayDamageMontage();
+
+	UFUNCTION()
 	void PlayDeadMontage();
 
 	UFUNCTION()
@@ -71,5 +74,8 @@ private:
 	// Death Montage
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Death, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UAnimMontage> DeathMontage;
+	// Damage Montage
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Death, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UAnimMontage> DamageMontage;
 	
 };

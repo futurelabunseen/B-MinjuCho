@@ -152,6 +152,22 @@ void ACMMonster::Attack()
 	}
 }
 
+float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	float InDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if(!AnimInstance)
+	{
+		AnimInstance = Cast<UCMMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	}
+	ensure(AnimInstance);
+	if(AnimInstance)
+	{
+		AnimInstance->PlayDamageMontage();
+	}
+	return InDamage;
+}
+
 void ACMMonster::LoadPlayer()
 {
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
