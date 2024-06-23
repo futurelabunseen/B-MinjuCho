@@ -22,7 +22,7 @@ UCMMonsterAnimInstance::UCMMonsterAnimInstance()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to call AttackMontage From MonsterAnimInstance"));
 	}
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT("/Game/Animation/MonsterDeadMontage.MonsterDeadMontage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT("/Game/Animation/MonsterDeathMontage.MonsterDeathMontage"));
 	if(DeadMontageRef.Object)
 	{
 		DeathMontage = DeadMontageRef.Object;
@@ -85,32 +85,38 @@ void UCMMonsterAnimInstance::PlayAttackMontage()
 
 void UCMMonsterAnimInstance::PlayDamageMontage()
 {
-	ensure(DamageMontage);
-	if(DamageMontage)
-	{
-		// Montage_Stop(0.1, AttackMontage);
-		// if(!Montage_IsPlaying(DamageMontage))
-		// {
-		// 	UE_LOG(LogTemp, Warning, TEXT("UCMMonsterAnimInstance::PlayDamageMontage"));
-		// 	Montage_Play(DamageMontage);
-		// }
-		Montage_Play(DamageMontage);
-	}
+	Montage_Play(DamageMontage);
+
+	//ensure(DamageMontage);
+	//if(DamageMontage)
+	//{
+	//	// Montage_Stop(0.1, AttackMontage);
+	//	// if(!Montage_IsPlaying(DamageMontage))
+	//	// {
+	//	// 	UE_LOG(LogTemp, Warning, TEXT("UCMMonsterAnimInstance::PlayDamageMontage"));
+	//	// 	Montage_Play(DamageMontage);
+	//	// }
+	//}
 }
 
 void UCMMonsterAnimInstance::PlayDeadMontage()
 {
-	ensure(DeathMontage);
+	StopAllMontages(0.0f);
+	UE_LOG(LogTemp, Warning, TEXT("UCMMonsterAnimInstance::PlayDeadMontage"));
+	Montage_Play(DeathMontage);
+	//Monster->AIControll
+	/*ensure(DeathMontage);
 	if(DeathMontage)
 	{
+
 		UE_LOG(LogTemp, Warning, TEXT("UCMMonsterAnimInstance::PlayDeadMontage"));
 		Montage_Stop(0.1, AttackMontage);
 		Montage_Stop(0.1, DamageMontage);
 		if(!Montage_IsPlaying(DeathMontage))
 		{
-			Montage_Play(DeathMontage);
+			
 		}
-	}
+	}*/
 }
 
 void UCMMonsterAnimInstance::AnimNotify_EndedAttack()

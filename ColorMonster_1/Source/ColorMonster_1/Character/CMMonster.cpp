@@ -129,6 +129,7 @@ void ACMMonster::Dead()
 	if(AnimInstance)
 	{
 		AnimInstance->PlayDeadMontage();
+		HpBar->SetActive(false);
 		ACMGameState* GameState = GetWorld()->GetGameState<ACMGameState>();
 		if(GameState)
 		{
@@ -163,7 +164,17 @@ float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	ensure(AnimInstance);
 	if(AnimInstance)
 	{
-		AnimInstance->PlayDamageMontage();
+
+		if (CurrentHP <= 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Actor: %s is DEAD"), *GetName());
+			Dead();
+			SetActorEnableCollision(false);
+		}
+		else
+		{
+			AnimInstance->PlayDamageMontage();
+		}
 	}
 	return InDamage;
 }
