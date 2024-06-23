@@ -129,12 +129,21 @@ void ACMMonster::Dead()
 	if(AnimInstance)
 	{
 		AnimInstance->PlayDeadMontage();
-		HpBar->SetActive(false);
+		ACMAIController* AIController = Cast<ACMAIController>(GetController());
+		ensure(AIController);
+		AIController->StopAI();
+		HpBar->SetVisibility(false);
 		ACMGameState* GameState = GetWorld()->GetGameState<ACMGameState>();
 		if(GameState)
 		{
 			GameState->UpdateFromDead(CurrentCategory, CurrentColor);
 		}
+
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			Destroy();
+		}), 2.0f, false);
 	}
 }
 
