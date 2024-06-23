@@ -113,18 +113,23 @@ void ACMGameState::CalcMinute()
 
 void ACMGameState::GameOver()
 {
+	if(GetIsCleared() == true)
+	{
+		return;
+	}
+	SetIsCleared(true);
 	// Stop Timer
 	GetWorldTimerManager().ClearTimer(TimeUpdateHandle);
 	if(CalculateWin() == true)
 	{
 		// Win UI
 		OnWinWindowChanged.Broadcast(true);
-		OnLooseWindowChanged.Broadcast(false);
+		//OnLooseWindowChanged.Broadcast(false);
 	}
 	else
 	{
 		// Loose UI
-		OnWinWindowChanged.Broadcast(false);
+		//OnWinWindowChanged.Broadcast(false);
 		OnLooseWindowChanged.Broadcast(true);
 	}
 }

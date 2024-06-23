@@ -79,6 +79,13 @@ private:
 // Win
 	UFUNCTION()
 	bool CalculateWin() const;
+
+public:
+	bool GetIsCleared() const {return IsCleared;}
+	void SetIsCleared(bool InIsCleared) {IsCleared = InIsCleared;}
+private:
+	UPROPERTY()
+	bool IsCleared = false;
 	
 
 public:
