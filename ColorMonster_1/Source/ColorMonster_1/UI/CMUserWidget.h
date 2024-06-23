@@ -94,8 +94,33 @@ public:
 	void ClickedPlayBtn();
 
 private:
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class USizeBox> Black_Size_Box;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Black_Image;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> TitleBackGroundImg;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> IntroduceImg;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> WinImg;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> LooseImg;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> StageImg;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> TitlePanel;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> TitleImg;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UVerticalBox> InGameUI;
@@ -105,9 +130,6 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> StartButton;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> IntroduceImg;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> PlayButton;
