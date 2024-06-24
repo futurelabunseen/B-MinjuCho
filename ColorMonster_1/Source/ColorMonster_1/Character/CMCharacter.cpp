@@ -93,15 +93,16 @@ float ACMCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
                                AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	CurrentHP -= FinalDamage;
+	OnHpChanged.Broadcast(CurrentHP);
 	UE_LOG(LogTemp, Warning, TEXT("Actor: %s took Damage : %f"), *GetName(), FinalDamage);
-	UpdateHPFromDamage(FinalDamage);
+	//UpdateHPFromDamage(FinalDamage);
 	return FinalDamage;
 }
 
 void ACMCharacter::UpdateHPFromDamage(float Damage)
 {
-	CurrentHP -= Damage;
-	OnHpChanged.Broadcast(CurrentHP);
+	
 	if(CurrentHP <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Actor: %s is DEAD"), *GetName());

@@ -176,9 +176,9 @@ float ACMMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 		if (CurrentHP <= 0)
 		{
+			SetActorEnableCollision(false);
 			UE_LOG(LogTemp, Warning, TEXT("Actor: %s is DEAD"), *GetName());
 			Dead();
-			SetActorEnableCollision(false);
 		}
 		else
 		{
@@ -244,6 +244,7 @@ void ACMMonster::UpdateDecal(const FLinearColor& InDecalColor, const FVector& In
 
 void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACMMonster::ChangeColor : RealColor"));
 	CurrentColor = InColor;
 	const FLinearColor RealColor = CMSharedDefinition::TranslateColor(CurrentColor);
 	for(int i=0; i<GetMesh()->GetNumMaterials(); ++i)
@@ -262,6 +263,7 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 			// {
 			// 	Dynamic->SetVectorParameterValueByInfo(MaterialParam, RealColor);
 			// }
+			UE_LOG(LogTemp, Warning, TEXT("ACMMonster::ChangeColor : RealColor %s"), *RealColor.ToString());
 			// 현재 컬러로 곱하기
 			DynamicMaterial->SetVectorParameterValue(FName("Tint"), RealColor);
 		}
