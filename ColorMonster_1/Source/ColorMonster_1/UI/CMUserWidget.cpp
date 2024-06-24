@@ -26,8 +26,8 @@ void UCMUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ScoreBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ScoreBox")));
-	ensure(ScoreBox);
+	//ScoreBox = Cast<UOverlay>(GetWidgetFromName(TEXT("ScoreBox")));
+	//ensure(ScoreBox);
 
 	BindToGameState();
 	BindButtonClicked();
@@ -95,14 +95,14 @@ void UCMUserWidget::AddTextBoxAtContainer(const FText& InText, const FString& Gr
 {
 	if(ScoreBox)
 	{
-		UTextBlock* NewTextBox = NewObject<UTextBlock>(ScoreBox);
-		if(NewTextBox)
-		{
-			NewTextBox->SetText(InText);
-			NewTextBox->SynchronizeProperties();
-			ScoreBox->AddChild(NewTextBox);
-			NewTextBox->SetCategoryName(GroupName);
-		}
+		// UOverlay* NewTextBox = NewObject<UOverlay>(ScoreBox);
+		// // if(NewTextBox)
+		// // {
+		// // 	NewTextBox->SetText(InText);
+		// // 	NewTextBox->SynchronizeProperties();
+		// // 	ScoreBox->AddChild(NewTextBox);
+		// // 	NewTextBox->SetCategoryName(GroupName);
+		// // }
 	}
 }
 
@@ -118,7 +118,6 @@ void UCMUserWidget::UpdateTextBoxAtContainer(const FString& InString, const FTex
 void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 {
 	
-	UE_LOG(LogTemp, Warning, TEXT("UCMUserWidget::TurnWinWindow"));
 	// 마우스 위치 해제 필요
 	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if(PlayerController)
@@ -128,8 +127,6 @@ void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 	if(IsTurnOn == true)
 	{
 		Black_Image->SetVisibility(ESlateVisibility::Visible);
-		int8 IsVisible = Black_Image->GetVisibility() == ESlateVisibility::Visible ? 1 : 0;
-		UE_LOG(LogTemp, Warning, TEXT("Black_Image: %d"), IsVisible);
 		WinWindow->SetVisibility(ESlateVisibility::Visible);
 		WinImg->SetVisibility(ESlateVisibility::Visible);
 		InGameWindow->SetVisibility(ESlateVisibility::Hidden);
@@ -144,7 +141,6 @@ void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 
 void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UCMUserWidget::TurnWinWindow"));
 	// 마우스 위치 해제 필요
 	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if(PlayerController)
@@ -196,6 +192,7 @@ void UCMUserWidget::ClickedStartBtn()
 	TitleBackGroundImg->SetVisibility(ESlateVisibility::Hidden);
 	TitleImg->SetVisibility(ESlateVisibility::Hidden);
 	StartButton->SetVisibility(ESlateVisibility::Hidden);
+	QuitButton->SetVisibility(ESlateVisibility::Hidden);
 	IntroduceImg->SetVisibility(ESlateVisibility::Visible);
 	PlayButton->SetVisibility(ESlateVisibility::Visible);
 }
@@ -218,7 +215,7 @@ void UCMUserWidget::ClickedPlayBtn()
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
 	{
-		GameMode->SetLevelAndLoad(GameMode->GetGameLevel() + 1);
+		GameMode->SetLevelAndLoad(GameMode->GetGameLevel());
 	}
 }
 
