@@ -28,19 +28,16 @@ void ACMGameState::InitializeScoreData(int32 Level)
 	auto CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if(CMGameInstance)
 	{
-		if(CMGameInstance->GetObjectiveData(Level))
+		if(Level > 0 && Level <= CMGameInstance->GetDataNum())
 		{
 			GameObjective.Reset();
-			if(CMGameInstance->GetObjectiveData(Level)->Base_Color != CM_COLOR_NONE)
+
+			// 각 몬스터 별로 저장.
+			FCMLevelObjectiveData ObjectiveData = CMGameInstance->GetObjectiveData(Level);
+			for(const TPair<FGameplayTag, FMonsterData>& Monster : ObjectiveData.Monsters)
 			{
-				FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Base_Color, CMGameInstance->GetObjectiveData(Level)->Base_Number);
-				GameObjective.Emplace(CM_MONSTER_BASE, BaseInfo);
-			}
-			
-			if(CMGameInstance->GetObjectiveData(Level)->Cardboard_Color != CM_COLOR_NONE)
-			{
-				FInfoPerColor BaseInfo(CMGameInstance->GetObjectiveData(Level)->Cardboard_Color, CMGameInstance->GetObjectiveData(Level)->Cardboard_Number);
-				GameObjective.Emplace(CM_MONSTER_CARDBOARD, BaseInfo);
+				FInfoPerColor BaseInfo(Monster.Value.ColorTag, Monster.Value.MonsterNum);
+				GameObjective.Emplace(Monster.Key, BaseInfo);
 			}
 			
 			UpdateAllScoreUI();
@@ -54,6 +51,8 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 	if(GameObjective.Contains(Category) && Color == GameObjective[Category].Color)
 	{
 		UpdateScoreData(Category, Color, GameObjective[Category].LeftOver - 1);
+		
+		UE_LOG(LogTemp, Warning, TEXT("ACMGameState::UpdateFromDead"));
 	}
 }
 

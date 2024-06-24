@@ -157,22 +157,71 @@ public:
 		return FText::FromString("NONE");
 	}
 
-	static const TArray<FGameplayTag>& GetCategoriesPerLevel(int32 InCode)
+	static const FGameplayTag& StringToColorTag(const FString& InString)
 	{
-		// 이게 아니라 그냥 static const TArray<FGameplayTag> 하나 만들어놓고, 비트에 따라 해당 인덱스 검색하게끔 해야함
-		static const TArray<FGameplayTag> BaseOnly = {CM_MONSTER_BASE};
-		static const TArray<FGameplayTag> CardboardOnly = {CM_MONSTER_CARDBOARD};
-		static const TArray<FGameplayTag> BaseCardboard = {CM_MONSTER_BASE, CM_MONSTER_CARDBOARD};
-		switch (InCode)
+		static const FGameplayTag Red = CM_COLOR_RED;
+		static const FGameplayTag Blue = CM_COLOR_BLUE;
+		static const FGameplayTag Green = CM_COLOR_GREEN;
+		static const FGameplayTag Purple = CM_COLOR_PURPLE;
+		static const FGameplayTag Pink = CM_COLOR_PINK;
+		static const FGameplayTag Yellow = CM_COLOR_YELLOW;
+		static const FGameplayTag Gray = CM_COLOR_GRAY;
+		static const FGameplayTag Orange = CM_COLOR_ORANGE;
+		static const FGameplayTag Black = CM_COLOR_BLACK;
+		static const FGameplayTag None = CM_COLOR_NONE;
+		// FString => Tag Value
+		if(InString == TEXT("Color.Red"))
 		{
-		case 1:
-			return BaseOnly;
-		case 2:
-			return CardboardOnly;
-		case 4:
-			return BaseCardboard;
-		default:
-			return BaseOnly;
+			return Red;
 		}
+		if(InString == TEXT("Color.Blue"))
+		{
+			return Blue;
+		}
+		if(InString == TEXT("Color.Green"))
+		{
+			return Green;
+		}
+		if(InString == TEXT("Color.Purple"))
+		{
+			return Purple;
+		}
+		if(InString == TEXT("Color.Pink"))
+		{
+			return Pink;
+		}
+		if(InString == TEXT("Color.Yellow"))
+		{
+			return Yellow;
+		}
+		if(InString == TEXT("Color.Gray") || InString == TEXT("Color.Grey"))
+		{
+			return Gray;
+		}
+		if(InString == TEXT("Color.Orange"))
+		{
+			return Orange;
+		}
+		if(InString == TEXT("Color.Black"))
+		{
+			return Black;
+		}
+		return None;
+	}
+	static const FGameplayTag& StringToMonsterTag(const FString& InString)
+	{
+		static const FGameplayTag Base = CM_MONSTER_BASE;
+		static const FGameplayTag Cardboard = CM_MONSTER_CARDBOARD;
+		// FString => Tag Value
+		if(InString == TEXT("Monster.Base"))
+		{
+			return Base;
+		}
+		if(InString == TEXT("Monster.Cardboard"))
+		{
+			return Cardboard;
+		}
+		
+		return Base;
 	}
 };

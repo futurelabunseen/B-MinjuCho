@@ -1,0 +1,84 @@
+{
+  "levels": [
+    {
+      "level": 1,
+      "limitTime": 180.0,
+      "monsters": [
+        {
+          "monsterTag": "Monster.Base",
+          "colorTag": "Color.Red",
+          "monsterNum": 3
+        },
+        {
+          "monsterTag": "Monster.Cardboard",
+          "colorTag": "Color.Purple",
+          "monsterNum": 2
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "limitTime": 170.0,
+      "monsters": [
+        {
+          "monsterTag": "Monster.Base",
+          "colorTag": "Color.Blue",
+          "monsterNum": 3
+        },
+        {
+          "monsterTag": "Monster.Cardboard",
+          "colorTag": "Color.None",
+          "monsterNum": 2
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "limitTime": 160.0,
+      "monsters": [
+        {
+          "monsterTag": "Monster.Base",
+          "colorTag": "Color.Orange",
+          "monsterNum": 4
+        },
+        {
+          "monsterTag": "Monster.Cardboard",
+          "colorTag": "Color.Yellow",
+          "monsterNum": 2
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "limitTime": 150.0,
+      "monsters": [
+        {
+          "monsterTag": "Monster.Base",
+          "colorTag": "Color.Red",
+          "monsterNum": 5
+        },
+        {
+          "monsterTag": "Monster.Cardboard",
+          "colorTag": "Color.Black",
+          "monsterNum": 2
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "limitTime": 140.0,
+      "monsters": [
+        {
+          "monsterTag": "Monster.Base",
+          "colorTag": "Color.Blue",
+          "monsterNum": 5
+        },
+        {
+          "monsterTag": "Monster.Cardboard",
+          "colorTag": "Color.Pink",
+          "monsterNum": 3
+        }
+      ]
+    }
+  ]
+}

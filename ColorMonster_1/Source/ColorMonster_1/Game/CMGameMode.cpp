@@ -3,7 +3,7 @@
 
 #include "Game/CMGameMode.h"
 
-#include "CMGameInstance.h"
+#include "Game/CMGameInstance.h"
 #include "CMGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/CMFPSHUD.h"
@@ -43,30 +43,24 @@ ACMGameMode::ACMGameMode()
 	CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	GameStateClass = ACMGameState::StaticClass();
 	
-	SetGameLevel(0);
 
 	// Wait for Title
 	IsSetTimerOn = true;
+	// First
+	GameLevel = -1;
 }
 
 void ACMGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// GameMode -> HUD로 옮김
-	// if(WidgetClass)
-	// {
-	// 	UCMUserWidget* CMUserWidget = CreateWidget<UCMUserWidget>(GetWorld(), WidgetClass);
-	// 	if(CMUserWidget)
-	// 	{
-	// 		CMUserWidget->AddToViewport();
-	// 	}
-	// }
+	ensure(CMGameInstance);
+	//GameLevel = CMGameInstance->GetGameLevel();
 
 	// Set GameState
 	CMGameState = GetWorld()->GetGameState<ACMGameState>();
 	ensure(CMGameState);
-	CMGameState->InitializeScoreData(GetGameLevel());
+	CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
 }
 
 void ACMGameMode::Tick(float DeltaSeconds)
@@ -107,38 +101,21 @@ void ACMGameMode::InitializeTime()
 	CurrentLeftTime = LimitTimePerThisLevel;
 }
 
-int32 ACMGameMode::GetGameLevel() const
-{ 
-	return GameLevel;
-}
-
-void ACMGameMode::SetGameLevel(int32 InLevel)
-{
-	GameLevel = InLevel;
-}
-
 // Get Data From GameInstance
 float ACMGameMode::GetLimitTime() const
 {
-	return CMGameInstance->GetObjectiveData(GameLevel)->LimitTime;
-}
-
-FGameplayTag ACMGameMode::GetBaseColor() const
-{
-	return CMGameInstance->GetObjectiveData(GameLevel)->Base_Color;
-}
-
-int32 ACMGameMode::GetBaseNumber() const
-{
-	return CMGameInstance->GetObjectiveData(GameLevel)->Base_Number;
+	ensure(CMGameInstance);
+	return CMGameInstance->GetObjectiveData(CMGameInstance->GetGameLevel()).LimitTime;
 }
 
 void ACMGameMode::SetLevelAndLoad(int32 InLevel = -1)
 {
-	if(InLevel == GetGameLevel())
+	UE_LOG(LogTemp, Warning, TEXT("InLevel: %d, CMGameInstance->GetGameLevel() : %d"), InLevel, CMGameInstance->GetGameLevel());
+	ensure(CMGameInstance);
+	if(InLevel == CMGameInstance->GetGameLevel())
 	{
 		// Update Game Objective passing to GameState
-		CMGameState->InitializeScoreData(GetGameLevel());
+		CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
 		IsSetTimerOn = false;
 		RestartGame();
 		return;
@@ -147,14 +124,15 @@ void ACMGameMode::SetLevelAndLoad(int32 InLevel = -1)
 	// Default: Next Level
 	if(InLevel == -1)
 	{
-		SetGameLevel(GetGameLevel() + 1);
+		CMGameInstance->SetGameLevel(CMGameInstance->GetGameLevel() + 1);
 	}
 	else
 	{
-		SetGameLevel(InLevel);
+		CMGameInstance->SetGameLevel(InLevel);
 	}
+	GameLevel = CMGameInstance->GetGameLevel();
 	// Update Game Objective passing to GameState
-	CMGameState->InitializeScoreData(GetGameLevel());
+	CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
 	IsSetTimerOn = false;
 	// 멀티 환경에서 클라이언트끼리 스타트 시점 맞추기 위해서 Delay Start 사용할 때 게임모드 전환이 필요하다.
 	// 게임모드 기능 활용하면 손봐야하고, 아니면 타이머로 구현 가능

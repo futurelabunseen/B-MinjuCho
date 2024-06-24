@@ -4,17 +4,34 @@
 
 #include "CoreMinimal.h"
 #include "CMSharedDefinition.h"
+#include "SkeletalMeshAttributes.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
 #include "CMGameInstance.generated.h"
 
 USTRUCT(BlueprintType)
-struct FCMLevelObjectiveData : public FTableRowBase
+struct FMonsterData
 {
 	GENERATED_BODY()
 
 public:
-	FCMLevelObjectiveData() : Level(1), LimitTime(180.0f), Base_Color(CM_COLOR_RED), Base_Number(3) {}
+	FMonsterData() : ColorTag(CM_COLOR_RED), MonsterNum(3) {}
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Color")
+	FGameplayTag ColorTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
+	int32 MonsterNum;
+};
+
+USTRUCT(BlueprintType)
+struct FCMLevelObjectiveData
+{
+	GENERATED_BODY()
+	
+public:
+	FCMLevelObjectiveData() : Level(1), LimitTime(180.0f)
+	{Monsters.Add(CM_MONSTER_BASE, FMonsterData());}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 Level;
@@ -23,20 +40,7 @@ public:
 	float LimitTime;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 Category_Code;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	FGameplayTag Base_Color;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 Base_Number;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	FGameplayTag Cardboard_Color;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 Cardboard_Number;
-	// 몬스터 종류에 따라 확장 필요
+	TMap<FGameplayTag, FMonsterData> Monsters;
 };
 
 /**
@@ -51,9 +55,25 @@ public:
 	UCMGameInstance();
 	virtual void Init() override;
 
-	FCMLevelObjectiveData* GetObjectiveData(int32 Level) const;
+	UFUNCTION()
+	FCMLevelObjectiveData GetObjectiveData(int32 Level) const;
+
+public:
+	int32 GetGameLevel() const {return GameLevel;}
+	void SetGameLevel(int32 InLevel) {GameLevel = InLevel;}
+	
+	int32 GetDataNum() const {return DataNum;}
 
 private:
 	UPROPERTY()
-	TObjectPtr<class UDataTable> CMLevelObjectiveTable;
+	TArray<FCMLevelObjectiveData> LevelsData;
+
+	void LoadLevelDataFromJSON();
+
+// Keep Level Without Converting Map
+	UPROPERTY()
+	int32 GameLevel;
+
+	UPROPERTY()
+	int32 DataNum;
 };

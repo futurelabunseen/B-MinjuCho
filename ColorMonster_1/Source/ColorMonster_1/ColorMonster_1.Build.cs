@@ -10,7 +10,7 @@ public class ColorMonster_1 : ModuleRules
 
         PublicIncludePaths.AddRange(new string[] { "ColorMonster_1" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "Json" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags", "AIModule", "GameplayTasks", "NavigationSystem" });
 
