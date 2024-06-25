@@ -37,20 +37,19 @@ void ACMColorDecalEffect::ChangeColor(const FGameplayTag& InColor)
 {
 	CurrentColor = InColor;
 	const FLinearColor RealColor = CMSharedDefinition::TranslateColor(CurrentColor);
-
 	
 	
 	// 각 매터리얼에 설정된 Dynamic 가져오기
 	UMaterialInterface* SkeletalMeshMaterial = GetDecalMaterial();
 	UMaterialInstanceDynamic* DynamicMaterial = 
-		Cast<UMaterialInstanceDynamic>(SkeletalMeshMaterial);
+									Cast<UMaterialInstanceDynamic>(SkeletalMeshMaterial);
 	
 	if(DynamicMaterial)
 	{
 		// 현재 컬러로 곱하기
 		DynamicMaterial->SetVectorParameterValue(FName("Tint"), RealColor);
 
-		// 전체 Parameter 훑는 방법
+		// 전체 Parameter 색깔 정보 출력
 		TArray<FMaterialParameterInfo> MaterialParameters;
 		TArray<FGuid> Guid;
 		DynamicMaterial->GetAllVectorParameterInfo(MaterialParameters, Guid);
@@ -58,8 +57,7 @@ void ACMColorDecalEffect::ChangeColor(const FGameplayTag& InColor)
 		{
 			FLinearColor ColorInformation;
 			DynamicMaterial->GetVectorParameterValue(MaterialParam, ColorInformation);
-			UE_LOG(LogTemp, Warning, TEXT("ACMColorDecalEffect::Set Color as %s"), *ColorInformation.ToString());
-	
+			UE_LOG(LogTemp, Log, TEXT("ACMColorDecalEffect::Set Color as %s"), *ColorInformation.ToString());
 		}
 	}
 	else

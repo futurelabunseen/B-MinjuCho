@@ -119,7 +119,7 @@ void ACMLineGun::ShootTrace()
 		);
 		
 		UE_LOG(LogTemp, Warning, TEXT("Line Trace Shoot!"));
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f, 0,0);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f, 0,0);
 		if(bResult && FireHit.GetActor())
 		{
 			TraceHit(FireHit);

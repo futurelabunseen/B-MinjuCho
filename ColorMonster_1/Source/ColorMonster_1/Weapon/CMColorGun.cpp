@@ -174,7 +174,7 @@ void ACMColorGun::ShootTrace()
 			ECollisionChannel::ECC_Visibility
 		);
 		
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f, 0,0);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f, 0,0);
 		if(bResult && FireHit.GetActor())
 		{
 			ACMColorSponge* Sponge = Cast<ACMColorSponge>(FireHit.GetActor());
