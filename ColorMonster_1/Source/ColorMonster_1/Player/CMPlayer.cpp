@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 
 #include "Animation/CMPlayerAnimInstance.h"
+#include "Components/SphereComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "UI/CMWidgetComponent.h"
 #include "Weapon/CMWeapon.h"
@@ -112,6 +113,11 @@ ACMPlayer::ACMPlayer()
 	
 	// Custom Anim Instance
 	PlayerAnimInstance = Cast<UCMPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+
+	// Big Size of Monster Collision against Monster
+	SecondCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SecondCollisionComponent"));
+	SecondCollisionComponent->SetCollisionProfileName(TEXT("Player"));
+	SecondCollisionComponent->SetWorldScale3D(FVector(3.0f, 3.0f, 3.0f));
 }
 
 void ACMPlayer::BeginPlay()

@@ -71,6 +71,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ReloadAction;
 
+	UPROPERTY()
+	TObjectPtr<class USphereComponent> SecondCollisionComponent;
 
 
 public:
