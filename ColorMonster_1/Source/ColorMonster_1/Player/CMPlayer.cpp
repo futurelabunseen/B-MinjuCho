@@ -22,7 +22,7 @@ ACMPlayer::ACMPlayer()
 {
 	// Create a Camera
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("FX_Head"));
+	FirstPersonCameraComponent->SetupAttachment(GetMesh(), TEXT("FX_Head"));
 	//FirstPersonCameraComponent->SetupAttachment(RootComponent);
 	//FirstPersonCameraComponent->SetRelativeLocation(FVector(12.0f, -5.0f, 72.0f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;

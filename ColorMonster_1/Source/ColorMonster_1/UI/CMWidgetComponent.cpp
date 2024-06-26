@@ -11,7 +11,7 @@ void UCMWidgetComponent::InitWidget()
 	Super::InitWidget();
 
 	UCMCharacterWidget* CMCharacterWidget = Cast<UCMCharacterWidget>(GetWidget());
-	ensure(CMCharacterWidget);
+	
 	if(CMCharacterWidget)
 	{
 		CMCharacterWidget->SetOwiningActor(GetOwner());

@@ -67,7 +67,12 @@ ACMCharacter::ACMCharacter()
 void ACMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if(HpBar)
+	{
+		HpBar->InitWidget();
+		
+	}
 }
 
 
