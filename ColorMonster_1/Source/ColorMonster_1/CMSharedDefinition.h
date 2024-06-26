@@ -22,19 +22,19 @@
 #define CM_MONSTER_CARDBOARD FGameplayTag::RequestGameplayTag(FName("Monster.Cardboard"))
 
 USTRUCT()
-struct FInfoPerColor
+struct FInfoPerMonster
 {
 	
 	GENERATED_BODY()
 	
 
-	FInfoPerColor()
+	FInfoPerMonster()
 	{
 		Color = CM_COLOR_RED;
 		LeftOver = -1;
 	}
 
-	FInfoPerColor (FGameplayTag InColor, int32 InLeftOver) : Color(InColor), LeftOver(InLeftOver) {}
+	FInfoPerMonster (FGameplayTag InColor, int32 InLeftOver) : Color(InColor), LeftOver(InLeftOver) {}
 	
 	UPROPERTY()
 	

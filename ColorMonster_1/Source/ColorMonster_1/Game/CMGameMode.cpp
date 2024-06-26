@@ -44,10 +44,7 @@ ACMGameMode::ACMGameMode()
 	GameStateClass = ACMGameState::StaticClass();
 	
 
-	// Wait for Title
-	IsSetTimerOn = true;
-	// First
-	GameLevel = -1;
+	
 }
 
 void ACMGameMode::BeginPlay()
@@ -55,12 +52,9 @@ void ACMGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	ensure(CMGameInstance);
-	//GameLevel = CMGameInstance->GetGameLevel();
 
 	// Set GameState
 	CMGameState = GetWorld()->GetGameState<ACMGameState>();
-	ensure(CMGameState);
-	CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
 }
 
 void ACMGameMode::Tick(float DeltaSeconds)
@@ -71,9 +65,15 @@ void ACMGameMode::Tick(float DeltaSeconds)
 
 void ACMGameMode::UpdateTime(float DeltaSeconds)
 {
-	if(IsSetTimerOn == false)
+	if(CMGameInstance == nullptr)
 	{
-		IsSetTimerOn = true;
+		CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	}
+	
+	// 한 스테이지 타이머 시작 시
+	if(CMGameInstance->GetTimerOn() == false)
+	{
+		CMGameInstance->SetTimerOn(true);
 		InitializeTime();
 		CMGameState->SetTimerOn();
 	}
@@ -108,34 +108,46 @@ float ACMGameMode::GetLimitTime() const
 	return CMGameInstance->GetObjectiveData(CMGameInstance->GetGameLevel()).LimitTime;
 }
 
-void ACMGameMode::SetLevelAndLoad(int32 InLevel = -1)
+void ACMGameMode::SetLevelAndLoad(int32 InLevel)
 {
 	UE_LOG(LogTemp, Warning, TEXT("InLevel: %d, CMGameInstance->GetGameLevel() : %d"), InLevel, CMGameInstance->GetGameLevel());
 	ensure(CMGameInstance);
+	ensure(CMGameState);
+
+	// Restart
 	if(InLevel == CMGameInstance->GetGameLevel())
 	{
 		// Update Game Objective passing to GameState
 		CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
-		IsSetTimerOn = false;
+		CMGameInstance->SetTimerOn(false);
 		RestartGame();
 		return;
 	}
 	
-	// Default: Next Level
+	// Default: 비로소 Play
 	if(InLevel == -1)
 	{
-		CMGameInstance->SetGameLevel(CMGameInstance->GetGameLevel() + 1);
+		CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
+		// Can Start Timer
+		CMGameInstance->SetTimerOn(false);
 	}
+	// Next Stage
 	else
 	{
+		// Update GameLevel
 		CMGameInstance->SetGameLevel(InLevel);
+		
+		// Can Start Timer 오픈 레벨 했을 때 어차피 자동으로 업데이트 될 것 같다.
+		//CMGameInstance->SetTimerOn(false);
+		UGameplayStatics::OpenLevel(this, FName("InGame" + FString::FromInt(InLevel)));
 	}
-	GameLevel = CMGameInstance->GetGameLevel();
+	
+	// 이 이후로는 오픈 레벨 했을 때 어차피 자동으로 업데이트 될 것 같다.
 	// Update Game Objective passing to GameState
-	CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
-	IsSetTimerOn = false;
+	//CMGameState->InitializeScoreData(CMGameInstance->GetGameLevel());
+	
+	// P.S.
 	// 멀티 환경에서 클라이언트끼리 스타트 시점 맞추기 위해서 Delay Start 사용할 때 게임모드 전환이 필요하다.
 	// 게임모드 기능 활용하면 손봐야하고, 아니면 타이머로 구현 가능
-	
 }
 

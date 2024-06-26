@@ -6,7 +6,10 @@
 
 UCMGameInstance::UCMGameInstance()
 {
-	SetGameLevel(0);
+	SetGameLevel(1);
+	
+	// Wait for Title
+	IsSetTimerOn = true;
 }
 
 void UCMGameInstance::Init()

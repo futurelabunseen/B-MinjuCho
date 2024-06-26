@@ -24,6 +24,7 @@ void ACMGameState::Tick(float DeltaSeconds)
 
 void ACMGameState::InitializeScoreData(int32 Level)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACMGameState::InitializeScoreData %d"), Level);
 	// csv Data from GameInstance
 	auto CMGameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if(CMGameInstance)
@@ -36,9 +37,11 @@ void ACMGameState::InitializeScoreData(int32 Level)
 			FCMLevelObjectiveData ObjectiveData = CMGameInstance->GetObjectiveData(Level);
 			for(const TPair<FGameplayTag, FMonsterData>& Monster : ObjectiveData.Monsters)
 			{
-				FInfoPerColor BaseInfo(Monster.Value.ColorTag, Monster.Value.MonsterNum);
+				FInfoPerMonster BaseInfo(Monster.Value.ColorTag, Monster.Value.MonsterNum);
 				GameObjective.Emplace(Monster.Key, BaseInfo);
+				UE_LOG(LogTemp, Warning, TEXT("ACMGameState::InitializeScoreData %s %s %d"), *Monster.Key.ToString(), *BaseInfo.Color.ToString(), BaseInfo.LeftOver);
 			}
+			
 			
 			UpdateAllScoreUI();
 		}
@@ -59,7 +62,7 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 // 몬스터 하나 죽일 때마다 불리는 Update Partial Data
 void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number)
 {
-	FInfoPerColor BaseInfo(Color, Number);
+	FInfoPerMonster BaseInfo(Color, Number);
 	if(GameObjective.Contains(Category))
 	{
 		GameObjective[Category] = BaseInfo;
@@ -92,6 +95,7 @@ void ACMGameState::UpdateAllScoreUI() const
 // Broadcast to CMUserWidget
 void ACMGameState::UpdateScoreUI(const FGameplayTag& Monster) const
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACMGameState::UpdateScoreUI"));
 	FText MonsterKey = CMSharedDefinition::MonsterTagToText(Monster);
 	FText ColorValue = CMSharedDefinition::ColorTagToText(GameObjective[Monster].Color);
 	FText NumberValue = FText::AsNumber(GameObjective[Monster].LeftOver);
@@ -100,6 +104,7 @@ void ACMGameState::UpdateScoreUI(const FGameplayTag& Monster) const
 
 void ACMGameState::CalcMinute()
 {
+	// 0.2초마다 GameMode에서 넘어온 값으로 시간 계산
 	CurrentMinute = CurrentLeftTime / 60;
 	CurrentSecond = static_cast<int>(CurrentLeftTime) % 60;
 	// 타이머가 끝났을 때 목표 완수 계산
@@ -112,13 +117,16 @@ void ACMGameState::CalcMinute()
 
 void ACMGameState::GameOver()
 {
+	// 이미 게임 오버 판정 났을 때는 중복 호출 막기.
 	if(GetIsCleared() == true)
 	{
 		return;
 	}
 	SetIsCleared(true);
+	
 	// Stop Timer
-	GetWorldTimerManager().ClearTimer(TimeUpdateHandle);
+	SetTimerOff();
+	
 	if(CalculateWin() == true)
 	{
 		// Win UI
@@ -148,6 +156,24 @@ bool ACMGameState::CalculateWin() const
 
 void ACMGameState::SetTimerOn()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACMGameState::SetTimerOn()"));
 	// Timer Handler for Update Minute
-	GetWorld()->GetTimerManager().SetTimer(TimeUpdateHandle, this, &ACMGameState::CalcMinute, 0.2f, true);
+	GetWorld()->GetTimerManager().SetTimer(TimeUpdateHandle, this, &ACMGameState::CalcMinute, 1.2f, true);
+}
+
+void ACMGameState::SetTimerOff()
+{
+	if(TimeUpdateHandle.IsValid())
+	{
+		// Stop Timer
+		UE_LOG(LogTemp, Warning, TEXT("ACMGameState::SetTimerOff()"));
+		GetWorldTimerManager().PauseTimer(TimeUpdateHandle);
+		GetWorldTimerManager().ClearTimer(TimeUpdateHandle);
+	}
+}
+
+void ACMGameState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }

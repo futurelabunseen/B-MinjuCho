@@ -43,7 +43,6 @@ private:
 // Game Object Data
 public:
 	float GetLimitTime() const;
-	int32 GetGameLevel() const {return GameLevel;}
 
 private:
 	UPROPERTY()
@@ -52,14 +51,10 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ACMGameState> CMGameState;
 
-	UPROPERTY()
-	int32 GameLevel;
 	
 
-	UPROPERTY()
-	bool IsSetTimerOn = false;
 // Next Level
 public:
-	void SetLevelAndLoad(int32 InLevel);
+	void SetLevelAndLoad(int32 InLevel = -1);
 
 };

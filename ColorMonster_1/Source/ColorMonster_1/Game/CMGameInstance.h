@@ -76,4 +76,13 @@ private:
 
 	UPROPERTY()
 	int32 DataNum;
+
+	// Timer
+public:
+	bool GetTimerOn() const {return IsSetTimerOn;}
+	void SetTimerOn(bool InTimerOn) {IsSetTimerOn = InTimerOn;}
+
+private:
+	UPROPERTY()
+	bool IsSetTimerOn = true;
 };

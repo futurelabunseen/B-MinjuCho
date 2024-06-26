@@ -53,7 +53,7 @@ private:
 	void UpdateScoreUI(const FGameplayTag& Monster) const;
 	
 	UPROPERTY()
-	TMap<FGameplayTag, FInfoPerColor> GameObjective;
+	TMap<FGameplayTag, FInfoPerMonster> GameObjective;
 
 
 // Time
@@ -93,4 +93,7 @@ public:
 	int32 GetSecond() const {return CurrentSecond;}
 
 	void SetTimerOn();
+	void SetTimerOff();
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

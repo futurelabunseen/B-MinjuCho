@@ -15,6 +15,7 @@
 #include "CMSharedDefinition.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
+#include "Game/CMGameInstance.h"
 
 
 UCMUserWidget::UCMUserWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -35,6 +36,7 @@ void UCMUserWidget::NativeConstruct()
 
 void UCMUserWidget::UpdateScore(const FText& Monster, const FText& Color, const FText& Number)
 {
+	UE_LOG(LogTemp, Warning, TEXT("UCMUserWidget::UpdateScore"));
 	FString WidgetMonsterKey = TEXT("Score_") + Monster.ToString();
 	UTextBlock* ExistMonsterTextBlock = Cast<UTextBlock>(GetWidgetFromName(FName(WidgetMonsterKey)));
 	if(ExistMonsterTextBlock)
@@ -71,6 +73,8 @@ void UCMUserWidget::BindToGameState()
 	if (GameState)
 	{
 		// 델리게이트에 함수 바인딩
+		
+		UE_LOG(LogTemp, Warning, TEXT("UCMUserWidget::BindToGameState()"));
 		GameState->OnScoreChanged.AddDynamic(this, &UCMUserWidget::UpdateScore);
 		GameState->OnTimeChanged.AddDynamic(this, &UCMUserWidget::UpdateTime);
 		
@@ -164,16 +168,11 @@ void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 
 void UCMUserWidget::ClickedRetryBtn()
 {
-	// 열릴 레벨이 Title UI가 아닌 경우
-	// ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	// if(PlayerController)
-	// {
-	// 	PlayerController->SetPlayerInputMode(true);
-	// }
+	UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
-	if(GameMode)
+	if(GameMode && GameInstance)
 	{
-		GameMode->SetLevelAndLoad(GameMode->GetGameLevel());
+		GameMode->SetLevelAndLoad(GameInstance->GetGameLevel());
 		// 레벨 초기화 필요
 		WinWindow->SetVisibility(ESlateVisibility::Hidden);
 		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
@@ -182,9 +181,18 @@ void UCMUserWidget::ClickedRetryBtn()
 
 void UCMUserWidget::ClickedStageBtn()
 {
-	StageWindow->SetVisibility(ESlateVisibility::Visible);
-	StageImg->SetVisibility(ESlateVisibility::Visible);
-	Black_Image->SetVisibility(ESlateVisibility::Visible);
+	UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode && GameInstance)
+	{
+		GameMode->SetLevelAndLoad(GameInstance->GetGameLevel() + 1);
+		// 레벨 초기화 필요
+		WinWindow->SetVisibility(ESlateVisibility::Hidden);
+		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
+	}
+	// StageWindow->SetVisibility(ESlateVisibility::Visible);
+	// StageImg->SetVisibility(ESlateVisibility::Visible);
+	// Black_Image->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UCMUserWidget::ClickedStartBtn()
@@ -212,10 +220,11 @@ void UCMUserWidget::ClickedPlayBtn()
 	Black_Image->SetVisibility(ESlateVisibility::Hidden);
 	InGameWindow->SetVisibility(ESlateVisibility::Visible);
 	// Game START
+	UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
-	if(GameMode)
+	if(GameMode && GameInstance)
 	{
-		GameMode->SetLevelAndLoad(GameMode->GetGameLevel());
+		GameMode->SetLevelAndLoad();
 	}
 }
 

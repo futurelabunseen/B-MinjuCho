@@ -68,8 +68,9 @@ void ACMColorDecalEffect::ChangeColor(const FGameplayTag& InColor)
 
 void ACMColorDecalEffect::SetTimerOn()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACMColorDecalEffect::SetTimerOn()"));
 	// Timer Handler for Update Minute
-	GetWorld()->GetTimerManager().SetTimer(DecalTimerHandle, this, &ACMColorDecalEffect::CalcMinute, 1.0f, true);
+	GetWorld()->GetTimerManager().SetTimer(DecalTimerHandle, this, &ACMColorDecalEffect::CalcMinute, 1.1f, true);
 }
 
 void ACMColorDecalEffect::CalcMinute()
@@ -83,7 +84,12 @@ void ACMColorDecalEffect::CalcMinute()
 
 void ACMColorDecalEffect::StopTimer()
 {
-	GetWorldTimerManager().ClearTimer(DecalTimerHandle);
+	if(DecalTimerHandle.IsValid())
+	{
+		// Stop Timer
+		GetWorldTimerManager().PauseTimer(DecalTimerHandle);
+		GetWorldTimerManager().ClearTimer(DecalTimerHandle);
+	}
 	Destroy();
 }
 
