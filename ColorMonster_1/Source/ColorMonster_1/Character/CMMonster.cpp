@@ -313,6 +313,7 @@ void ACMMonster::TraceHit()
 #endif
 
 	OnAttackFinished.ExecuteIfBound();
+	UE_LOG(LogTemp, Warning, TEXT("OnAttackFinished Delegate Call"));
 }
 
 
@@ -339,6 +340,7 @@ float ACMMonster::GetAITurnSpeed()
 void ACMMonster::SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished)
 {
 	OnAttackFinished = InOnAttackFinished;
+	UE_LOG(LogTemp, Warning, TEXT("ACMMonster::SetAIAttackDelegate - Binding Delegate"));
 }
 
 void ACMMonster::AttackByAI()

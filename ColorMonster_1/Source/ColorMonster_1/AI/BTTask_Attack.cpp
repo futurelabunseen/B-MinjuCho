@@ -40,6 +40,11 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 			// 기본적으로 ExecuteTask 함수가 리턴된 후, Task 끝내려면 호출되어야 하는 함수 (성공으로)
 			UE_LOG(LogTemp, Warning, TEXT("Delgate: Finished Monster Attack Task."));
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(BBKEY_ISATTACKING, false);
+			if(!OwnerComp.GetBlackboardComponent()->GetValueAsBool(BBKEY_ISATTACKING))
+			{
+				
+				UE_LOG(LogTemp, Warning, TEXT("BBKEY_ISATTACKING is False"));
+			}
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	);

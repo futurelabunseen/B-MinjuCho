@@ -42,6 +42,11 @@ bool UBTDecorator_AttackInRange::CalculateRawConditionValue(UBehaviorTreeCompone
 	bool IsAttacking = OwnerComp.GetBlackboardComponent()->GetValueAsBool(BBKEY_ISATTACKING);
 	if(IsAttacking)
 	{
+				
+		UE_LOG(LogTemp, Warning, TEXT("BBKEY_ISATTACKING is True"));
+	}
+	if(IsAttacking)
+	{
 		return false;
 	}
 	
