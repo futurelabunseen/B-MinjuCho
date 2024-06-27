@@ -42,7 +42,7 @@ public:
 private:
 	float AttackRange = 100.0f;
 	float AttackRadius = 100.0f;
-	float AttackDamage = 10.0f;
+	float AttackDamage = 0.1f;
 
 // Decal
 public:
