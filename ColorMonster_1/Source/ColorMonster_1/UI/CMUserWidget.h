@@ -222,4 +222,18 @@ public:
 
 	UFUNCTION()
 	void ConvertGunUI(uint8 InIsLeft);
+
+	// Player HP UI
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UProgressBar> PlayerHpBar;
+
+	UPROPERTY()
+	float PlayerMaxHP;
+
+public:
+	UFUNCTION()
+	void UpdatePlayerHpBar(float InCurrentHP);
+
+	void SetPlayerMaxHP(float InMaxHP) {PlayerMaxHP = InMaxHP;}
 };

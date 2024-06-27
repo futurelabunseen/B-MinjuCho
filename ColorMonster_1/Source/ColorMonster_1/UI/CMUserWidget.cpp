@@ -14,6 +14,7 @@
 #include "Player/CMPlayerController.h"
 #include "CMSharedDefinition.h"
 #include "Components/Image.h"
+#include "Components/ProgressBar.h"
 #include "Components/SizeBox.h"
 #include "Game/CMGameInstance.h"
 
@@ -356,3 +357,11 @@ void UCMUserWidget::ConvertGunUI(uint8 InIsLeft)
 	RightGunWindow->SetVisibility(visibleRight);
 }
 
+void UCMUserWidget::UpdatePlayerHpBar(float InCurrentHP)
+{
+	if(PlayerHpBar == 0)
+	{
+		return;
+	}
+	PlayerHpBar->SetPercent(InCurrentHP/PlayerMaxHP);
+}

@@ -35,7 +35,9 @@ protected:
 	float MaxHP;
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE void SetCurrentHP(float InValue) { CurrentHP = InValue; }
+public:
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
+protected:
 	FORCEINLINE void SetMaxHP(float InValue) { MaxHP = InValue; }
 	// UI Widget Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))

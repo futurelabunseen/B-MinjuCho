@@ -52,6 +52,11 @@ void ACMFPSHUD::BeginPlay()
 	if(Player)
 	{
 		Player->OnSetGun.AddDynamic(this, &ACMFPSHUD::BindPlayerDelagate);
+		if(CMWidget)
+		{
+			CMWidget->SetPlayerMaxHP(Player->GetMaxHP());
+			Player->OnHpChanged.AddDynamic(CMWidget, &UCMUserWidget::UpdatePlayerHpBar);
+		}
 	}
 }
 
