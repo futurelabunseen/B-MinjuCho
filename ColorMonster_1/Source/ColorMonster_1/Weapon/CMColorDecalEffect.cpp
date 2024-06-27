@@ -13,7 +13,6 @@ ACMColorDecalEffect::ACMColorDecalEffect()
 	{
 		SetDecalMaterial(DecalMaterialRef.Object);
 	}
-	DestroyTime = 3;
 }
 
 void ACMColorDecalEffect::BeginPlay()
@@ -64,32 +63,7 @@ void ACMColorDecalEffect::ChangeColor(const FGameplayTag& InColor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ACMColorDecalEffect::Failed to Load DynmaicMaterial"));
 	}
+	SetLifeSpan(DestroyTime);
 }
 
-void ACMColorDecalEffect::SetTimerOn()
-{
-	UE_LOG(LogTemp, Warning, TEXT("ACMColorDecalEffect::SetTimerOn()"));
-	// Timer Handler for Update Minute
-	GetWorld()->GetTimerManager().SetTimer(DecalTimerHandle, this, &ACMColorDecalEffect::CalcMinute, 1.1f, true);
-}
-
-void ACMColorDecalEffect::CalcMinute()
-{
-	BeforeDestroyTime += 1;
-	if(BeforeDestroyTime >= DestroyTime)
-	{
-		StopTimer();
-	}
-}
-
-void ACMColorDecalEffect::StopTimer()
-{
-	if(DecalTimerHandle.IsValid())
-	{
-		// Stop Timer
-		GetWorldTimerManager().PauseTimer(DecalTimerHandle);
-		GetWorldTimerManager().ClearTimer(DecalTimerHandle);
-	}
-	Destroy();
-}
 

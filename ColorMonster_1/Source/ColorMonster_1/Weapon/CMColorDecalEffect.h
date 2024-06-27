@@ -30,19 +30,7 @@ protected:
 
 // Timer
 public:
-	void SetTimerOn();
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Time)
-	int32 DestroyTime;
+	int32 DestroyTime = 3;
 	
-protected:
-	UFUNCTION()
-	void CalcMinute();
-private:
-	UPROPERTY()
-	FTimerHandle DecalTimerHandle;
-	
-	int32 BeforeDestroyTime = 0;
-
-	void StopTimer();
 };

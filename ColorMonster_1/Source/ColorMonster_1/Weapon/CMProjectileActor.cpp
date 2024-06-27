@@ -111,7 +111,7 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 			{
 				DecalEffect->ChangeColor(CurrentColor);
 				DecalEffect->SetActorLocation(HitMonster->GetActorLocation() + FVector(0.0f, 0.0f, -142.792745));
-				DecalEffect->SetTimerOn();
+				
 			
 			}
 

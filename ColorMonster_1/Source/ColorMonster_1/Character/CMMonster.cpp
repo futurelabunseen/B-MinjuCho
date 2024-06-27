@@ -139,11 +139,7 @@ void ACMMonster::Dead()
 			GameState->UpdateFromDead(CurrentCategory, CurrentColor);
 		}
 
-		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			Destroy();
-		}), 2.0f, false);
+		SetLifeSpan(2.0f);
 	}
 }
 
@@ -159,6 +155,7 @@ void ACMMonster::Attack()
 	if(AnimInstance)
 	{
 		AnimInstance->PlayAttackMontage();
+		TraceHit();
 	}
 }
 
@@ -272,25 +269,38 @@ void ACMMonster::ChangeColor(const FGameplayTag& InColor)
 
 void ACMMonster::AfterAnimEndedAttack()
 {
-	OnAttackFinished.ExecuteIfBound();
+	
 	if(HitPlayer)
 	{
-		FDamageEvent DamageEvent;
-		HitPlayer->TakeDamage(GetAttackDamage(), DamageEvent, GetController(), this);
+		//FDamageEvent DamageEvent;
+		//UE_LOG(LogTemp, Warning, TEXT("ACMMonster::AfterAnimEndedAttack()"));
+		//HitPlayer->TakeDamage(GetAttackDamage(), DamageEvent, GetController(), this);
 	}
 }
 
 void ACMMonster::TraceHit()
 {
-	FHitResult OutHitResult;
+	
+	UE_LOG(LogTemp, Warning, TEXT("ACMMonster::TraceHit()"));
+	TArray<FOverlapResult> OutHitResult;
 	const FVector Start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + GetActorForwardVector() * GetAttackRange();
 	
-	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, ECC_GameTraceChannel4, FCollisionShape::MakeSphere(GetAttackRadius()));
+	bool HitDetected = GetWorld()->OverlapMultiByChannel(OutHitResult, Start, FQuat::Identity, ECC_GameTraceChannel4, FCollisionShape::MakeSphere(GetAttackRadius()));
 	
 	if (HitDetected)
 	{
-		HitPlayer = Cast<ACMPlayer>(OutHitResult.GetActor());
+		for (auto HitResult : OutHitResult)
+		{
+			HitPlayer = Cast<ACMPlayer>(HitResult.GetActor());
+			if(HitPlayer)
+			{
+				HitDetected = true;
+				UE_LOG(LogTemp, Warning, TEXT("ACMMonster::TraceHit()::TakeDamage()"));
+				FDamageEvent DamageEvent;
+				HitPlayer->TakeDamage(GetAttackDamage(), DamageEvent, GetController(), this);
+			}
+		}
 	}
 #if ENABLE_DRAW_DEBUG
 
@@ -298,9 +308,11 @@ void ACMMonster::TraceHit()
 	float CapsuleHalfHeight = AttackRange * 0.5f;
 	FColor DrawColor = HitDetected ? FColor::Green : FColor::Red;
 
-	//DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
 
 #endif
+
+	OnAttackFinished.ExecuteIfBound();
 }
 
 

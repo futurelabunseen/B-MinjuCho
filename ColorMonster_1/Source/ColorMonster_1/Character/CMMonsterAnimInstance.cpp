@@ -133,7 +133,7 @@ void UCMMonsterAnimInstance::AnimNotify_CheckHit()
 	ensure(Monster);
 	if(Monster)
 	{
-		Monster->TraceHit();
+		//Monster->TraceHit();
 	}
 }
 
