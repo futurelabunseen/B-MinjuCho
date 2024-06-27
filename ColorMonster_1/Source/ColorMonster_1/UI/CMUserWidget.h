@@ -67,20 +67,18 @@ public:
 	void ClickedRetryBtn();
 	
 	UFUNCTION(BlueprintCallable)
-	void ClickedStageBtn();
+	void ClickedNextBtn();
 
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> RetryButton_Win;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> StageButton_Win;
+	TObjectPtr<class UButton> NextButton_Win;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> RetryButton_Loose;
 	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> StageButton_Loose;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> StageWindow;
@@ -137,6 +135,53 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> PlayButton;
 
+	// Ending
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> EndingImg;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCanvasPanel> EndingWindow;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> BackButton_Ending;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageButton_Ending;
+public:
+	UFUNCTION()
+	void ClickedBackButton();
+	
+	UFUNCTION()
+	void ClickedStageButton();
+
+	// Stage
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageBtn1;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageBtn2;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageBtn3;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageBtn4;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageBtn5;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageButton_Win;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StageButton_Loose;
+
+public:
+	UFUNCTION()
+	void ClickedEachStageBtn1();
+	UFUNCTION()
+	void ClickedEachStageBtn2();
+	UFUNCTION()
+	void ClickedEachStageBtn3();
+	UFUNCTION()
+	void ClickedEachStageBtn4();
+	UFUNCTION()
+	void ClickedEachStageBtn5();
+
+private:
+	
 	// Gun UI
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> LeftGunImg;

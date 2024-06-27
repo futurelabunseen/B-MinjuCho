@@ -89,10 +89,20 @@ void UCMUserWidget::BindButtonClicked()
 {
 	RetryButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
 	RetryButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedRetryBtn);
-	StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
-	StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageBtn);
+	NextButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedNextBtn);
 	PlayButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedPlayBtn);
 	StartButton->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStartBtn);
+
+	BackButton_Ending->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedBackButton);
+	StageButton_Ending->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageButton);
+	StageButton_Win->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageButton);
+	StageButton_Loose->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedStageButton);
+
+	StageBtn1->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedEachStageBtn1);
+	StageBtn2->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedEachStageBtn2);
+	StageBtn3->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedEachStageBtn3);
+	StageBtn4->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedEachStageBtn4);
+	StageBtn5->OnClicked.AddDynamic(this, &UCMUserWidget::ClickedEachStageBtn5);
 }
 
 void UCMUserWidget::AddTextBoxAtContainer(const FText& InText, const FString& GroupName) const
@@ -130,9 +140,20 @@ void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 	}
 	if(IsTurnOn == true)
 	{
+		// 마지막 레벨이면 엔딩 띄우기
+		UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if(GameInstance && GameInstance->GetGameLevel() == GameInstance->MaxLevel)
+		{
+			EndingWindow->SetVisibility(ESlateVisibility::Visible);
+			EndingImg->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			WinWindow->SetVisibility(ESlateVisibility::Visible);
+			WinImg->SetVisibility(ESlateVisibility::Visible);
+		}
+		// 공통으로 꺼야함
 		Black_Image->SetVisibility(ESlateVisibility::Visible);
-		WinWindow->SetVisibility(ESlateVisibility::Visible);
-		WinImg->SetVisibility(ESlateVisibility::Visible);
 		InGameWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
@@ -153,9 +174,14 @@ void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 	}
 	if(IsTurnOn == true)
 	{
-		Black_Image->SetVisibility(ESlateVisibility::Visible);
+		
+		//quitbtn
+	
 		LooseWindow->SetVisibility(ESlateVisibility::Visible);
 		LooseImg->SetVisibility(ESlateVisibility::Visible);
+	
+		// 공통으로 꺼야함
+		Black_Image->SetVisibility(ESlateVisibility::Visible);
 		InGameWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
@@ -179,7 +205,7 @@ void UCMUserWidget::ClickedRetryBtn()
 	}
 }
 
-void UCMUserWidget::ClickedStageBtn()
+void UCMUserWidget::ClickedNextBtn()
 {
 	UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
@@ -190,9 +216,6 @@ void UCMUserWidget::ClickedStageBtn()
 		WinWindow->SetVisibility(ESlateVisibility::Hidden);
 		LooseWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
-	// StageWindow->SetVisibility(ESlateVisibility::Visible);
-	// StageImg->SetVisibility(ESlateVisibility::Visible);
-	// Black_Image->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UCMUserWidget::ClickedStartBtn()
@@ -220,11 +243,84 @@ void UCMUserWidget::ClickedPlayBtn()
 	Black_Image->SetVisibility(ESlateVisibility::Hidden);
 	InGameWindow->SetVisibility(ESlateVisibility::Visible);
 	// Game START
-	UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
-	if(GameMode && GameInstance)
+	if(GameMode)
 	{
 		GameMode->SetLevelAndLoad();
+	}
+}
+
+// 첫 레벨로 돌아가기
+void UCMUserWidget::ClickedBackButton()
+{
+	EndingImg->SetVisibility(ESlateVisibility::Hidden);
+	EndingWindow->SetVisibility(ESlateVisibility::Hidden);
+	
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(1);
+	}
+}
+
+void UCMUserWidget::ClickedStageButton()
+{
+	WinWindow->SetVisibility(ESlateVisibility::Hidden);
+	LooseWindow->SetVisibility(ESlateVisibility::Hidden);
+	EndingWindow->SetVisibility(ESlateVisibility::Hidden);
+	StageWindow->SetVisibility(ESlateVisibility::Visible);
+	StageImg->SetVisibility(ESlateVisibility::Visible);
+	Black_Image->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UCMUserWidget::ClickedEachStageBtn1()
+{
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(1);
+	}
+}
+
+void UCMUserWidget::ClickedEachStageBtn2()
+{
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(2);
+	}
+}
+
+void UCMUserWidget::ClickedEachStageBtn3()
+{
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(3);
+	}
+}
+
+void UCMUserWidget::ClickedEachStageBtn4()
+{
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(4);
+	}
+}
+
+void UCMUserWidget::ClickedEachStageBtn5()
+{
+	// Game START
+	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
+	if(GameMode)
+	{
+		GameMode->SetLevelAndLoad(5);
 	}
 }
 
