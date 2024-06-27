@@ -52,10 +52,11 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	// 델리게이트 Pawn에게 넘겨준 후
 	// 공격 수행
 	AIInterface->SetAIAttackDelegate(OnAttackFinished);
-	AIInterface->AttackByAI();
-
+	
 	// 아직 실행 중
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(BBKEY_ISATTACKING, true);
+	AIInterface->AttackByAI();
+
 	return EBTNodeResult::InProgress;
 	// 델리게이트로 FinishLatentTask 넘겨줬으니까 공격 끝날 시 자동으로 성공 함수가 실행될 것임.
 }
