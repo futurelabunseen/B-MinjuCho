@@ -139,7 +139,11 @@ void ACMGameMode::SetLevelAndLoad(int32 InLevel)
 		
 		// Can Start Timer 오픈 레벨 했을 때 어차피 자동으로 업데이트 될 것 같다.
 		//CMGameInstance->SetTimerOn(false);
-		UGameplayStatics::OpenLevel(this, FName("InGame" + FString::FromInt(InLevel)));
+		FTimerHandle DelayedTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(DelayedTimerHandle, [this, InLevel]()
+		{
+			UGameplayStatics::OpenLevel(this, FName("InGame" + FString::FromInt(InLevel)));
+		}, 1.0f, false);
 	}
 	
 	// 이 이후로는 오픈 레벨 했을 때 어차피 자동으로 업데이트 될 것 같다.

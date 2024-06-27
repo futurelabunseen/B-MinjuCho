@@ -64,6 +64,9 @@ public:
 	
 	int32 GetDataNum() const {return DataNum;}
 
+	UPROPERTY()
+	int32 MaxLevel = 5;
+	
 private:
 	UPROPERTY()
 	TArray<FCMLevelObjectiveData> LevelsData;
