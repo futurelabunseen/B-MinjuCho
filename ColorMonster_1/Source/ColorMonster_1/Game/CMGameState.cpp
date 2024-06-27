@@ -37,7 +37,7 @@ void ACMGameState::InitializeScoreData(int32 Level)
 			FCMLevelObjectiveData ObjectiveData = CMGameInstance->GetObjectiveData(Level);
 			for(const TPair<FGameplayTag, FMonsterData>& Monster : ObjectiveData.Monsters)
 			{
-				FInfoPerMonster BaseInfo(Monster.Value.ColorTag, Monster.Value.MonsterNum);
+				FInfoPerMonster BaseInfo(Monster.Value.ColorTag, Monster.Value.MonsterNum, Monster.Value.SpawnNum);
 				GameObjective.Emplace(Monster.Key, BaseInfo);
 				UE_LOG(LogTemp, Warning, TEXT("ACMGameState::InitializeScoreData %s %s %d"), *Monster.Key.ToString(), *BaseInfo.Color.ToString(), BaseInfo.LeftOver);
 			}
@@ -53,23 +53,36 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 {
 	if(GameObjective.Contains(Category) && Color == GameObjective[Category].Color)
 	{
-		UpdateScoreData(Category, Color, GameObjective[Category].LeftOver - 1);
+		UpdateScoreData(Category, Color, GameObjective[Category].LeftOver - 1, GameObjective[Category].SpawnNum - 1);
 		
-		UE_LOG(LogTemp, Warning, TEXT("ACMGameState::UpdateFromDead"));
+	}
+	else if(GameObjective.Contains(Category) && Color != GameObjective[Category].Color)
+	{
+		--GameObjective[Category].SpawnNum;
+		UE_LOG(LogTemp, Warning, TEXT("다른 컬러: %s SpawnNum Updated: %d"), *Color.ToString(), GameObjective[Category].SpawnNum);
+		if(GameObjective[Category].SpawnNum == 0)
+		{
+			if(CalculateAllDead())
+			{
+				OnLooseWindowChanged.Broadcast(true);
+			}
+		}
 	}
 }
 
 // 몬스터 하나 죽일 때마다 불리는 Update Partial Data
-void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number)
+void ACMGameState::UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number, int32 InSpawnNum)
 {
-	FInfoPerMonster BaseInfo(Color, Number);
+	FInfoPerMonster BaseInfo(Color, Number, InSpawnNum);
 	if(GameObjective.Contains(Category))
 	{
 		GameObjective[Category] = BaseInfo;
+		
+		//UE_LOG(LogTemp, Warning, TEXT("해당 컬러: %s SpawnNum Updated: %d"), *GameObjective[Category].Color.ToString(), GameObjective[Category].SpawnNum);
 	}
 	else
 	{
-		GameObjective.Add(Category, BaseInfo);
+		//GameObjective.Add(Category, BaseInfo);
 	}
 	UpdateScoreUI(Category);
 
@@ -152,6 +165,21 @@ bool ACMGameState::CalculateWin() const
 		}
 	}
 	return true;
+}
+
+bool ACMGameState::CalculateAllDead() const
+{
+	int32 CurrentTotalSpawnNum = 0;
+	for(auto ElemOfObjective : GameObjective)
+	{
+		CurrentTotalSpawnNum += ElemOfObjective.Value.SpawnNum;
+		UE_LOG(LogTemp, Warning, TEXT("%s CurrentTotalSpawnNum: %d"),  *ElemOfObjective.Value.Color.ToString(), CurrentTotalSpawnNum)
+	}
+	if(CurrentTotalSpawnNum == 0)
+	{
+		return true;
+	}
+	return false;
 }
 
 void ACMGameState::SetTimerOn()

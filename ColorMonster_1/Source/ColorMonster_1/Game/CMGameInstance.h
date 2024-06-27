@@ -15,13 +15,16 @@ struct FMonsterData
 	GENERATED_BODY()
 
 public:
-	FMonsterData() : ColorTag(CM_COLOR_RED), MonsterNum(3) {}
+	FMonsterData() : ColorTag(CM_COLOR_RED), MonsterNum(3), SpawnNum(3) {}
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Color")
 	FGameplayTag ColorTag;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
 	int32 MonsterNum;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
+	int32 SpawnNum;
 };
 
 USTRUCT(BlueprintType)

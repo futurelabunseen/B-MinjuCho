@@ -62,6 +62,7 @@ void UCMGameInstance::LoadLevelDataFromJSON()
 					FGameplayTag MonsterTag = CMSharedDefinition::StringToMonsterTag(MonsterObj->GetStringField("monsterTag"));
 					MonsterData.ColorTag = CMSharedDefinition::StringToColorTag(MonsterObj->GetStringField("colorTag"));
 					MonsterData.MonsterNum = MonsterObj->GetIntegerField("monsterNum");
+					MonsterData.SpawnNum = MonsterObj->GetIntegerField("spawnNum");
 
 					LevelData.Monsters.Add(MonsterTag, MonsterData);
 				}

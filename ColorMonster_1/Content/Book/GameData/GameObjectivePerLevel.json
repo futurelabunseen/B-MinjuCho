@@ -7,12 +7,14 @@
         {
           "monsterTag": "Monster.Base",
           "colorTag": "Color.Red",
-          "monsterNum": 3
+          "monsterNum": 3,
+          "spawnNum" : 3
         },
         {
           "monsterTag": "Monster.Cardboard",
           "colorTag": "Color.Purple",
-          "monsterNum": 2
+          "monsterNum": 2,
+          "spawnNum" : 2
         }
       ]
     },
@@ -23,12 +25,14 @@
         {
           "monsterTag": "Monster.Base",
           "colorTag": "Color.Blue",
-          "monsterNum": 3
+          "monsterNum": 3,
+          "spawnNum" : 3
         },
         {
           "monsterTag": "Monster.Cardboard",
           "colorTag": "Color.Green",
-          "monsterNum": 2
+          "monsterNum": 2,
+          "spawnNum" : 2
         }
       ]
     },
@@ -39,12 +43,14 @@
         {
           "monsterTag": "Monster.Base",
           "colorTag": "Color.Orange",
-          "monsterNum": 3
+          "monsterNum": 3,
+          "spawnNum" : 3
         },
         {
           "monsterTag": "Monster.Cardboard",
           "colorTag": "Color.Yellow",
-          "monsterNum": 2
+          "monsterNum": 2,
+          "spawnNum" : 2
         }
       ]
     },
@@ -55,12 +61,14 @@
         {
           "monsterTag": "Monster.Base",
           "colorTag": "Color.Red",
-          "monsterNum": 3
+          "monsterNum": 3,
+          "spawnNum" : 3
         },
         {
           "monsterTag": "Monster.Cardboard",
           "colorTag": "Color.Black",
-          "monsterNum": 2
+          "monsterNum": 2,
+          "spawnNum" : 2
         }
       ]
     },
@@ -71,12 +79,14 @@
         {
           "monsterTag": "Monster.Base",
           "colorTag": "Color.Blue",
-          "monsterNum": 3
+          "monsterNum": 3,
+          "spawnNum" : 3
         },
         {
           "monsterTag": "Monster.Cardboard",
           "colorTag": "Color.Pink",
-          "monsterNum": 2
+          "monsterNum": 2,
+          "spawnNum" : 2
         }
       ]
     }

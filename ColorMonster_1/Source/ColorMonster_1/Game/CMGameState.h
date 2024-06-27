@@ -44,7 +44,7 @@ public:
 // Score
 private:	
 	UFUNCTION()
-	void UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number);
+	void UpdateScoreData(const FGameplayTag& Category, const FGameplayTag& Color, int32 Number, int32 InSpawnNum);
 	
 	UFUNCTION()
 	void UpdateAllScoreUI() const;
@@ -79,6 +79,10 @@ private:
 // Win
 	UFUNCTION()
 	bool CalculateWin() const;
+	
+// Monster All Dead
+	UFUNCTION()
+	bool CalculateAllDead() const;
 
 public:
 	bool GetIsCleared() const {return IsCleared;}

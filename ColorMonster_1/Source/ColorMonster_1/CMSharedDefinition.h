@@ -32,9 +32,10 @@ struct FInfoPerMonster
 	{
 		Color = CM_COLOR_RED;
 		LeftOver = -1;
+		SpawnNum = -1;
 	}
 
-	FInfoPerMonster (FGameplayTag InColor, int32 InLeftOver) : Color(InColor), LeftOver(InLeftOver) {}
+	FInfoPerMonster (FGameplayTag InColor, int32 InLeftOver, int32 InSpawnNum) : Color(InColor), LeftOver(InLeftOver), SpawnNum(InSpawnNum) {}
 	
 	UPROPERTY()
 	
@@ -43,6 +44,10 @@ struct FInfoPerMonster
 	UPROPERTY()
 	
 	int32 LeftOver;
+
+	UPROPERTY()
+
+	int32 SpawnNum;
 };
 
 /**
