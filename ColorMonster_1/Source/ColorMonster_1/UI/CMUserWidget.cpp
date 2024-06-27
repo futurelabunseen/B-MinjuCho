@@ -165,7 +165,7 @@ void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 	}
 }
 
-void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
+void UCMUserWidget::TurnLooseWindow(bool IsTurnOn, const FString& InLooseReason)
 {
 	// 마우스 위치 해제 필요
 	ACMPlayerController* PlayerController = Cast<ACMPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -175,7 +175,7 @@ void UCMUserWidget::TurnLooseWindow(bool IsTurnOn)
 	}
 	if(IsTurnOn == true)
 	{
-		
+		LooseReasonTxt->SetText(FText::FromString(InLooseReason));
 		//quitbtn
 	
 		LooseWindow->SetVisibility(ESlateVisibility::Visible);
@@ -248,6 +248,11 @@ void UCMUserWidget::ClickedPlayBtn()
 	if(GameMode)
 	{
 		GameMode->SetLevelAndLoad();
+	}
+	UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if(GameInstance)
+	{
+		LevelNumTxt->SetText(FText::FromString(FString::FromInt(GameInstance->GetGameLevel())));
 	}
 }
 

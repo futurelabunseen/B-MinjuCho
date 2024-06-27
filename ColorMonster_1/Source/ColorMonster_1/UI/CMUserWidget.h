@@ -52,7 +52,7 @@ public:
 	void TurnWinWindow(bool IsTurnOn);
 	
 	UFUNCTION()
-	void TurnLooseWindow(bool IsTurnOn);
+	void TurnLooseWindow(bool IsTurnOn, const FString& InLooseReason);
 	
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -60,6 +60,9 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> LooseWindow;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> LooseReasonTxt;
 
 	// RETRY BTN / SELECT STAGE BTN
 public:
@@ -125,6 +128,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> InGameWindow;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> LevelNumTxt;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> StartButton;

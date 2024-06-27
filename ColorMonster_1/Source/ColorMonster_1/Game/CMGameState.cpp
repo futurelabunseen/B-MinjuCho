@@ -64,7 +64,7 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 		{
 			if(CalculateAllDead())
 			{
-				OnLooseWindowChanged.Broadcast(true);
+				OnLooseWindowChanged.Broadcast(true, TEXT("NONE LEFT TO KILL !!!"));
 			}
 		}
 	}
@@ -128,7 +128,7 @@ void ACMGameState::CalcMinute()
 	OnTimeChanged.Broadcast(CurrentMinute, CurrentSecond);
 }
 
-void ACMGameState::GameOver()
+void ACMGameState::GameOver(int8 IsPlayerDead)
 {
 	// 이미 게임 오버 판정 났을 때는 중복 호출 막기.
 	if(GetIsCleared() == true)
@@ -139,6 +139,14 @@ void ACMGameState::GameOver()
 	
 	// Stop Timer
 	SetTimerOff();
+
+	// 플레이어가 죽었을 경우에는 무조건 Loose
+	if(IsPlayerDead != 0)
+	{
+		// Loose UI
+		OnLooseWindowChanged.Broadcast(true, TEXT("PLAYER IS DEAD !!!"));
+		return;
+	}
 	
 	if(CalculateWin() == true)
 	{
@@ -150,7 +158,7 @@ void ACMGameState::GameOver()
 	{
 		// Loose UI
 		//OnWinWindowChanged.Broadcast(false);
-		OnLooseWindowChanged.Broadcast(true);
+		OnLooseWindowChanged.Broadcast(true, TEXT("TIME OVER !!!"));
 	}
 }
 

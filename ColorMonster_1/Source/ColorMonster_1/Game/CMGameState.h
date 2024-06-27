@@ -10,7 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnScoreChanged, const FText&, Monster, const FText&, Color, const FText&, Number);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTimeChanged, int32, Minute, int32, Second);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWinWindowChanged, bool, IsTurnOn);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLooseWindowChanged, bool, IsTurnOn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLooseWindowChanged, bool, IsTurnOn, const FString&, LooseReason);
 
 /**
  * 
@@ -72,10 +72,12 @@ private:
 
 	UFUNCTION()
 	void CalcMinute();
-
-	UFUNCTION()
-	void GameOver();
 	
+public:
+	UFUNCTION()
+	void GameOver(int8 IsPlayerDead = 0);
+	
+private:
 // Win
 	UFUNCTION()
 	bool CalculateWin() const;

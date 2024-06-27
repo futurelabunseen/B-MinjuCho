@@ -40,6 +40,9 @@ public:
 protected:
 	// Add Input Mapping Context
 	virtual void BeginPlay() override;
+public:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void Dead() override;
 
 // Input Section
 protected:

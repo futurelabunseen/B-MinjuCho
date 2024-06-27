@@ -13,10 +13,13 @@
 #include "Animation/CMPlayerAnimInstance.h"
 #include "Components/SphereComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Game/CMGameState.h"
 #include "UI/CMWidgetComponent.h"
 #include "Weapon/CMWeapon.h"
 #include "Weapon/CMLineGun.h"
 #include "Weapon/CMColorGun.h"
+
+class ACMGameState;
 
 ACMPlayer::ACMPlayer()
 {
@@ -203,6 +206,27 @@ void ACMPlayer::BeginPlay()
 	ArrayGun.Add(LeftGun);
 
 	Gun = ArrayGun[0];
+}
+
+float ACMPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	float InDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if(CurrentHP <= 0)
+	{
+		Dead();
+	}
+	return InDamage;
+}
+
+void ACMPlayer::Dead()
+{
+	Super::Dead();
+	ACMGameState* GameState = GetWorld()->GetGameState<ACMGameState>();
+	if(GameState)
+	{
+		GameState->GameOver(1);
+	}
 }
 
 void ACMPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
