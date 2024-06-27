@@ -211,6 +211,9 @@ private:
 	TObjectPtr<class UTextBlock> RightTotalNumTxt;
 	
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> ReloadTxt;
+	
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> LeftGunWindow;
 	
 	UPROPERTY(meta = (BindWidget))

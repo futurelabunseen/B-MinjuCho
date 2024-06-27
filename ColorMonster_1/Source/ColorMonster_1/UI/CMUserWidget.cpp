@@ -350,6 +350,14 @@ void UCMUserWidget::ChangeLeftNum(int32 CurrentNum, int32 MaxNum)
 
 void UCMUserWidget::ChangeRightNum(int32 CurrentNum, int32 MaxNum)
 {
+	if(CurrentNum == 0)
+	{
+		ReloadTxt->SetVisibility(ESlateVisibility::Visible);
+	}
+	else if(CurrentNum == MaxNum)
+	{
+		ReloadTxt->SetVisibility(ESlateVisibility::Hidden);
+	}
 	RightCurrentNumTxt->SetText(FText::AsNumber(CurrentNum));
 	RightTotalNumTxt->SetText(FText::AsNumber(MaxNum));
 }
