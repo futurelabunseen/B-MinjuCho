@@ -54,20 +54,20 @@ void ACMGameState::UpdateFromDead(const FGameplayTag& Category, const FGameplayT
 	if(GameObjective.Contains(Category) && Color == GameObjective[Category].Color)
 	{
 		UpdateScoreData(Category, Color, GameObjective[Category].LeftOver - 1, GameObjective[Category].SpawnNum - 1);
-		
 	}
 	else if(GameObjective.Contains(Category) && Color != GameObjective[Category].Color)
 	{
 		--GameObjective[Category].SpawnNum;
-		UE_LOG(LogTemp, Warning, TEXT("다른 컬러: %s SpawnNum Updated: %d"), *Color.ToString(), GameObjective[Category].SpawnNum);
-		if(GameObjective[Category].SpawnNum == 0)
+	}
+	// Check All Dead Anyway
+	if (GameObjective[Category].SpawnNum <= 0)
+	{
+		if (CalculateAllDead())
 		{
-			if(CalculateAllDead())
-			{
-				OnLooseWindowChanged.Broadcast(true, TEXT("NONE LEFT TO KILL !!!"));
-			}
+			OnLooseWindowChanged.Broadcast(true, TEXT("NONE LEFT TO KILL !!!"));
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Dead: %s SpawnNum Updated: %d"), *Color.ToString(), GameObjective[Category].SpawnNum);
 }
 
 // 몬스터 하나 죽일 때마다 불리는 Update Partial Data
