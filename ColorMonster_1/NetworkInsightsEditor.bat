@@ -1,0 +1,1 @@
+UnrealEditor.exe %cd%\ColorMonster_1.uproject -NetTrace=1 -Trace=Net
