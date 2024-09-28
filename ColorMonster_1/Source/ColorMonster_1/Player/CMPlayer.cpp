@@ -18,6 +18,7 @@
 #include "Weapon/CMWeapon.h"
 #include "Weapon/CMLineGun.h"
 #include "Weapon/CMColorGun.h"
+#include "ColorMonster_1.h"
 
 class ACMGameState;
 
@@ -206,6 +207,61 @@ void ACMPlayer::BeginPlay()
 	ArrayGun.Add(LeftGun);
 
 	Gun = ArrayGun[0];
+}
+
+void ACMPlayer::PossessedBy(AController* NewController)
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+	AActor* OwnerActor = GetOwner();
+	if (OwnerActor)
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("Owner : %s"), *OwnerActor->GetName());
+	}
+	else
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("No Owner"));
+	}
+
+	Super::PossessedBy(NewController);
+	OwnerActor = GetOwner();
+	if (OwnerActor)
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("Owner : %s"), *OwnerActor->GetName());
+	}
+	else
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("No Owner"));
+	}
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
+}
+
+void ACMPlayer::OnRep_Owner()
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+	
+
+	Super::PostNetInit();
+	AActor* OwnerActor = GetOwner();
+	if (OwnerActor)
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("Owner : %s"), *OwnerActor->GetName());
+	}
+	else
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("No Owner"));
+	}
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
+}
+
+void ACMPlayer::PostNetInit()
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s %s"), TEXT("Begin"), *GetName());
+
+	Super::PostNetInit();
+	
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
 }
 
 float ACMPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

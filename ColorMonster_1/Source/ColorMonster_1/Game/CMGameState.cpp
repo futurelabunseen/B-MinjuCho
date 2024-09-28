@@ -6,6 +6,7 @@
 #include "CMSharedDefinition.h"
 #include "Game/CMGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "ColorMonster_1.h"
 
 ACMGameState::ACMGameState()
 {
@@ -20,6 +21,24 @@ void ACMGameState::BeginPlay()
 void ACMGameState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void ACMGameState::HandleBeginPlay()
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+
+	Super::HandleBeginPlay();
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
+}
+
+void ACMGameState::OnRep_ReplicatedHasBegunPlay()
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+
+	Super::OnRep_ReplicatedHasBegunPlay();
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
 }
 
 void ACMGameState::InitializeScoreData(int32 Level)

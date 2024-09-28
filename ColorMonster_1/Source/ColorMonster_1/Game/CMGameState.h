@@ -25,6 +25,11 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+
+	// For Network
+	virtual void HandleBeginPlay() override;
+
+	virtual void OnRep_ReplicatedHasBegunPlay() override;
 	
 	UFUNCTION()
 	void InitializeScoreData(int32 Level);

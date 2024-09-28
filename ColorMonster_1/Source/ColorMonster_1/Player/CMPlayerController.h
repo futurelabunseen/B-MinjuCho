@@ -20,8 +20,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<class UInputMappingContext> InputMappingContext;
 
+	// For Network
 protected:
+	virtual void PostInitializeComponents() override;
+	virtual void PostNetInit() override;
 	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 public:
 	void SetPlayerInputMode(bool bInputMode);
 };

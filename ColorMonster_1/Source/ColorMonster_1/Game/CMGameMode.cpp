@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/CMFPSHUD.h"
 #include "UI/CMUserWidget.h"
+#include "ColorMonster_1.h"
 
 ACMGameMode::ACMGameMode()
 {
@@ -61,6 +62,64 @@ void ACMGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	UpdateTime(DeltaSeconds);
+}
+
+void ACMGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("============================================================"));
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+
+	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
+}
+
+APlayerController* ACMGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+	
+	APlayerController* NewPlayerController = Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
+	
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
+	return NewPlayerController;
+}
+
+void ACMGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+
+	Super::PostLogin(NewPlayer);
+
+	UNetDriver* NetDriver = GetNetDriver();
+	if (NetDriver)
+	{
+		if (NetDriver->ClientConnections.Num() == 0)
+		{
+			CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("No Client Connection"));
+		}
+		else
+		{
+			for (const auto& Connection : NetDriver->ClientConnections)
+			{
+				CM_LOG(LogCMNetwork, Log, TEXT("Client Connections: %s"), *Connection->GetName());
+			}
+		}
+	}
+	else
+	{
+		CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("No NetDriver"));
+	}
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
+}
+
+void ACMGameMode::StartPlay()
+{
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("Begin"));
+
+	Super::StartPlay();
+
+	CM_LOG(LogCMNetwork, Log, TEXT("%s"), TEXT("End"));
 }
 
 void ACMGameMode::UpdateTime(float DeltaSeconds)
