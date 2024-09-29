@@ -9,6 +9,7 @@
 #include "CMSharedDefinition.h"
 #include "Weapon/CMColorDecalEffect.h"
 #include "Components/DecalComponent.h"
+#include "Weapon/CMColorSyncComponent.h"
 
 // Sets default values
 ACMProjectileActor::ACMProjectileActor()
@@ -38,7 +39,7 @@ ACMProjectileActor::ACMProjectileActor()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CMPROJECTILEACTOR: Failed to Load Static Mesh"));
 	}
-	
+
 	// Movement
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
@@ -51,7 +52,6 @@ ACMProjectileActor::ACMProjectileActor()
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
 
-	CurrentColor = CM_COLOR_NONE;
 
 	// 1. For Decal Actor
 	// Load Effect
@@ -75,9 +75,6 @@ ACMProjectileActor::ACMProjectileActor()
 void ACMProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// Dynamic 세팅
-	StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
 }
 
 // Called every frame
@@ -85,6 +82,29 @@ void ACMProjectileActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ACMProjectileActor::SetSyncAndMat(UCMColorSyncComponent* InColorSync)
+{
+	ColorSync = InColorSync;
+	if (ColorSync && ColorSync->GetDynamicInstance())
+	{
+		// Set Mat by Sync Dynamic Mat
+		StaticMesh->SetMaterial(0, ColorSync->GetDynamicInstance());
+	}
+}
+
+void ACMProjectileActor::ChangeColorByLast()
+{
+	UMaterialInstanceDynamic* TempDynamic = StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
+	if (TempDynamic)
+	{
+		const FLinearColor RealColor = CMSharedDefinition::TranslateColor(ProjectileCurrentColor);
+		TempDynamic->SetVectorParameterValue(FName("Tint"), RealColor);
+		StaticMesh->SetMaterial(0, TempDynamic);
+
+		UE_LOG(LogTemp, Warning, TEXT("ACMProjectileActor::ChangeColorByLast"));
+	}
 }
 
 void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
@@ -103,20 +123,20 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		ACMMonster* HitMonster = Cast<ACMMonster>(OtherActor);
 		if (HitMonster != nullptr)
 		{
-			HitMonster->ChangeColor(CurrentColor);
+			HitMonster->ChangeColor(ProjectileCurrentColor);
 
 			// 1. Decal Actor
 			ACMColorDecalEffect* DecalEffect = GetWorld()->SpawnActor<ACMColorDecalEffect>(EffectClass);
 			if (DecalEffect)
 			{
-				DecalEffect->ChangeColor(CurrentColor);
+				DecalEffect->ChangeColor(ProjectileCurrentColor);
 				DecalEffect->SetActorLocation(HitMonster->GetActorLocation() + FVector(0.0f, 0.0f, -142.792745));
 				
 			
 			}
 
 			// 2. Decal Component
-			HitMonster->UpdateDecal(CMSharedDefinition::TranslateColor(CurrentColor));
+			HitMonster->UpdateDecal(CMSharedDefinition::TranslateColor(ProjectileCurrentColor));
 
 		}
 
@@ -126,25 +146,3 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 //GetWorld()->OverlapMultiByChannel()
 //UKismetSystemLibrary::SphereOverlapActors()
 //UKismetSystemLibrary::SphereTraceSingle()
-
-void ACMProjectileActor::ChangeColor(const FGameplayTag& InColor)
-{
-	CurrentColor = InColor;
-	const FLinearColor RealColor = CMSharedDefinition::TranslateColor(CurrentColor);
-	for (int i = 0; i < StaticMesh->GetNumMaterials(); ++i)
-	{
-		// 각 매터리얼에 설정된 Dynamic 가져오기
-		UMaterialInterface* SkeletalMeshMaterial = StaticMesh->GetMaterial(i);
-		UMaterialInstanceDynamic* DynamicMaterial =
-			Cast<UMaterialInstanceDynamic>(SkeletalMeshMaterial);
-		if (DynamicMaterial)
-		{
-			// 현재 컬러로 곱하기
-			DynamicMaterial->SetVectorParameterValue(FName("Tint"), RealColor);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("ACMProjectileActor::Failed to Load DynmaicMaterial"));
-		}
-	}
-}

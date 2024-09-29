@@ -25,6 +25,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetSyncAndMat(class UCMColorSyncComponent* InColorSync);
+
+	void ChangeColorByLast();
+	
+	UPROPERTY(VisibleDefaultsOnly, Category = "Color")
+	TObjectPtr<UCMColorSyncComponent> ColorSync;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	TObjectPtr<class USphereComponent> CollisionComponent;
 
@@ -40,20 +47,18 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
-	FORCEINLINE void SetCurrentColor(const FGameplayTag& InColor) {CurrentColor = InColor;}
-
-	UFUNCTION()
-	void ChangeColor(const FGameplayTag& InColor);
 	
 protected:
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag CurrentColor;
 
 	// Decal Effect For Actor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ADecalActor> EffectClass;
 
-	
+public:
+	void SetProjectileCurrentColor(const FGameplayTag& InColor) { ProjectileCurrentColor = InColor; }
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag ProjectileCurrentColor;
 };
 

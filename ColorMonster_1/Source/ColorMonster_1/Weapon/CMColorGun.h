@@ -27,7 +27,7 @@ public:
 	virtual void Fire() override;
 	virtual void Reload() override;
 	void ShootTrace();
-	void ChangeColor(const FGameplayTag& InColor);
+	void CallChangeColor(const FGameplayTag& InColor);
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
@@ -42,8 +42,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Player, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCMPlayerAnimInstance> PlayerAnimInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag CurrentColor;
+	UPROPERTY(VisibleDefaultsOnly, Category = "Color")
+	TObjectPtr<class UCMColorSyncComponent> ColorSync;
 
 private:
 	UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "true"))

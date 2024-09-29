@@ -11,6 +11,7 @@
 #include "CMSharedDefinition.h"
 #include "Character/CMMonster.h"
 #include "Math/RandomStream.h"
+#include "Weapon/CMColorSyncComponent.h"
 
 ACMColorGun::ACMColorGun()
 {
@@ -32,7 +33,9 @@ ACMColorGun::ACMColorGun()
 	SkeletalMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	SkeletalMesh->SetMobility(EComponentMobility::Movable);
 
-	CurrentColor = CM_COLOR_NONE;
+	// Color Component
+	ColorSync = CreateDefaultSubobject<UCMColorSyncComponent>(TEXT("ColorSync"));
+
 	
 	// 투사체 세팅
 	// Projectile Class
@@ -60,9 +63,14 @@ void ACMColorGun::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SkeletalMesh->CreateAndSetMaterialInstanceDynamic(0);
-
-	ChangeColor(CurrentColor);
+	if (ColorSync)
+	{
+		// Set Mat by Created Sync Dynamic Mat
+		ColorSync->CreateDynamicMaterial(SkeletalMesh->CreateAndSetMaterialInstanceDynamic(0));
+		SkeletalMesh->SetMaterial(0, ColorSync->GetDynamicInstance());
+		// Set As Default Color
+		CallChangeColor(ColorSync->GetCurrentColor());
+	}
 }
 
 void ACMColorGun::SetPlayer(ACMPlayer* const InPlayer)
@@ -116,17 +124,35 @@ void ACMColorGun::Fire()
 			if (Projectile)
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->ChangeColor(CurrentColor);
+
+				// Update Bullet Num
+				SetCurrentBullet(GetCurrentBullet() - 1);
+
+				if (ColorSync)
+				{
+					// Memorizing Color in Each Projectile
+					Projectile->SetProjectileCurrentColor(ColorSync->GetCurrentColor());
+
+					// If it is not the Last, Set DynMat As Shared by ColorGun
+					if (GetCurrentBullet() != 0)
+					{
+						Projectile->SetSyncAndMat(ColorSync);
+					}
+					else
+					{
+						// Last Projectile has to be Localized DynMat
+						Projectile->ChangeColorByLast();
+					}
+				}
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
-		SetCurrentBullet(GetCurrentBullet() - 1);
+		// Update Bullet UI
 		OnBulletChanged.Broadcast(GetCurrentBullet(), GetMaxBullet());
 	}
 	if(GetCurrentBullet() == 0)
 	{
-		CurrentColor = CM_COLOR_NONE;
-		ChangeColor(CurrentColor);
+		CallChangeColor(CM_COLOR_NONE);
 	}
 }
 
@@ -181,24 +207,18 @@ void ACMColorGun::ShootTrace()
 			
 			if(Sponge)
 			{
-				ChangeColor(Sponge->GetCurrentColor());
+				CallChangeColor(Sponge->GetCurrentColor());
 			}
 		}
 	}
 }
 
-void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
+void ACMColorGun::CallChangeColor(const FGameplayTag& InColor)
 {
-	UMaterialInterface* StaticMeshMaterial = SkeletalMesh->GetMaterial(0);
-	UMaterialInstanceDynamic* DynamicMaterial = 
-		Cast<UMaterialInstanceDynamic>(StaticMeshMaterial);
-	
-	if(DynamicMaterial)
+	if(ColorSync)
 	{
-		DynamicMaterial->SetVectorParameterValue(FName("Tint"), CMSharedDefinition::TranslateColor(InColor));
-		
-		CurrentColor = InColor;
-		OnColorChanged.Broadcast(CurrentColor);
+		ColorSync->ChangeColor(InColor);
+		OnColorChanged.Broadcast(InColor);
 		// 색이 제대로 바뀌었을 때만 장전 완료 처리
 		if(InColor != CM_COLOR_NONE)
 		{
@@ -206,7 +226,7 @@ void ACMColorGun::ChangeColor(const FGameplayTag& InColor)
 			SetCurrentBullet(GetMaxBullet());
 			OnBulletChanged.Broadcast(GetCurrentBullet(), GetMaxBullet());
 			
-			UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload : %s"), *CurrentColor.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("ColorGun Reload : %s"), *InColor.ToString());
 		}
 	}
 }
