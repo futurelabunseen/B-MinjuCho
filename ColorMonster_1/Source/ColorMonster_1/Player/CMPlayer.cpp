@@ -38,7 +38,7 @@ ACMPlayer::ACMPlayer()
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 	
-	GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
+	
 	GetCapsuleComponent()->BodyInstance.SetCollisionProfileName(TEXT("Player"));
 	
 	// Animation
@@ -130,7 +130,12 @@ void ACMPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	HpBar->SetVisibility(false);
-	GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
+
+	// Hide Head ONLY CONTROLLED
+	if (IsLocallyControlled())
+	{
+		GetMesh()->HideBoneByName(TEXT("head"), PBO_None);
+	}
 	
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
