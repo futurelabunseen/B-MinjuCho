@@ -145,16 +145,16 @@ void UCMUserWidget::TurnWinWindow(bool IsTurnOn)
 		UCMGameInstance* GameInstance = Cast<UCMGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 		if(GameInstance && GameInstance->GetGameLevel() == GameInstance->MaxLevel)
 		{
-			EndingWindow->SetVisibility(ESlateVisibility::Visible);
-			EndingImg->SetVisibility(ESlateVisibility::Visible);
+			EndingWindow->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			EndingImg->SetVisibility(ESlateVisibility::HitTestInvisible);
 		}
 		else
 		{
-			WinWindow->SetVisibility(ESlateVisibility::Visible);
-			WinImg->SetVisibility(ESlateVisibility::Visible);
+			WinWindow->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			WinImg->SetVisibility(ESlateVisibility::HitTestInvisible);
 		}
 		// 공통으로 꺼야함
-		Black_Image->SetVisibility(ESlateVisibility::Visible);
+		Black_Image->SetVisibility(ESlateVisibility::HitTestInvisible);
 		InGameWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
@@ -178,11 +178,11 @@ void UCMUserWidget::TurnLooseWindow(bool IsTurnOn, const FString& InLooseReason)
 		LooseReasonTxt->SetText(FText::FromString(InLooseReason));
 		//quitbtn
 	
-		LooseWindow->SetVisibility(ESlateVisibility::Visible);
-		LooseImg->SetVisibility(ESlateVisibility::Visible);
+		LooseWindow->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		LooseImg->SetVisibility(ESlateVisibility::HitTestInvisible);
 	
 		// 공통으로 꺼야함
-		Black_Image->SetVisibility(ESlateVisibility::Visible);
+		Black_Image->SetVisibility(ESlateVisibility::HitTestInvisible);
 		InGameWindow->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
@@ -225,7 +225,7 @@ void UCMUserWidget::ClickedStartBtn()
 	TitleImg->SetVisibility(ESlateVisibility::Hidden);
 	StartButton->SetVisibility(ESlateVisibility::Hidden);
 	QuitButton->SetVisibility(ESlateVisibility::Hidden);
-	IntroduceImg->SetVisibility(ESlateVisibility::Visible);
+	IntroduceImg->SetVisibility(ESlateVisibility::HitTestInvisible);
 	PlayButton->SetVisibility(ESlateVisibility::Visible);
 }
 
@@ -242,7 +242,7 @@ void UCMUserWidget::ClickedPlayBtn()
 	}
 	TitlePanel->SetVisibility(ESlateVisibility::Hidden);
 	Black_Image->SetVisibility(ESlateVisibility::Hidden);
-	InGameWindow->SetVisibility(ESlateVisibility::Visible);
+	InGameWindow->SetVisibility(ESlateVisibility::HitTestInvisible);
 	// Game START
 	ACMGameMode* GameMode = Cast<ACMGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
@@ -275,9 +275,9 @@ void UCMUserWidget::ClickedStageButton()
 	WinWindow->SetVisibility(ESlateVisibility::Hidden);
 	LooseWindow->SetVisibility(ESlateVisibility::Hidden);
 	EndingWindow->SetVisibility(ESlateVisibility::Hidden);
-	StageWindow->SetVisibility(ESlateVisibility::Visible);
-	StageImg->SetVisibility(ESlateVisibility::Visible);
-	Black_Image->SetVisibility(ESlateVisibility::Visible);
+	StageWindow->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	StageImg->SetVisibility(ESlateVisibility::HitTestInvisible);
+	Black_Image->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void UCMUserWidget::ClickedEachStageBtn1()
@@ -352,7 +352,7 @@ void UCMUserWidget::ChangeRightNum(int32 CurrentNum, int32 MaxNum)
 {
 	if(CurrentNum == 0)
 	{
-		ReloadTxt->SetVisibility(ESlateVisibility::Visible);
+		ReloadTxt->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 	else if(CurrentNum == MaxNum)
 	{
@@ -364,8 +364,8 @@ void UCMUserWidget::ChangeRightNum(int32 CurrentNum, int32 MaxNum)
 
 void UCMUserWidget::ConvertGunUI(uint8 InIsLeft)
 {
-	ESlateVisibility visibleLeft = (InIsLeft == 1) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
-	ESlateVisibility visibleRight = (InIsLeft == 0) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	ESlateVisibility visibleLeft = (InIsLeft == 1) ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden;
+	ESlateVisibility visibleRight = (InIsLeft == 0) ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden;
 	LeftGunWindow->SetVisibility(visibleLeft);
 	RightGunWindow->SetVisibility(visibleRight);
 }
