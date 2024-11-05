@@ -12,6 +12,7 @@
 #include "Character/CMMonster.h"
 #include "Math/RandomStream.h"
 #include "Weapon/CMColorSyncComponent.h"
+#include "CMObjectPoolManager.h"
 
 ACMColorGun::ACMColorGun()
 {
@@ -71,6 +72,12 @@ void ACMColorGun::BeginPlay()
 		// Set As Default Color
 		CallChangeColor(ColorSync->GetCurrentColor());
 	}
+	UCMObjectPoolManager* ObjectPoolManager = GetWorld()->GetGameInstance()->GetSubsystem<UCMObjectPoolManager>();
+
+	if (ObjectPoolManager)
+	{
+		ObjectPoolManager->CreatePool<ACMProjectileActor>(ProjectileClass, 10);
+	}
 }
 
 void ACMColorGun::SetPlayer(ACMPlayer* const InPlayer)
@@ -120,7 +127,22 @@ void ACMColorGun::Fire()
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
 
-			ACMProjectileActor* Projectile = GetWorld()->SpawnActor<ACMProjectileActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			UCMObjectPoolManager* ObjectPoolManager = GetWorld()->GetGameInstance()->GetSubsystem<UCMObjectPoolManager>();
+			ACMProjectileActor* Projectile = nullptr;
+			if (ObjectPoolManager)
+			{
+				Projectile = ObjectPoolManager->GetPooledObject<ACMProjectileActor>();
+				if (Projectile)
+				{
+					Projectile->SetActorLocationAndRotation(MuzzleLocation, MuzzleRotation);
+				}
+			}
+			// Pooling Error
+			if (Projectile == nullptr)
+			{
+				Projectile = GetWorld()->SpawnActor<ACMProjectileActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			}
+			//ACMProjectileActor* Projectile = GetWorld()->SpawnActor<ACMProjectileActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();

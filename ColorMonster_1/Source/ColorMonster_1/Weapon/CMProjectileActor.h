@@ -6,10 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTags.h"
+#include "Interface/CMPoolableInterface.h"
 #include "CMProjectileActor.generated.h"
 
 UCLASS()
-class COLORMONSTER_1_API ACMProjectileActor : public AActor
+class COLORMONSTER_1_API ACMProjectileActor : public AActor, public ICMPoolableInterface
 {
 	GENERATED_BODY()
 	
@@ -24,6 +25,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	// For Projectile Pooling Interface func
+	virtual void Reset() override;
+	virtual void Hide() override;
 
 	void SetSyncAndMat(class UCMColorSyncComponent* InColorSync);
 
@@ -60,5 +64,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Color, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag ProjectileCurrentColor;
+	
+	UPROPERTY()
+	int8 bCanHit = true;
 };
 

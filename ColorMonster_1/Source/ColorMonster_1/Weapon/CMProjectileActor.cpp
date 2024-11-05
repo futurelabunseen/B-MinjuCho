@@ -10,6 +10,7 @@
 #include "Weapon/CMColorDecalEffect.h"
 #include "Components/DecalComponent.h"
 #include "Weapon/CMColorSyncComponent.h"
+#include "CMObjectPoolManager.h"
 
 // Sets default values
 ACMProjectileActor::ACMProjectileActor()
@@ -50,7 +51,7 @@ ACMProjectileActor::ACMProjectileActor()
 	ProjectileMovementComponent->Bounciness = 0.6f;
 
 	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
+	//InitialLifeSpan = 3.0f;
 
 
 	// 1. For Decal Actor
@@ -84,6 +85,18 @@ void ACMProjectileActor::Tick(float DeltaTime)
 
 }
 
+void ACMProjectileActor::Reset()
+{
+	SetActorHiddenInGame(false);
+	bCanHit = true;
+}
+
+void ACMProjectileActor::Hide()
+{
+	SetActorHiddenInGame(true);
+	bCanHit = false;
+}
+
 void ACMProjectileActor::SetSyncAndMat(UCMColorSyncComponent* InColorSync)
 {
 	ColorSync = InColorSync;
@@ -94,6 +107,7 @@ void ACMProjectileActor::SetSyncAndMat(UCMColorSyncComponent* InColorSync)
 	}
 }
 
+// Called ONLY if it is the last
 void ACMProjectileActor::ChangeColorByLast()
 {
 	UMaterialInstanceDynamic* TempDynamic = StaticMesh->CreateAndSetMaterialInstanceDynamic(0);
@@ -114,12 +128,21 @@ void ACMProjectileActor::FireInDirection(const FVector& ShootDirection)
 
 void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (!bCanHit)
+	{
+		return;
+	}
 	if ((OtherActor != this) && (OtherComponent != nullptr))
 	{
 		// Knock Back
 		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 
 		ensure(OtherActor != nullptr);
+		UCMObjectPoolManager* ObjectPoolManager = GetWorld()->GetGameInstance()->GetSubsystem<UCMObjectPoolManager>();
+		if (ObjectPoolManager)
+		{
+			ObjectPoolManager->ReturnPooledObject<ACMProjectileActor>(this);
+		}
 		ACMMonster* HitMonster = Cast<ACMMonster>(OtherActor);
 		if (HitMonster != nullptr)
 		{
@@ -140,7 +163,7 @@ void ACMProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 
 		}
 
-		Destroy();
+		//Destroy();
 	}
 }
 //GetWorld()->OverlapMultiByChannel()

@@ -50,6 +50,18 @@ struct FInfoPerMonster
 	int32 SpawnNum;
 };
 
+template <typename T>
+struct ObjectPoolInfo
+{
+	ObjectPoolInfo(TSubclassOf<T> InClassInfo) : ClassInfo(InClassInfo)
+	{
+	}
+
+	TSubclassOf<T> ClassInfo;
+	TArray<T*> DeactiveObjects;
+	TArray<T*> ActiveObjects;
+};
+
 /**
  * 
  */
